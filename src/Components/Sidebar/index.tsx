@@ -2,8 +2,8 @@ import { NavLink } from "react-router-dom";
 
 function Sidebar () {
     return (
-        <nav>
-            <ul className="flex flex-col gap-6">
+        <nav className="p-3">
+            <ul className="flex flex-col gap-2">
                 <li>
                     <NavLink 
                         to="/"
@@ -42,7 +42,6 @@ function Sidebar () {
                         </li>
                     </ul>
                 </li>
-                
             </ul>
         </nav>
     )
