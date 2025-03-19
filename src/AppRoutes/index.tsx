@@ -2,20 +2,21 @@ import { useRoutes } from 'react-router-dom'
 import Home from '../Pages/Home'
 import Clients from '../Pages/Clients'
 import Offers from '../Pages/Offers'
-import Products from '../Pages/Products'
-import ProductEdit from '../Pages/ProductEdit'
+import ProductsEdit from '../Pages/Products/ProductsEdit'
+import ProductsInventory from '../Pages/Products/ProductsInventory'
 import NotFound from '../Pages/NotFound'
 
 const AppRoutes = () => {
   let appRoutes = useRoutes([
     { path: '/', element: <Home /> },
     { path: '/clients', element: <Clients /> },
-    { path: '/*', element: <NotFound /> },
     { path: '/offers', element: <Offers /> },
-    { path: '/Products', element: <Products />, 
+    { path: '/products', 
       children: [
-      { path: 'edit', element: <ProductEdit /> }, // nested route for product details, e.g., /products/12345
+      { path: 'edit', element: <ProductsEdit /> },
+      { path: 'inventory', element: <ProductsInventory /> },
     ]},
+    { path: '/*', element: <NotFound /> },
   ]);
 
     return appRoutes;
