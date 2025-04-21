@@ -1,0 +1,23 @@
+// 🎨 Colores principales
+$bg-primary: #18181B;
+$bg-secondary: #09090B;
+
+// Colores hover
+$bg-hover-primary: darken($bg-primary, 10%); // Azul grisáceo oscuro con 10% de saturación
+$bg-hover-secondary: darken($bg-secondary, 10%); // Gris neutro con 10% de saturación
+
+// 🌟 Colores complementarios
+$accent-color: #ff6b35;  // Naranja vibrante para resaltar elementos interactivos
+$success-color: #4caf50; // Verde para acciones exitosas
+$error-color: #e63946;   // Rojo para errores o alertas
+$warning-color: #ffcc00; // Amarillo para advertencias
+
+// 🎭 Tonos de fondo
+$bg-light: #f4f4f4;      // Fondo claro para secciones o tarjetas
+$bg-dark: #1e2a38;       // Fondo oscuro para contrastes
+$text-primary: #ffffff;  // Texto principal sobre fondos oscuros
+$text-secondary: #2d3748; // Texto oscuro para fondos claros
+
+// 🔲 Bordes y sombras
+$border-color: #cbd5e0;  // Bordes suaves para inputs y tarjetas
+$shadow-color: rgba(0, 0, 0, 0.2); // Sombras sutiles

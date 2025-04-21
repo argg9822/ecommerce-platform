@@ -1,13 +1,26 @@
 import { defineConfig } from 'vite';
+import path from 'path';
 import laravel from 'laravel-vite-plugin';
-import tailwindcss from '@tailwindcss/vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: 'resources/js/app.tsx',
             refresh: true,
         }),
-        tailwindcss(),
+        react(),
     ],
+    css: {
+        preprocessorOptions: {
+          scss: {
+            additionalData: '@use "@sass/abstracts" as a;',
+          },
+        },
+      },
+      resolve: {
+        alias: {
+          '@sass': path.resolve(__dirname, 'resources/sass'),
+        },
+      },
 });

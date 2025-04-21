@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Tenant;
+use Illuminate\Support\Facades\Log;
 
 class IdentifyTenant
 {
@@ -16,8 +17,9 @@ class IdentifyTenant
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $host = $request->getHost();
-        $tenant = Tenant::where('domain', $host)->fistOrFail();
+        $domain = $request->getHost();
+
+        $tenant = Tenant::byDomain($domain)->firstOrFail();
         app()->instance('currentTenant', $tenant);
         return $next($request);
     }

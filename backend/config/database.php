@@ -82,18 +82,45 @@ return [
             ]) : [],
         ],
 
-        'pgsql' => [
+        'pgsql' => [ //Conexion central
             'driver' => 'pgsql',
-            'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'laravel'),
-            'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => env('DB_CHARSET', 'utf8'),
+            'database' => env('DB_DATABASE', 'ecommerce_business'),
+            'username' => env('DB_USERNAME', 'postgres'),
+            'password' => env('DB_PASSWORD', '123456'),
+            'charset' => 'utf8',
             'prefix' => '',
-            'prefix_indexes' => true,
+            'schema' => 'public',
             'search_path' => 'public',
+            'sslmode' => 'prefer',
+        ],
+
+        'tenant' => [
+            'driver' => 'pgsql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'ecommerce_business'),
+            'username' => env('DB_USERNAME', 'postgres'),
+            'password' => env('DB_PASSWORD', '123456'),
+            'schema' => 'public',
+            'search_path' => '',
+            'charset' => 'utf8',
+            'prefix' => '',
+            'sslmode' => 'prefer'
+        ],
+
+        'central' => [
+            'driver' => 'pgsql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'ecommerce_business'),
+            'username' => env('DB_USERNAME', 'postgres'),
+            'password' => env('DB_PASSWORD', '123456'),
+            'schema' => 'public',
+            'search_path' => 'public',
+            'charset' => 'utf8',
+            'prefix' => '',
             'sslmode' => 'prefer',
         ],
 

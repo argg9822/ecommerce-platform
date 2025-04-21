@@ -1,0 +1,102 @@
+[
+    {
+        "name": "Colombia",
+        "code": "CO",
+        "dial_code": "+57"
+    },
+    {
+        "name": "Estados Unidos",
+        "code": "US",
+        "dial_code": "+1"
+    },
+    {
+        "name": "México",
+        "code": "MX",
+        "dial_code": "+52"
+    },
+    {
+        "name": "Argentina",
+        "code": "AR",
+        "dial_code": "+54"
+    },
+    {
+        "name": "España",
+        "code": "ES",
+        "dial_code": "+34"
+    },
+    {
+        "name": "Canadá",
+        "code": "CA",
+        "dial_code": "+1"
+    },
+    {
+        "name": "Chile",
+        "code": "CL",
+        "dial_code": "+56"
+    },
+    {
+        "name": "Brasil",
+        "code": "BR",
+        "dial_code": "+55"
+    },
+    {
+        "name": "Alemania",
+        "code": "DE",
+        "dial_code": "+49"
+    },
+    {
+        "name": "Francia",
+        "code": "FR",
+        "dial_code": "+33"
+    },
+    {
+        "name": "Reino Unido",
+        "code": "GB",
+        "dial_code": "+44"
+    },
+    {
+        "name": "Italia",
+        "code": "IT",
+        "dial_code": "+39"
+    },
+    {
+        "name": "Perú",
+        "code": "PE",
+        "dial_code": "+51"
+    },
+    {
+        "name": "Venezuela",
+        "code": "VE",
+        "dial_code": "+58"
+    },
+    {
+        "name": "Uruguay",
+        "code": "UY",
+        "dial_code": "+598"
+    },
+    {
+        "name": "Paraguay",
+        "code": "PY",
+        "dial_code": "+595"
+    },
+    {
+        "name": "Bolivia",
+        "code": "BO",
+        "dial_code": "+591"
+    },
+    {
+        "name": "Ecuador",
+        "code": "EC",
+        "dial_code": "+593"
+    },
+    {
+        "name": "Panamá",
+        "code": "PA",
+        "dial_code": "+507"
+    },
+    {
+        "name": "Costa Rica",
+        "code": "CR",
+        "dial_code": "+506"
+    }
+]

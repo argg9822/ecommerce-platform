@@ -1,0 +1,139 @@
+[
+    {
+        "group": "North America",
+        "zones": [
+            {
+                "label": "Eastern Standard Time (EST)",
+                "value": "America/New_York"
+            },
+            {
+                "label": "Central Standard Time (CST)",
+                "value": "America/Chicago"
+            },
+            {
+                "label": "Mountain Standard Time (MST)",
+                "value": "America/Denver"
+            },
+            {
+                "label": "Pacific Standard Time (PST)",
+                "value": "America/Los_Angeles"
+            },
+            {
+                "label": "Alaska Standard Time (AKST)",
+                "value": "America/Anchorage"
+            },
+            {
+                "label": "Hawaii Standard Time (HST)",
+                "value": "Pacific/Honolulu"
+            }
+        ]
+    },
+    {
+        "group": "Europe & Africa",
+        "zones": [
+            {
+                "label": "Greenwich Mean Time (GMT)",
+                "value": "Etc/GMT"
+            },
+            {
+                "label": "Central European Time (CET)",
+                "value": "Europe/Berlin"
+            },
+            {
+                "label": "Eastern European Time (EET)",
+                "value": "Europe/Bucharest"
+            },
+            {
+                "label": "Western European Summer Time (WEST)",
+                "value": "Europe/Lisbon"
+            },
+            {
+                "label": "Central Africa Time (CAT)",
+                "value": "Africa/Harare"
+            },
+            {
+                "label": "East Africa Time (EAT)",
+                "value": "Africa/Nairobi"
+            }
+        ]
+    },
+    {
+        "group": "Asia",
+        "zones": [
+            {
+                "label": "Moscow Time (MSK)",
+                "value": "Europe/Moscow"
+            },
+            {
+                "label": "India Standard Time (IST)",
+                "value": "Asia/Kolkata"
+            },
+            {
+                "label": "China Standard Time (CST)",
+                "value": "Asia/Shanghai"
+            },
+            {
+                "label": "Japan Standard Time (JST)",
+                "value": "Asia/Tokyo"
+            },
+            {
+                "label": "Korea Standard Time (KST)",
+                "value": "Asia/Seoul"
+            },
+            {
+                "label": "Indonesia Central Standard Time (WITA)",
+                "value": "Asia/Makassar"
+            }
+        ]
+    },
+    {
+        "group": "Australia & Pacific",
+        "zones": [
+            {
+                "label": "Australian Western Standard Time (AWST)",
+                "value": "Australia/Perth"
+            },
+            {
+                "label": "Australian Central Standard Time (ACST)",
+                "value": "Australia/Adelaide"
+            },
+            {
+                "label": "Australian Eastern Standard Time (AEST)",
+                "value": "Australia/Sydney"
+            },
+            {
+                "label": "New Zealand Standard Time (NZST)",
+                "value": "Pacific/Auckland"
+            },
+            {
+                "label": "Fiji Time (FJT)",
+                "value": "Pacific/Fiji"
+            }
+        ]
+    },
+    {
+        "group": "South America",
+        "zones": [
+            {
+                "label": "Colombia Time (COT)",
+                "value": "America/Bogota"
+            },
+            {
+                "label": "Argentina Time (ART)",
+                "value": "America/Argentina/Buenos_Aires"
+            },
+            {
+                "label": "Bolivia Time (BOT)",
+                "value": "America/La_Paz"
+            },
+            {
+                "label": "Brasilia Time (BRT)",
+                "value": "America/Sao_Paulo"
+            },
+            {
+                "label": "Chile Standard Time (CLT)",
+                "value": "America/Santiago"
+            }
+        ]
+    }
+]
