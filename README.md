@@ -1,54 +1,126 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Documentación para Configuración de Proyecto Laravel - Ecommerce Platform
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 1. Instalación de pgAdmin y PostgreSQL
 
-## Expanding the ESLint configuration
+1. Descargar pgAdmin desde su página oficial: [https://www.pgadmin.org/download/](https://www.pgadmin.org/download/).
+2. Descargar PostgreSQL desde: [https://www.postgresql.org/download/](https://www.postgresql.org/download/).
+3. Instalar PostgreSQL (recordar la contraseña asignada al usuario `postgres`).
+4. Instalar pgAdmin, abrirlo y configurar la conexión con los siguientes datos:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```
+Host: localhost
+Puerto: 5432
+Usuario: postgres
+Contraseña: (la que colocaste en la instalación)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+> 💡 Una vez conectado, crear una base de datos con el nombre que necesites (ejemplo: `ecommerce_db`).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+## 2. Preparación del Proyecto Laravel
+
+### Requisitos:
+
+- PHP > 8.2
+- Laravel 12
+- React 19
+- Composer
+
+### Pasos:
+
+1. Clonar el repositorio o ubicarte en la carpeta del proyecto Laravel.
+2. Instalar dependencias con Composer:
+
 ```
+composer install
+```
+
+3. Instalar dependencias de Node:
+
+```
+npm install
+```
+
+---
+
+## 3. Configuración del Archivo `.env`
+
+Crear un archivo `.env` en la raíz de tu proyecto y configurar las variables:
+
+```dotenv
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+
+LOG_CHANNEL=stack
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=debug
+
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=ecommerce_db
+DB_USERNAME=postgres
+DB_PASSWORD=tu_password_aqui
+
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+```
+
+> ⚠️ **Nota:** Reemplaza `tu_password_aqui` por la contraseña real de tu base de datos PostgreSQL.
+
+---
+
+## 4. Generar la Clave de la Aplicación
+
+Luego de configurar `.env`, ejecutar en consola:
+
+```
+php artisan key:generate
+```
+
+Esto establecerá automáticamente `APP_KEY` en el archivo `.env`.
+
+---
+
+## 5. Migraciones de la Base de Datos
+
+Una vez generada la clave y con la conexión a la base de datos lista, ejecutar:
+
+```
+php artisan migrate
+```
+
+Esto creará todas las tablas necesarias en la base de datos.
+
+---
+
+## 6. Limpieza y Cacheo de Configuración
+
+Para asegurar que las configuraciones nuevas de `.env` estén activas:
+
+```
+php artisan config:clear
+php artisan cache:clear
+php artisan config:cache
+```
+
+---
+
+## 📝 Notas Finales
+
+- Si al ejecutar `php artisan migrate` ves el mensaje `APPLICATION IN PRODUCTION`, es porque `APP_ENV` está en `production`. Cambia el valor a `local` y limpia la configuración nuevamente.
+- En sistemas Windows, recuerda **cerrar y abrir la consola** tras modificar `.env` antes de volver a ejecutar comandos Artisan.
+
+---
+
+¡Listo! Con esto tu entorno debería estar correctamente configurado.
