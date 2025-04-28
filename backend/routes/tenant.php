@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Tenant\ProductController;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Controllers\TenantSetupController;
 
 //Controllers
-
 
 /*
 |--------------------------------------------------------------------------
@@ -29,16 +27,6 @@ Route::middleware([
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
     
-});
-
-
-Route::controller(ProductController::class)->group(function () {
-    Route::get('/products', 'index')->name('tenant.products.index');
-    Route::get('/products/create', 'create')->name('tenant.products.create');
-    Route::post('/products/store', 'store')->name('tenant.products.store');
-    Route::get('/products/{product}/edit', 'edit')->name('tenant.products.edit');
-    Route::put('/products/{product}', 'update')->name('tenant.products.update');
-    Route::delete('/products/{product}', 'destroy')->name('tenant.products.destroy');
 });
 
 Route::middleware(['auth'])->group(function (){

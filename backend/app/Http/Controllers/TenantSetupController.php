@@ -18,13 +18,14 @@ use Illuminate\Support\Facades\Storage;
 //Requests
 use App\Http\Requests\StoreTenantRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class TenantSetupController extends Controller
 {
     public function index(): Response
     {
         return Inertia::render('Tenant/Setup', [
-            'tenants' => Tenant::all(),
+            'tenants' => Tenant::with(['plan', 'owner'])->get(),
         ]);
     }
 
@@ -39,10 +40,10 @@ class TenantSetupController extends Controller
     {
         $tenantName = Str::lower(Str::slug($request->tenant_name));
 
-        Log::info($request->all());
+        Log::info($request);
         $tenantExists = Tenant::where('name', "$tenantName")->first();
         if ($tenantExists) {
-            return response()->json(['error' => 'La tienda ya existe'], 400);
+            return to_route('tenantCreate')->with(['error' => 'La tienda ya existe']);
         }
 
         $logoPath = '';
@@ -64,6 +65,7 @@ class TenantSetupController extends Controller
             'email' => $request->tenant_email
         ];
 
+        DB::beginTransaction();
         try {
             $tenant = Tenant::create([
                 'name' => $tenantName,
@@ -71,13 +73,26 @@ class TenantSetupController extends Controller
                 'is_active' => true,
                 'api_token' => hash('sha256', Str::uuid()->toString() . now()),
                 'logo' => $logoPath,
-                'data' => json_encode($additionalData),
+                'config' => $additionalData,
             ]);
 
+            $ownerId = $this->createOwner($request, $tenant);
+
+            Log::info("Propietario ".$ownerId);
+
+            if ($ownerId) {
+                // $tenant->update([
+                //     'owner_id' => $ownerId
+                // ]);
+
+                $tenant->owner_id = $ownerId;
+                $tenant->save();
+            }
+
             $tenant->domains()->create(['domain' => "$tenantDomain.$tenantDomainExtension"]);
-            $this->createUser($request, $tenant);
             tenancy()->initialize($tenant);
-            DB::connection('tenant')->statement("SET search_path TO \"$tenantName\"");
+
+            DB::connection('tenant')->statement("SET search_path TO \"tenant$tenant->id\"");
 
             Artisan::call('tenants:migrate', [
                 '--path' => 'database/migrations/tenant',
@@ -85,35 +100,38 @@ class TenantSetupController extends Controller
                 '--force' => true,
             ]);
         
+            DB::commit();
             tenancy()->end();
 
-            return response()->json(['success' => "Tienda {$tenantName} creada con éxito."]);
+            return to_route('tenantIndex')->with(['success' => "Tienda {$tenantName} creada con éxito."]);
         
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Error creando tenant', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            return response()->json(['error' => 'Error al crear la tienda'], 500);
+            return to_route('tenantCreate')->with(['error' => 'Error al crear la tienda']);
         }
     }
 
-    private function createUser($request, $tenant)
+    private function createOwner($request, $tenant)
     {
         $tenant_id = $tenant->id;
 
         $user = User::create([
             'name' => $request->user_name,
             'email' => $request->user_email,
-            'password' => bcrypt($request->user_password),
+            'password' => Hash::make($request->user_password),
+            'role' => 'owner',
             'tenant_id' => $tenant_id,
-            'phone' => $request->user_phone,
+            'phone' => trim($request->phone_indicator." ".$request->user_phone),
         ]);
 
         if(!$user->wasRecentlyCreated){
             return false;
         }
 
-        return true;
+        return $user->id;
     }
 }

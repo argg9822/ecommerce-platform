@@ -26,11 +26,14 @@ class CreateTenantsTable extends Migration
             $table->uuid('id')->primary();
             $table->string('name')->unique();
             $table->string('logo')->nullable();
-            $table->foreignId('plan_id')->constrained()->restrictOnDelete();
+            $table->unsignedBigInteger('plan_id');
+            $table->foreign('plan_id')->references('id')->on('plans')->restrictOnDelete();
             $table->boolean('is_active')->default(true);
             $table->string('api_token')->nullable()->unique();
-            $table->timestamps();
+            $table->unsignedBigInteger('owner_id')->nullable();
+            $table->json('config')->nullable();
             $table->json('data')->nullable();
+            $table->timestamps();
         });
     }
 

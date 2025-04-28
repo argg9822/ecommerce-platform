@@ -8,6 +8,7 @@ use App\Models\Tenant;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -39,8 +40,13 @@ class AuthenticatedSessionController extends Controller
          if($user->tenant_id){
             $tenant = Tenant::find($user->tenant_id);
 
-            if($tenant){
-                tenancy()->initialize($tenant);
+            if ($tenant) {
+                DB::connection('tenant')->statement("SET search_path TO \"tenant$tenant->id\"");
+                // $tenantSchema = "tenant".$tenant->id;
+
+                // config(['database.connections.tenant.schema' => $tenantSchema]);
+                // config(['database.connections.tenant.search_path' => $tenantSchema]);
+                // DB::purge('tenant');
             }
         }
         

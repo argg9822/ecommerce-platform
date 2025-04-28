@@ -16,7 +16,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     use HasFactory, HasDatabase, HasDomains;
     
     protected $casts = [
-        'data' => 'array',
+        'config' => 'array',
     ];
 
     protected $fillable = [
@@ -25,14 +25,26 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'logo',
         'plan_id',
         'is_active',
+        'config',
         'data',
         'api_token',
-        'phone'
+        'phone',
+        'owner_id'
     ];
 
     public function plan()
     {
         return $this->belongsTo(Plan::class);
+    }
+
+    public function owner()
+    {
+        return $this->hasOne(User::class);
+    }
+
+    public function user()
+    {
+        return $this->hasMany(User::class);
     }
 
     public function getLogoUrl()
@@ -50,7 +62,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
     public function getCurrency()
     {
-        return $this->data['currency'] ?? 'COP';
+        return $this->config['currency'] ?? 'COP';
     }
 
     public static function getCustomColumns(): array
@@ -61,7 +73,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'logo',
             'plan_id',
             'is_active',
-            'data',
+            'config',
             'api_token',
         ];
     }

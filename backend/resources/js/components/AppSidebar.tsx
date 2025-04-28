@@ -17,7 +17,7 @@ import {
 
 const items = [
     {title: "Dashboard", url: route("dashboard"), active: route().current("dashboard"), icon: Home, role: ["admin", "superadmin"]},
-    {title: "Tiendas", url: route("tenant.setup"), active: route().current("tenants"), icon: Inbox, role: ["superadmin"]},
+    {title: "Tiendas", url: route("tenantIndex"), active: route().current("tenants"), icon: Inbox, role: ["superadmin"]},
     {title: "Productos", url: route("tenant.products.index"), active: route().current("products"), icon: Inbox, role: ["admin"]},
     // {title: "Inbox", url: "#", icon: Inbox},
     // {title: "Calendar", url: "#", icon: Calendar},
@@ -33,7 +33,7 @@ export function AppSidebar() {
       <SidebarHeader>
         <div className="flex items-center justify-between px-4 py-2">
           <Link href="/">
-            <ApplicationLogo className="block h-9 w-auto fill-current text-gray-400" />
+            <ApplicationLogo />
           </Link>
         </div>
       </SidebarHeader>

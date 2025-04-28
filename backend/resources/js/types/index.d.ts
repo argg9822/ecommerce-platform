@@ -6,24 +6,49 @@ export interface User {
     email_verified_at?: string;
 }
 
+export interface Plan {
+    id: number;
+    name: string;
+    price: number;
+    features: object;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface Tenant {
     id: number;
     name: string;
     domain: string;
     logo: string;
     plan_id: number;
+    plan?: Plan | null;
     is_active: boolean;
     data: object;
     api_token: string;
     created_at: string;
     updated_at: string;
+    owner?: User | null;
+    config: {
+        currency: string,
+        language: string,
+        timezone: string,
+        store_email: string
+    }
 }
 
-export interface Plan {
+export interface Product {
     id: number;
     name: string;
+    description: string;
     price: number;
-    features: object;
+    compare_price: number;
+    stock: number;
+    sku: number;
+    barcode: string;
+    is_feature: boolean;
+    is_available: boolean;
+    brand: string;
+    category_id: number;
     created_at: string;
     updated_at: string;
 }

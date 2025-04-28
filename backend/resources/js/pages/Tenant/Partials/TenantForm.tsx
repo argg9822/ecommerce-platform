@@ -6,6 +6,7 @@ import { useForm } from '@inertiajs/react';
 import timezones from '@/data/timezones.json';
 import currencies from '@/data/currencies.json';
 import indicators from '@/data/indicators.json';
+import { Link } from '@inertiajs/react';
 import { useState } from 'react';
 import {
   AlertDialog,
@@ -15,8 +16,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+  AlertDialogTitle
 } from "@/components/ui/alert-dialog"
 import {
   Select,
@@ -35,7 +35,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from '@/components/ui/button';
 
 type props = {
   className?: string,
@@ -56,8 +55,8 @@ export default function TenantForm({ className = '', props} : props) {
       domain: '',
       plan: '',
       tenant_logo: null as File | null,
-      tenant_language: '',
-      tenant_timezone: '',
+      tenant_language: 'es',
+      tenant_timezone: 'America/Bogota',
       currency: '',
       tenant_email: '',
       domain_extension: 'com',
@@ -73,7 +72,7 @@ export default function TenantForm({ className = '', props} : props) {
     useState(
       {
         message: 'Tienda guardada correctamente!',
-        title: 'Tienda creada'
+        title: 'Se ha creado la tienda'
       }
     );
   const tenantNameRef = useRef<HTMLInputElement>(null);
@@ -387,7 +386,7 @@ export default function TenantForm({ className = '', props} : props) {
                       value="Lenguaje"
                   />
 
-                  <Select defaultValue='value={data.tenant_language}'>
+                  <Select onValueChange={(e) => setData('tenant_language', e)} defaultValue={data.tenant_language}>
                     <SelectTrigger>
                       <SelectValue placeholder="Seleccione un lenguaje" />
                     </SelectTrigger>
@@ -499,7 +498,6 @@ export default function TenantForm({ className = '', props} : props) {
       </form>
 
       <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
-        <AlertDialogTrigger>Open</AlertDialogTrigger>
         <AlertDialogContent className="bg-gray-400">
           <AlertDialogHeader>
             <AlertDialogTitle>{messageDialog.title}</AlertDialogTitle>
@@ -508,8 +506,14 @@ export default function TenantForm({ className = '', props} : props) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction>Continue</AlertDialogAction>
+            <AlertDialogCancel>{errors ? 'Aceptar' : 'Crear nueva tienda'}</AlertDialogCancel>
+            {!errors && 
+            <AlertDialogAction>
+              <Link
+                href={route("tenantIndex")}>
+                Ver lista de tiendas
+              </Link>
+            </AlertDialogAction>}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

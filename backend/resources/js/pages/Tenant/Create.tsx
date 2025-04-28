@@ -10,7 +10,7 @@ type CreateProps = {
 export default function Create ({ plans }: CreateProps) {
     return (
         <AuthenticatedLayout>
-            <Head title="Nueva tienda"/>
+            <Head title="Crear tienda"/>
             <TenantForm className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8 mt-8" props={plans}/>
         </AuthenticatedLayout>
     );

@@ -18,9 +18,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('phone')->nullable();
             $table->string('password');
-            $table->enum('role', ['admin', 'superadmin'])->default('admin');
+            $table->enum('role', ['admin', 'superadmin', 'owner'])->default('admin');
             $table->uuid('tenant_id')->nullable();
-            $table->foreign('tenant_id')->references('id')->on('tenants')->restrictOnDelete();
             $table->rememberToken();
             $table->timestamps();
         });

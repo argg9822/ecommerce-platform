@@ -31,6 +31,8 @@ class StoreTenantRequest extends FormRequest
                 'alpha_dash',
                 Rule::unique('domains', 'domain')->where(fn ($q) => $q->where('domain', $domainExtension . '.' . $domain)),
             ],
+            'user_name' => 'required|string|max:255',
+            'user_phone' => 'required|numeric|digits_between:7,20',
             'domain_extension' => 'required|string|max:255',
             'plan' => 'required|exists:plans,id',
             'tenant_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
@@ -51,6 +53,12 @@ class StoreTenantRequest extends FormRequest
             'tenant_logo.image' => 'Logo must be an image',
             'tenant_logo.mimes' => 'El logo debe ser un archivo de tipo: jpeg, png, jpg o webp',
             'tenant_logo.max' => 'El logo no debe exceder los 2MB',
+            'user_name.required' => 'Proporcione el nombre del administrador',
+            'user_name.string' => 'El plan debe ser una cadena de texto',
+            'user_name.max' => 'El nombre no puede exceder los 255 caracteres',
+            'user_phone.required' => 'Proporcione un número de teléfono',
+            'user_phone.numeric' => 'Proporcione un número de teléfono válido',
+            'user_phone.max' => 'Proporcione un número de teléfono válido'
         ];
     }
 }
