@@ -1,4 +1,4 @@
-import logo from '../../../storage/app/public/logos/ChatGPT Image Apr 27, 2025, 06_06_33 PM.png';
+import logo from '../../../storage/app/public/logos/main-logo.png';
 
 export default function ApplicationLogo() {
     return (

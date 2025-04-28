@@ -19,6 +19,8 @@ type SetupProps = {
 }
 
 export default function Setup({ tenants }: SetupProps) {  
+  console.log(tenants);
+  
   return (
     <AuthenticatedLayout 
       header={

@@ -41,7 +41,9 @@ class AuthenticatedSessionController extends Controller
             $tenant = Tenant::find($user->tenant_id);
 
             if ($tenant) {
-                DB::connection('tenant')->statement("SET search_path TO \"tenant$tenant->id\"");
+                // DB::connection('tenant')->statement("SET search_path TO \"tenant$tenant->id\"");
+                tenancy()->initialize($tenant);
+
                 // $tenantSchema = "tenant".$tenant->id;
 
                 // config(['database.connections.tenant.schema' => $tenantSchema]);

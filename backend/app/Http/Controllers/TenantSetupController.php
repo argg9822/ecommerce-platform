@@ -39,8 +39,6 @@ class TenantSetupController extends Controller
     public function store(StoreTenantRequest $request)
     {
         $tenantName = Str::lower(Str::slug($request->tenant_name));
-
-        Log::info($request);
         $tenantExists = Tenant::where('name', "$tenantName")->first();
         if ($tenantExists) {
             return to_route('tenantCreate')->with(['error' => 'La tienda ya existe']);
@@ -77,8 +75,6 @@ class TenantSetupController extends Controller
             ]);
 
             $ownerId = $this->createOwner($request, $tenant);
-
-            Log::info("Propietario ".$ownerId);
 
             if ($ownerId) {
                 // $tenant->update([

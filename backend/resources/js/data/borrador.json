@@ -1,0 +1,62 @@
+[
+    {
+        "products": [
+            {
+                "id": 2, 
+                "name": "Nepe", 
+                "price": 10000, 
+                "compare_price": 10000, 
+                "description": "aadadasdasdasdasd",
+                "features": [
+                    {"color": ["red", "blue"]},
+                    {"generals": ["Largo", "Grueso"]},
+                    {"tallas": ["lg", "sm", "xs"]}
+                ],
+                "img": [
+                    "#",
+                    "#"
+                ],
+                "categories": [
+                    "consoladores", "lubricantes"
+                ],
+                "subcategories": [
+                    {"id": 985, "name": "Nepe pequeño"},
+                    {"id": 85, "name": "Aja"}
+                ],
+                "qualification": {
+                    "count_users": {
+                        "5": 20,
+                        "4": 10,
+                        "3": 5,
+                        "2": 1,
+                        "1": 25
+                    },
+                    "comments": ["adasdasd", "sdfdsfsdff"] //Ordenado mas reciente al mas antiguo
+                },
+                "brand": "Algo",
+                "stock": 6,
+                "shipment": 10000,
+                "is_available": true,
+                "questions": [
+                    {"user_id": 5,"question": "Por que tan caro", "answer": "Algo", "created_at": "14/04/2025"},
+                    {"user_id": 4, "question": "Por que tan barato", "answer": "Por que si", "created_at": "14/04/2025"}
+                ],
+                "created_at": "14/04/2025"
+            }
+        ],
+
+        "categories": [
+            {"id": 4, "name": "pepito", "subcategory_id": [{"id": 45, "name": "mierda"}], "img": "##", "slug": "toysnow/sujetadores"}
+        ],
+
+        "features_products":{
+            "products_id": [1,2,55,5]
+        },
+
+        "last_views": {
+            "products_id": [1,2,55,5]
+        },
+        
+        "favorite_products": [21, 65, 98]
+    }
+]

@@ -21,8 +21,10 @@ return new class extends Migration
             $table->integer('sku')->unique()->nullable();
             $table->string('barcode')->nullable();
             $table->boolean('is_feature')->default(false); //Destacado en homepage
+            $table->json('features')->nullable();
             $table->boolean('is_available')->default(true);
             $table->string('brand');
+            $table->decimal('shipment', 10, 2)->default(0)->nullable();
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
