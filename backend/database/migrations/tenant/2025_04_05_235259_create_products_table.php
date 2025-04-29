@@ -27,6 +27,7 @@ return new class extends Migration
             $table->decimal('shipment', 10, 2)->default(0)->nullable();
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

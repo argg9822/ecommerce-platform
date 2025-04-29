@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TenantSetupController;
+use App\Http\Middleware\TenantSessionMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -27,13 +28,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/tenants/{tenant}', 'destroy')->name('tenant.destroy');
     });
     
-    Route::controller(ProductController::class)->group(function () {
-        Route::get('/products', 'index')->name('tenant.products.index');
-        Route::get('/products/create', 'create')->name('tenant.products.create');
-        Route::post('/products/store', 'store')->name('tenant.products.store');
-        Route::get('/products/{product}/edit', 'edit')->name('tenant.products.edit');
-        Route::put('/products/{product}', 'update')->name('tenant.products.update');
-        Route::delete('/products/{product}', 'destroy')->name('tenant.products.destroy');
+    Route::middleware(TenantSessionMiddleware::class)->group(function () {
+        Route::controller(ProductController::class)->group(function () {
+            Route::get('/products', 'index')->name('tenant.products.index');
+            Route::get('/products/create', 'create')->name('tenant.products.create');
+            Route::post('/products/store', 'store')->name('tenant.products.store');
+            Route::get('/products/{product}/edit', 'edit')->name('tenant.products.edit');
+            Route::put('/products/{product}', 'update')->name('tenant.products.update');
+            Route::delete('/products/{product}', 'destroy')->name('tenant.products.destroy');
+        });
     });
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

@@ -103,7 +103,7 @@ return [
             'database' => env('DB_DATABASE', 'ecommerce_business'),
             'username' => env('DB_USERNAME', 'postgres'),
             'password' => env('DB_PASSWORD', '123456'),
-            'schema' => 'public',
+            'schema' => '{tenant_id}',
             'search_path' => '',
             'charset' => 'utf8',
             'prefix' => '',

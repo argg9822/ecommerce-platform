@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IdentifyTenant;
+use App\Http\Middleware\TenantSessionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -20,7 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->group('middleware', [
             IsAdmin::class, 
-            IdentifyTenant::class
+            IdentifyTenant::class,
+            TenantSessionMiddleware::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

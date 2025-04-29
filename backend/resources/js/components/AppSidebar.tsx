@@ -16,9 +16,9 @@ import {
 } from "@/components/ui/sidebar";
 
 const items = [
-    {title: "Dashboard", url: route("dashboard"), active: route().current("dashboard"), icon: Home, role: ["admin", "superadmin"]},
+    {title: "Dashboard", url: route("dashboard"), active: route().current("dashboard"), icon: Home, role: ["admin", "superadmin", "owner"]},
     {title: "Tiendas", url: route("tenantIndex"), active: route().current("tenants"), icon: Inbox, role: ["superadmin"]},
-    {title: "Productos", url: route("tenant.products.index"), active: route().current("products"), icon: Inbox, role: ["admin"]},
+    {title: "Productos", url: route("tenant.products.index"), active: route().current("products"), icon: Inbox, role: ["admin", "owner"]},
     // {title: "Inbox", url: "#", icon: Inbox},
     // {title: "Calendar", url: "#", icon: Calendar},
     // {title: "Search", url: "#", icon: Search},

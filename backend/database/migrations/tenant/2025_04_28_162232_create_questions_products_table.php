@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('questions_products', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('product_id');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->nullable();           
+            $table->foreignId('product_id')->constrained()->onDelete('cascade')->nullable();
             $table->text('question');
             $table->text("answer")->nullable();
-            $table->unsignedBigInteger("admin_id")->nullable();
+            $table->unsignedBigInteger('admin_id')->nullable();
+            $table->foreign('admin_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

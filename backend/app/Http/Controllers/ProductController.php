@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-
 use App\Models\Product;
-use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -16,8 +13,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Products', [
-            'products' => Product::all()
+        $products = Product::all();
+        return Inertia::render('Products/Index', [
+            'products' => $products
         ]);
     }
 

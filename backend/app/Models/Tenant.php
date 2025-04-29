@@ -77,4 +77,9 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'api_token',
         ];
     }
+
+    public function getSchemaName(): string
+    {
+        return "tenant{$this->id}";
+    }
 }

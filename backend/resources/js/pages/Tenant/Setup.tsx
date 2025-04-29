@@ -54,6 +54,7 @@ export default function Setup({ tenants }: SetupProps) {
               </Link>
             </TableRow>
             <TableRow>
+              <TableHead className="w-[50px] text-center"></TableHead>
               <TableHead className="w-[100px] text-center">Nombre</TableHead>
               <TableHead className="text-center">Plan</TableHead>
               <TableHead className="text-center">Administrador</TableHead>
@@ -65,6 +66,17 @@ export default function Setup({ tenants }: SetupProps) {
           <TableBody>
             {tenants.map((tenant) => (
               <TableRow key={tenant.id} className="text-center">
+                <TableCell>
+                  <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-600">
+                    <img
+                      src={`/storage/${tenant.logo}`}
+                      alt={tenant.name}
+                      title={tenant.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </TableCell>
+
                 <TableCell className="font-medium">{tenant.name}</TableCell>
                 <TableCell>{tenant.plan?.name}</TableCell>
                 <TableCell>{ tenant.owner?.name }</TableCell>

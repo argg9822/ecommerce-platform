@@ -109,21 +109,21 @@ class TenancyServiceProvider extends ServiceProvider
 
         $this->makeTenancyMiddlewareHighestPriority();
 
-        Event::listen(TenancyInitialized::class, function (TenancyInitialized $event) {
-            // $schema = $event->tenancy->tenant->id;
-            $schema = "tenant".$event->tenancy->getTenantKey();
-            DB::connection('tenant')->statement("SET search_path TO \"$schema\"");
-        });
+        // Event::listen(TenancyInitialized::class, function (TenancyInitialized $event) {
+        //     // $schema = $event->tenancy->tenant->id;
+        //     $schema = "tenant".$event->tenancy->getTenantKey();
+        //     DB::connection('tenant')->statement("SET search_path TO \"$schema\"");
+        // });
 
-        Event::listen(BootstrappingTenancy::class, function($event){
-            $schema = $event->tenancy->tenant->id;            
+        // Event::listen(BootstrappingTenancy::class, function($event){
+        //     $schema = $event->tenancy->tenant->id;            
 
-            if (!empty($schema)) {
-                DB::connection('tenant')->statement("SET search_path TO \"$schema\"");
-            } else {
-                Log::error("Schema vacío. No se puede ejecutar SET search_path.");
-            }
-        });
+        //     if (!empty($schema)) {
+        //         DB::connection('tenant')->statement("SET search_path TO \"$schema\"");
+        //     } else {
+        //         Log::error("Schema vacío. No se puede ejecutar SET search_path.");
+        //     }
+        // });
     }
 
     protected function bootEvents()

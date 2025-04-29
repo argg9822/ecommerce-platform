@@ -33,25 +33,8 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
-        $user = Auth::user();
 
-         if($user->tenant_id){
-            $tenant = Tenant::find($user->tenant_id);
-
-            if ($tenant) {
-                // DB::connection('tenant')->statement("SET search_path TO \"tenant$tenant->id\"");
-                tenancy()->initialize($tenant);
-
-                // $tenantSchema = "tenant".$tenant->id;
-
-                // config(['database.connections.tenant.schema' => $tenantSchema]);
-                // config(['database.connections.tenant.search_path' => $tenantSchema]);
-                // DB::purge('tenant');
-            }
-        }
-        
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
