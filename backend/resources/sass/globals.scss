@@ -23,85 +23,6 @@ main{
     width: var(--sidebar-width);
 }
 
-// nav {
-//     background-color: a.$bg-primary;
-//     width: 250px;    
-//     position: fixed;
-//     top: 0;
-//     bottom: 0;
-
-//     a {
-//         display: flex;
-//         color: #ffffff8a;
-//         padding: 0.5rem 1rem;
-//         width: 100%;
-//         border-radius: 6px;
-//         -webkit-border-radius: 6px;
-//         -moz-border-radius: 6px;
-//         -ms-border-radius: 6px;
-//         -o-border-radius: 6px;
-//         transition: all .3s ease-in-out;
-//         -webkit-transition: all .3s ease-in-out;
-//         -moz-transition: all .3s ease-in-out;
-//         -ms-transition: all .3s ease-in-out;
-//         -o-transition: all .3s ease-in-out;
-//     }
-
-//     li {
-//         width: 100%;
-//         color: a.$text-primary;
-//     }
-
-//     .dropdown:hover{
-//         .submenu {
-//             opacity: 1;
-//             transform: translateY(0px);
-//             -webkit-transform: translateY(0px);
-//             -moz-transform: translateY(0px);
-//             -ms-transform: translateY(0px);
-//             -o-transform: translateY(0px);
-//         }
-//     }
-
-//     a.active,
-//     a:hover {
-//         background-color: #ffffff1a;
-//         color: a.$text-primary;
-//         box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.2);
-//     }
-
-//     .submenu {
-//         position: relative;
-//         padding-top: 10px;
-//         margin-left: 1.3rem;
-//         opacity: 0;
-//         transition: all 0.3s ease-in-out;
-//         -webkit-transition: all 0.3s ease-in-out;
-//         -moz-transition: all 0.3s ease-in-out;
-//         -ms-transition: all 0.3s ease-in-out;
-//         -o-transition: all 0.3s ease-in-out;
-//         transform: translateY(-50px);
-//         -webkit-transform: translateY(-50px);
-//         -moz-transform: translateY(-50px);
-//         -ms-transform: translateY(-50px);
-//         -o-transform: translateY(-50px);
-        
-//         a{
-//             border-radius: 6px;
-//             -webkit-border-radius: 6px;
-//             -moz-border-radius: 6px;
-//             -ms-border-radius: 6px;
-//             -o-border-radius: 6px;
-//             padding: 0.3rem 1rem;
-//         }
-
-//         a.active{
-//             background-color: rgb(247 247 247 / 13%);
-//             color: a.$text-primary;
-//         }
-//     }
-// }
-
 .bg-primary {
     background-color: a.$bg-primary;
     &:hover {
@@ -114,4 +35,50 @@ main{
     &:hover {
         background-color: a.$bg-hover-secondary;
     }
+}
+
+.btn-primary{
+    background-color: rgb(136, 0, 0);
+    border: 3px solid transparent;
+    color: #ffffff;
+}
+
+.btn-primary:hover{
+    background-color: rgba(136, 0, 0, 0.774);
+}
+
+.btn-primary:focus{
+    box-shadow: none;
+    border: solid 3px rgba(179, 0, 0, 0.774);
+    background-color: rgba(136, 0, 0, 0.774);
+}
+
+.card{
+    background-color: #001c6d14;
+    border: none;
+    border-left: 5px solid #9fb7ff;
+}
+
+.card h2{
+    color: #9fb7ff;
+}
+
+[type='text'], 
+input:where(:not([type])), 
+[type='email'], 
+[type='url'], 
+[type='password'], 
+[type='number'], 
+[type='date'], 
+[type='datetime-local'], 
+[type='month'], 
+[type='search'], 
+[type='tel'], 
+[type='time'], 
+[type='week'], 
+[multiple], 
+textarea, 
+select {
+    background-color: #9fb7ff0d;
+    border: none;
 }

@@ -4,7 +4,6 @@ import PrimaryButton from '@/components/PrimaryButton';
 import { FormEventHandler, useRef } from 'react';
 import { useForm } from '@inertiajs/react';
 import timezones from '@/data/timezones.json';
-import currencies from '@/data/currencies.json';
 import indicators from '@/data/indicators.json';
 import { Link } from '@inertiajs/react';
 import { useState } from 'react';
@@ -34,37 +33,39 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox"
+import { Textarea } from '@/components/ui/textarea';
 import { Input } from "@/components/ui/input";
+import { Category } from '@/types';
 
 type props = {
   className?: string,
-  props: any,
+  categories: Category[]
 }
 
-export default function TenantForm({ className = '', props} : props) {
+export default function ProductForm({ className = '', categories }: props) {
   const {
-      data,
-      setData,
-      errors,
-      post,
-      reset,
-      processing,
-      recentlySuccessful,
+    data,
+    setData,
+    errors,
+    post,
+    reset,
+    processing,
+    recentlySuccessful,
   } = useForm({
-      tenant_name: 'ToysNow',
-      domain: 'toysnow',
-      plan: '3',
-      tenant_logo: null as File | null,
-      tenant_language: 'es',
-      tenant_timezone: 'America/Bogota',
-      currency: 'COP',
-      tenant_email: 'info@toysnow.com',
-      domain_extension: 'com',
-      user_name: 'Viviana Marin',
-      user_email: 'viviana@gmail.com',
-      user_password: '12345678',
-      user_phone: '32131654654',
-      phone_indicator: '+57'
+    name: '',
+    brand: '',
+    description: '',
+    price: '',
+    compare_price: '',
+    stock: '',
+    shipment: '',
+    sku: '',
+    barcode: '',
+    category_id: '',
+    is_available: false as boolean,
+    is_feature: false as boolean,
+    features: ''
   });
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -76,7 +77,6 @@ export default function TenantForm({ className = '', props} : props) {
       }
     );
   const tenantNameRef = useRef<HTMLInputElement>(null);
-  const plans = props;
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -85,17 +85,17 @@ export default function TenantForm({ className = '', props} : props) {
 
     const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
     const maxSizeInMB = 2;
-  
+
     if (!validTypes.includes(file.type)) {
       alert('Extensión de archivo no válida. Debe ser .jpg, .jpeg, .png o .webp.');
       return;
     }
-  
+
     if (file.size > maxSizeInMB * 1024 * 1024) {
       alert(`El archivo debe pesar menos de ${maxSizeInMB}MB.`);
       return;
     }
-  
+
     setData('tenant_logo', file);
   };
 
@@ -109,28 +109,22 @@ export default function TenantForm({ className = '', props} : props) {
         setOpenDialog(true);
       },
       onError: (errors) => {
-        if (errors.tenant_name) {
-          reset('tenant_name');
+        if (errors.name) {
+          reset('name');
           tenantNameRef.current?.focus();
         }
 
-        if (errors.tenant_logo) {
-          reset('tenant_logo');
-        }
+        if (errors.brand) reset('brand');
+        if (errors.price) reset('price');
+        if (errors.compare_price) reset('compare_price');
+        if (errors.stock) reset('stock');
+        if (errors.shipment) reset('shipment');
+        if (errors.sku) reset('sku');
+        if (errors.barcode) reset('barcode');
+        if (errors.category_id) reset('category_id');
+        if (errors.is_feature) reset('is_feature');
 
-        if (errors.tenant_email) {
-          reset('tenant_email');
-        }
-
-        if (errors.user_name) {
-          reset('user_name');
-        }
-
-        if (errors.user_email) {
-          reset('user_email');
-        }
-
-        setmessageDialog({message:'Error al crear la tienda', title:'Error'});
+        setmessageDialog({ message: 'Error al crear la tienda', title: 'Error' });
         setOpenDialog(true);
       }
     });
@@ -140,347 +134,156 @@ export default function TenantForm({ className = '', props} : props) {
     <>
       <form onSubmit={storeTenant} encType="multipart/form-data">
         <section className={className}>
-          {/* Tenant information */}
           <Card>
             <CardHeader>
-              <CardTitle>
-                <h2 className="text-center">Datos de la tienda</h2>
-              </CardTitle>
+              <CardTitle><h2 className="text-lg text-center">Información del producto</h2></CardTitle>
             </CardHeader>
 
-            <CardContent className='flex items-center'>
-              <div className='w-1/2'>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <InputLabel
-                      htmlFor="tenant_name"
-                      value="Nombre de la tienda"
-                  />
-
-                  <Input
-                    id="tenant_name"
-                    type="text"
-                    onChange={(e) => setData('tenant_name', e.target.value)}
-                    value={data.tenant_name}
-                    autoComplete="off"
-                  />
-
-                  <InputError
-                    message={errors.tenant_name}
-                  />
+                  <InputLabel htmlFor="name" value="Nombre del producto" />
+                  <Input id="name" type="text" value={data.name} onChange={(e) => setData('name', e.target.value)} />
+                  <InputError message={errors.name} />
                 </div>
 
-                <div className='mt-4'>
-                  <InputLabel
-                      htmlFor="domain"
-                      value="Dominio"
-                  />
-
-                  <div className='flex items-center'>
-                    <Input
-                      id="domain"
-                      type="text"
-                      value={data.domain}
-                      onChange={(e) => setData('domain', e.target.value)}
-                      autoComplete="off"
-                    />
-
-                    <Select onValueChange={(e) => setData('domain_extension', e)} defaultValue={data.domain_extension}>
-                      <SelectTrigger className="max-w-[100px] ml-2">
-                        <SelectValue placeholder="..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="com">.com</SelectItem>
-                        <SelectItem value="net">.net</SelectItem>
-                        <SelectItem value="org">.org</SelectItem>
-                        <SelectItem value="co">.co</SelectItem>
-                        <SelectItem value="io">.io</SelectItem>
-                        <SelectItem value="ai">.ai</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <InputError
-                    message={errors.domain}
-                  />
+                <div>
+                  <InputLabel htmlFor="brand" value="Marca" />
+                  <Input id="brand" type="text" value={data.brand} onChange={(e) => setData('brand', e.target.value)} />
+                  <InputError message={errors.brand} />
                 </div>
               </div>
 
-              <div className="h-40 w-px bg-gray-700 mx-6" />
-
-              <div className='w-1/2'>
-                <div>
-                  <InputLabel
-                      htmlFor="plan"
-                      value="Plan"
-                  />
-
-                  {plans.length > 0 && (
-                    <Select onValueChange={(e) => setData('plan', e)} defaultValue={data.plan}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccione un plan" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {plans.map((plan: any) => (
-                          <SelectItem
-                            key={plan.id}
-                            value={String(plan.id)}
-                          >
-                          {plan.name}
-                        </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-
-                  <InputError
-                    message={errors.plan}
-                  />
-                </div>
-
-                <div className='mt-4'>
-                  <InputLabel
-                      htmlFor="tenant_logo"
-                      value="Logo"
-                  />
-
-                  <Input
-                    id="tenant_logo"
-                    type="file"
-                    onChange={handleLogoChange}
-                    accept="image/*"
-                    autoComplete="off"
-                    className='cursor-pointer'
-                  />
-
-                  <InputError
-                    message={errors.tenant_logo}
-                  />
-                </div>
+              <div>
+                <InputLabel htmlFor="description" value="Descripción" />
+                <Textarea id="description" value={data.description} onChange={(e) => setData('description', e.target.value)} className="min-h-[100px]" />
+                <InputError message={errors.description} />
               </div>
+
             </CardContent>
           </Card>
-          
-          {/* Admin information */}
+
+          {/* Precios y stock */}
           <Card>
             <CardHeader>
-              <CardTitle>
-                <h2 className="text-center">Administrador de la tienda</h2>
-              </CardTitle>
+              <CardTitle><h2 className="text-lg text-center">Precios y stock</h2></CardTitle>
             </CardHeader>
-
-            <CardContent className='flex items-center'>
-              <div className='w-1/2'>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <InputLabel
-                      htmlFor="user_name"
-                      value="Nombre completo"
-                  />
-
-                  <Input
-                    id="user_name"
-                    type="text"
-                    onChange={(e) => setData('user_name', e.target.value)}
-                    value={data.user_name}
-                    autoComplete="off"
-                  />
-
-                  <InputError
-                    message={errors.user_name}
-                  />
+                  <InputLabel htmlFor="price" value="Precio" />
+                  <Input id="price" type="number" step="0.01" value={data.price} onChange={(e) => setData('price', e.target.value)} />
+                  <InputError message={errors.price} />
                 </div>
-
-                <div className='mt-4'>
-                  <InputLabel
-                      htmlFor="user_email"
-                      value="Correo electrónico"
-                  />
-
-                  <Input
-                    id="user_email"
-                    type="text"
-                    value={data.user_email}
-                    onChange={(e) => setData('user_email', e.target.value)}
-                    autoComplete="off"
-                  />
-
-                  <InputError
-                    message={errors.domain}
-                  />
+                <div>
+                  <InputLabel htmlFor="compare_price" value="Precio comparativo" />
+                  <Input id="compare_price" type="number" step="0.01" value={data.compare_price} onChange={(e) => setData('compare_price', e.target.value)} />
+                  <InputError message={errors.compare_price} />
                 </div>
               </div>
 
-              <div className="h-40 w-px bg-gray-700 mx-6" />
-
-              <div className='w-1/2'>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <InputLabel
-                      htmlFor="user_password"
-                      value="Contraseña"
-                  />
-
-                  <Input
-                    id="user_password"
-                    type="password"
-                    value={data.user_password}
-                    onChange={(e) => setData('user_password', e.target.value)}
-                    autoComplete="off"
-                  />
-
-                  <InputError
-                    message={errors.plan}
-                  />
+                  <InputLabel htmlFor="stock" value="Stock" />
+                  <Input id="stock" type="number" value={data.stock} onChange={(e) => setData('stock', e.target.value)} />
+                  <InputError message={errors.stock} />
                 </div>
+                <div>
+                  <InputLabel htmlFor="shipment" value="Costo de envío" />
+                  <Input id="shipment" type="number" step="0.01" value={data.shipment} onChange={(e) => setData('shipment', e.target.value)} />
+                  <InputError message={errors.shipment} />
+                </div>
+              </div>
 
-                <div className='mt-4'>
-                  <InputLabel
-                      htmlFor="user_phone"
-                      value="Teléfono"
-                  />
-
-                  <div className='flex items-center'>
-                    <Select defaultValue={data.phone_indicator} onValueChange={(e) => setData('phone_indicator', e)}>
-                      <SelectTrigger className="max-w-[200px] mr-2">
-                        <SelectValue placeholder="Indicativo"/>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {indicators.map((indicator) => (
-                          <SelectItem key={indicator.code} value={indicator.dial_code}>({indicator.dial_code}) {indicator.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Input
-                      id="user_phone"
-                      type="number"
-                      value={data.user_phone}
-                      onChange={(e) => setData('user_phone', e.target.value)}
-                      autoComplete="off"
-                    />
-
-                  </div>
-
-                  <InputError
-                    message={errors.user_phone}
-                  />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <InputLabel htmlFor="sku" value="SKU" />
+                  <Input id="sku" type="text" value={data.sku} onChange={(e) => setData('sku', e.target.value)} />
+                  <InputError message={errors.sku} />
+                </div>
+                <div>
+                  <InputLabel htmlFor="barcode" value="Código de barras" />
+                  <Input id="barcode" type="text" value={data.barcode} onChange={(e) => setData('barcode', e.target.value)} />
+                  <InputError message={errors.barcode} />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Additional configuration */}
-          <Card>
+          {/* Características adicionales */}
+          <Card className="col-span-1 md:col-span-2">
             <CardHeader>
-              <CardTitle>
-                <h2 className="text-center">Configuración adicional</h2>
-              </CardTitle>
-              <CardDescription>
-                <p className="text-center">Esta configuración podrá ser cambiada en cualquier momento</p>
-              </CardDescription>
+              <CardTitle><h2 className="text-lg text-center">Categoría y otras opciones</h2></CardTitle>
             </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <InputLabel htmlFor="category_id" value="Categoría" />
+                <Select onValueChange={(e) => { setData('category_id', e) }} defaultValue={data.category_id}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccione una categoría" />
+                  </SelectTrigger>
 
-            <CardContent className='flex items-center'>
-              <div className='w-1/2'>
-                <div>
-                  <InputLabel
-                      htmlFor="tenant_language"
-                      value="Lenguaje"
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem
+                        key={category.id}
+                        value={String(category.id)}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <InputError message={errors.category_id} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="items-top flex space-x-2">
+                  <Checkbox 
+                    id="is_available" 
+                    checked={data.is_available}
+                    onCheckedChange={(checked) => setData('is_available', checked ? true : false)}
                   />
-
-                  <Select onValueChange={(e) => setData('tenant_language', e)} defaultValue={data.tenant_language}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione un lenguaje" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='es'>Español</SelectItem>
-                      <SelectItem value='en'>Inglés</SelectItem>
-                    </SelectContent>
-                  </Select>             
-
-                  <InputError
-                    message={errors.tenant_language}
-                  />
+                  <div className="grid gap-1.5 leading-none">
+                    <label
+                      htmlFor="is_available"
+                      className="text-sm font-medium leading-none text-gray-400"
+                    >
+                      Disponible
+                    </label>
+                    <p className="text-sm text-gray-600">
+                      Establecer producto como disponible en la tienda
+                    </p>
+                  </div>
                 </div>
 
-                <div className='mt-4'>
-                  <InputLabel
-                      value="Zona horaria"
+                <div className="items-top flex space-x-2">
+                  <Checkbox 
+                    id="is_feature" 
+                    onCheckedChange={(checked) => setData('is_feature', checked ? true : false)}
                   />
-
-                  <Select onValueChange={(e) => setData('tenant_timezone', e)} defaultValue={data.tenant_timezone}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione una zona horaria" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {timezones.map((group) => (
-                        <SelectGroup key={group.group}>
-                          <SelectLabel>{group.group}</SelectLabel>
-                          {group.zones.map((zone) => (
-                            <SelectItem key={zone.value} value={zone.value}>
-                              {zone.label}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
-                  <InputError
-                    message={errors.tenant_timezone}
-                  />
+                  <div className="grid gap-1.5 leading-none">
+                    <label
+                      htmlFor="is_available"
+                      className="text-sm font-medium leading-none text-gray-400"
+                    >
+                      Destacar en homepage
+                    </label>
+                    <p className="text-sm text-gray-600">
+                      Hacer que sea más visible este producto
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              <div className="h-40 w-px bg-gray-700 mx-6" />
-
-              <div className='w-1/2'>
-                <div>
-                  <InputLabel
-                      htmlFor="currency"
-                      value="Moneda"
-                  />
-
-                  {plans.length > 0 && (
-                    <Select onValueChange={(e) => setData('currency', e)} defaultValue={data.currency}>
-                      <SelectTrigger className="text-white px-4 py-2">
-                        <SelectValue placeholder="Seleccione un plan" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-zinc-900 text-white border border-zinc-700">
-                        {currencies.map((currency: any) => (
-                          <SelectItem
-                          key={currency.name}
-                          value={String(currency.code)}
-                          className=" hover:bg-zinc-800 cursor-pointer"
-                        >
-                          {currency.name} ({currency.symbol}) - {currency.country}
-                        </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-
-                  <InputError
-                    message={errors.currency}
-                  />
-                </div>
-
-                <div className='mt-4'>
-                  <InputLabel
-                      htmlFor="tenant_email"
-                      value="Correo de la tienda"
-                  />
-
-                  <Input
-                    id="tenant_email"
-                    type="email"
-                    value={data.tenant_email}
-                    onChange={(e) => setData('tenant_email', e.target.value)}
-                    autoComplete="off"
-                  />
-
-                  <InputError
-                    message={errors.tenant_email}
-                  />
-                </div>
+              <div>
+                <InputLabel htmlFor="features" value="Características" />
+                <Textarea
+                  id="features"
+                  value={data.features}
+                  onChange={(e) => setData('features', e.target.value)}
+                  placeholder='Ej: {"color":"rojo", "material":"algodón"}'
+                />
+                <InputError message={errors.features} />
               </div>
             </CardContent>
           </Card>
@@ -492,7 +295,7 @@ export default function TenantForm({ className = '', props} : props) {
             className="ml-4"
             disabled={processing}
           >
-            Crear tienda
+            Guardar
           </PrimaryButton>
         </div>
       </form>
@@ -506,14 +309,14 @@ export default function TenantForm({ className = '', props} : props) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{errors ? 'Aceptar' : 'Crear nueva tienda'}</AlertDialogCancel>
-            {!errors && 
-            <AlertDialogAction>
-              <Link
-                href={route("tenantIndex")}>
-                Ver lista de tiendas
-              </Link>
-            </AlertDialogAction>}
+            <AlertDialogCancel>{errors ? 'Aceptar' : 'Crear nuevo producto'}</AlertDialogCancel>
+            {!errors &&
+              <AlertDialogAction>
+                <Link
+                  href={route("tenantProductsIndex")}>
+                  Ver productos
+                </Link>
+              </AlertDialogAction>}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

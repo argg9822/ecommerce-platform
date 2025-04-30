@@ -30,8 +30,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     Route::middleware(TenantSessionMiddleware::class)->group(function () {
         Route::controller(ProductController::class)->group(function () {
-            Route::get('/products', 'index')->name('tenant.products.index');
-            Route::get('/products/create', 'create')->name('tenant.products.create');
+            Route::get('/products', 'index')->name('tenantProductsIndex');
+            Route::get('/products/create', 'create')->name('tenantProductsCreate');
             Route::post('/products/store', 'store')->name('tenant.products.store');
             Route::get('/products/{product}/edit', 'edit')->name('tenant.products.edit');
             Route::put('/products/{product}', 'update')->name('tenant.products.update');

@@ -7,4 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $connection = 'tenant';
+
+    protected $fillable = [
+        'name',
+        'description',
+        'price',
+        'stock'
+    ];
 }

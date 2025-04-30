@@ -77,12 +77,12 @@ class TenantSetupController extends Controller
             $ownerId = $this->createOwner($request, $tenant);
 
             if ($ownerId) {
-                // $tenant->update([
-                //     'owner_id' => $ownerId
-                // ]);
+                $tenant->update([
+                    'owner_id' => $ownerId
+                ]);
 
-                $tenant->owner_id = $ownerId;
-                $tenant->save();
+                // $tenant->owner_id = $ownerId;
+                // $tenant->save();
             }
 
             $tenant->domains()->create(['domain' => "$tenantDomain.$tenantDomainExtension"]);

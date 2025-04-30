@@ -441,18 +441,17 @@ export default function TenantForm({ className = '', props} : props) {
 
                   {plans.length > 0 && (
                     <Select onValueChange={(e) => setData('currency', e)} defaultValue={data.currency}>
-                      <SelectTrigger className="text-white px-4 py-2">
+                      <SelectTrigger>
                         <SelectValue placeholder="Seleccione un plan" />
                       </SelectTrigger>
-                      <SelectContent className="bg-zinc-900 text-white border border-zinc-700">
+                      <SelectContent>
                         {currencies.map((currency: any) => (
                           <SelectItem
-                          key={currency.name}
-                          value={String(currency.code)}
-                          className=" hover:bg-zinc-800 cursor-pointer"
-                        >
-                          {currency.name} ({currency.symbol}) - {currency.country}
-                        </SelectItem>
+                            key={currency.name}
+                            value={String(currency.code)}
+                          >
+                            {currency.name} ({currency.symbol}) - {currency.country}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>

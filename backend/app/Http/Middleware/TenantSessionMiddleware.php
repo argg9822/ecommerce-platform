@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 use Stancl\Tenancy\Tenancy;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -32,6 +33,12 @@ class TenantSessionMiddleware
                     
                     config(['database.connections.tenant.schema' => "tenant_{$tenant->id}"]);
                     app('db')->purge('tenant');
+
+                    Inertia::share([
+                        'tenant' => [
+                            'logo' => $tenant->logo
+                        ]
+                    ]);
                 }
             }
         }
