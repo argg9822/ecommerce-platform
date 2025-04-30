@@ -57,7 +57,16 @@ export interface Product {
     is_feature: boolean;
     is_available: boolean;
     brand: string;
+    product_images: ProductImage[],
     category_id: number;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ProductImage {
+    id: number,
+    url: string,
+    product_id: number,
     created_at: string;
     updated_at: string;
 }

@@ -1,23 +1,28 @@
 // 🎨 Colores principales
-$bg-primary: #18181B;
-$bg-secondary: #09090B;
+$bg-primary: #0e0e11;      // Casi negro, fondo principal
+$bg-secondary: #1a1b20;
 
 // Colores hover
-$bg-hover-primary: darken($bg-primary, 10%); // Azul grisáceo oscuro con 10% de saturación
-$bg-hover-secondary: darken($bg-secondary, 10%); // Gris neutro con 10% de saturación
+$bg-hover-primary: #1c1c23;     // Azul-gris muy oscuro (hover sobre primario)
+$bg-hover-secondary: #2a2a33;  // Gris neutro con 10% de saturación
 
-// 🌟 Colores complementarios
-$accent-color: #ff6b35;  // Naranja vibrante para resaltar elementos interactivos
-$success-color: #4caf50; // Verde para acciones exitosas
-$error-color: #e63946;   // Rojo para errores o alertas
-$warning-color: #ffcc00; // Amarillo para advertencias
+// 🌟 Colores complementarios (acento y estados)
+$accent-color: #9f1c1c;    // Rojo oscuro elegante para botones/acento
+$accent-color-hover: rgba(136, 0, 0, 0.774);
+$success-color: #3ba55d;   // Verde esmeralda moderado (acciones correctas)
+$error-color: #ff4b4b;     // Rojo alerta, más visible que el acento
+$warning-color: #facc15;   // Amarillo mostaza suave para advertencias
+$secondary-color: #374151;   // Gris azulado para botones secundarios (neutral y sobrio)
+$secondary-hover-color: #3a4a64;
 
-// 🎭 Tonos de fondo
-$bg-light: #f4f4f4;      // Fondo claro para secciones o tarjetas
-$bg-dark: #1e2a38;       // Fondo oscuro para contrastes
-$text-primary: #ffffff;  // Texto principal sobre fondos oscuros
-$text-secondary: #2d3748; // Texto oscuro para fondos claros
+// 🧊 Tonos auxiliares
+$bg-light: #1f1f2b;        // Para tarjetas sobre fondo oscuro
+$bg-dark: #111118;         // Más oscuro que secundario, para profundidad
+
+// ✍️ Colores de texto
+$text-primary: #e4e4e7;    // Gris claro muy legible sobre fondo oscuro
+$text-secondary: #9ca3af;  // Gris neutro más tenue
 
 // 🔲 Bordes y sombras
-$border-color: #cbd5e0;  // Bordes suaves para inputs y tarjetas
-$shadow-color: rgba(0, 0, 0, 0.2); // Sombras sutiles
+$border-color: #2e2e38;    // Borde sutil oscuro
+$shadow-color: rgba(255, 255, 255, 0.267); // Sombra más marcada para mejor profundidad

@@ -38,23 +38,28 @@ main{
 }
 
 .btn-primary{
-    background-color: rgb(136, 0, 0);
+    background-color: a.$accent-color;
     border: 3px solid transparent;
     color: #ffffff;
+    &:hover{
+        background-color: a.$accent-color-hover;
+    }
+    &:focus{
+        box-shadow: none;
+        border: solid 3px rgba(179, 0, 0, 0.774);
+        background-color: rgba(136, 0, 0, 0.774);
+    }
 }
 
-.btn-primary:hover{
-    background-color: rgba(136, 0, 0, 0.774);
-}
-
-.btn-primary:focus{
-    box-shadow: none;
-    border: solid 3px rgba(179, 0, 0, 0.774);
-    background-color: rgba(136, 0, 0, 0.774);
+.btn-secondary{
+    background-color: a.$secondary-color;
+    &:hover{
+        background-color: a.$secondary-hover-color;
+    }
 }
 
 .card{
-    background-color: #001c6d14;
+    background-color: a.$bg-light;
     border: none;
     border-left: 5px solid #9fb7ff;
 }
@@ -77,8 +82,15 @@ input:where(:not([type])),
 [type='time'], 
 [type='week'], 
 [multiple], 
-textarea, 
+textarea,
 select {
-    background-color: #9fb7ff0d;
-    border: none;
+  background-color: rgba(125, 125, 125, 0.034);
+  border: none;
+  border: 1px solid a.$shadow-color;
+  transition: box-shadow 0.2s ease, background-color 0.2s ease;
+  -webkit-transition: box-shadow 0.2s ease, background-color 0.2s ease;
+  -moz-transition: box-shadow 0.2s ease, background-color 0.2s ease;
+  -ms-transition: box-shadow 0.2s ease, background-color 0.2s ease;
+  -o-transition: box-shadow 0.2s ease, background-color 0.2s ease;
+  backdrop-filter: blur(2px);
 }
