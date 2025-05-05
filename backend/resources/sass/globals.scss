@@ -59,9 +59,9 @@ main{
 }
 
 .card{
-    background-color: a.$bg-light;
+    background: a.$bg-cards;
     border: none;
-    border-left: 5px solid #9fb7ff;
+    border-bottom: 5px solid #9fb7ff;
 }
 
 .card h2{

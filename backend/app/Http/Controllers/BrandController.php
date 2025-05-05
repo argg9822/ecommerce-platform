@@ -2,22 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use App\Models\Product;
 use App\Models\Brand;
-use App\Models\Tenant\Category;
+use App\Http\Requests\StoreBrandsRequest;
+use App\Http\Requests\UpdateBrandsRequest;
 
-class ProductController extends Controller
+class BrandController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render('Products/Index', [
-            'products' => Product::all()
-        ]);
+        //
     }
 
     /**
@@ -25,16 +21,13 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Products/Create', [
-            'categories' => Category::select('id', 'name', 'description', 'image')->get(),
-            'brands' => Brand::select('id', 'name')->get(),
-        ]);
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreBrandsRequest $request)
     {
         //
     }
@@ -42,7 +35,7 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Brand $brands)
     {
         //
     }
@@ -50,7 +43,7 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Brand $brands)
     {
         //
     }
@@ -58,7 +51,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateBrandsRequest $request, Brand $brands)
     {
         //
     }
@@ -66,7 +59,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Brand $brands)
     {
         //
     }

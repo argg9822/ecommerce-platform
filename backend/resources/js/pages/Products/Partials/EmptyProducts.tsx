@@ -10,7 +10,7 @@ export default function EmptyProducts(){
         <div className="flex flex-col items-center justify-center text-center px-4">
             <div className="w-36 h-36 rounded-full overflow-hidden border-2 border-red-400 mb-6">
                 <img
-                    src={`/storage/${tenant?.logo}`}
+                    src={route('tenant_media', {path: tenant?.logo})}
                     alt="Logo"
                     className="w-full h-full object-cover opacity-80"
                 />

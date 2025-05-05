@@ -1,6 +1,6 @@
 // 🎨 Colores principales
-$bg-primary: #0e0e11;      // Casi negro, fondo principal
-$bg-secondary: #1a1b20;
+$bg-primary: #000514     ;      // Fondo principal más respirable que #070810
+$bg-secondary: #0f111a  ;
 
 // Colores hover
 $bg-hover-primary: #1c1c23;     // Azul-gris muy oscuro (hover sobre primario)
@@ -14,6 +14,9 @@ $error-color: #ff4b4b;     // Rojo alerta, más visible que el acento
 $warning-color: #facc15;   // Amarillo mostaza suave para advertencias
 $secondary-color: #374151;   // Gris azulado para botones secundarios (neutral y sobrio)
 $secondary-hover-color: #3a4a64;
+
+//Cards
+$bg-cards: linear-gradient(150deg,#0a0b16 0%, #0a0b16 50%,  #1B284A 100%);
 
 // 🧊 Tonos auxiliares
 $bg-light: #1f1f2b;        // Para tarjetas sobre fondo oscuro

@@ -19,7 +19,6 @@ type SetupProps = {
 }
 
 export default function Setup({ tenants }: SetupProps) {  
-  console.log(tenants);
   
   return (
     <AuthenticatedLayout 
@@ -69,7 +68,7 @@ export default function Setup({ tenants }: SetupProps) {
                 <TableCell>
                   <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-600">
                     <img
-                      src={`/storage/${tenant.logo}`}
+                      src={route('tenant_media_admin', {path: tenant.logo, tenantId: tenant?.id})}
                       alt={tenant.name}
                       title={tenant.name}
                       className="w-full h-full object-cover"

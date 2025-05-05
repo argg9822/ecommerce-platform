@@ -23,7 +23,7 @@ return new class extends Migration
             $table->boolean('is_feature')->default(false); //Destacado en homepage
             $table->json('features')->nullable();
             $table->boolean('is_available')->default(true);
-            $table->string('brand');
+            $table->foreignId('brand_id')->constrained()->onDelete('cascade');
             $table->decimal('shipment', 10, 2)->default(0)->nullable();
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->timestamps();

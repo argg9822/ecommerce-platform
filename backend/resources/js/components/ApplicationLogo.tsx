@@ -1,4 +1,4 @@
-import logo from '../../../storage/app/public/logos/main-logo.png';
+import logo from '../../../storage/app/public/softgenix/logos/main-logo.png';
 
 export default function ApplicationLogo() {
     return (

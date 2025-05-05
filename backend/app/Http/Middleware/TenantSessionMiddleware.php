@@ -31,12 +31,14 @@ class TenantSessionMiddleware
                 if ($tenant) {
                     $this->tenancy->initialize($tenant);
                     
-                    config(['database.connections.tenant.schema' => "tenant_{$tenant->id}"]);
+                    config(['database.connections.tenant.schema' => "tenant{$tenant->id}"]);
                     app('db')->purge('tenant');
 
                     Inertia::share([
                         'tenant' => [
-                            'logo' => $tenant->logo
+                            'id' => $tenant->id,
+                            'logo' => $tenant->logo,
+                            'name' => $tenant->name
                         ]
                     ]);
                 }

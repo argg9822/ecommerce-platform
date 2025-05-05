@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
 //Requests
 use App\Http\Requests\StoreTenantRequest;
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\Hash;
 
 class TenantSetupController extends Controller
@@ -44,50 +45,34 @@ class TenantSetupController extends Controller
             return to_route('tenantCreate')->with(['error' => 'La tienda ya existe']);
         }
 
-        $logoPath = '';
-
-        if($request->hasFile('tenant_logo')){
-            $tenantLogo = $request->file('tenant_logo');
-            $logoName = uniqid() . '.' . $tenantLogo->getClientOriginalExtension();
-            $logoPath = "tenants/$tenantName/logos/$logoName";
-            Storage::disk('public')->putFileAs("tenants/$tenantName/logos", $tenantLogo, $logoName);
-        }
-
-        $tenantDomain = Str::lower($request->domain);
-        $tenantDomainExtension = Str::lower(Str::slug($request->domain_extension));
-
-        $additionalData = [
-            'currency' => $request->currency,
-            'timezone' => $request->tenant_timezone,
-            'language' => $request->tenant_language,
-            'email' => $request->tenant_email
-        ];
-
         DB::beginTransaction();
         try {
+            $additionalData = [
+                'currency' => $request->currency,
+                'timezone' => $request->tenant_timezone,
+                'language' => $request->tenant_language,
+                'email' => $request->tenant_email
+            ];
+
             $tenant = Tenant::create([
                 'name' => $tenantName,
                 'plan_id' => $request->plan,
                 'is_active' => true,
                 'api_token' => hash('sha256', Str::uuid()->toString() . now()),
-                'logo' => $logoPath,
                 'config' => $additionalData,
             ]);
 
-            $ownerId = $this->createOwner($request, $tenant);
-
-            if ($ownerId) {
-                $tenant->update([
-                    'owner_id' => $ownerId
-                ]);
-
-                // $tenant->owner_id = $ownerId;
-                // $tenant->save();
+            $pathLogo = null;
+            if ($request->hasFile('tenant_logo')) {
+                $pathLogo = $this->saveLogo($request->file('tenant_logo'), $tenant->id);
             }
 
-            $tenant->domains()->create(['domain' => "$tenantDomain.$tenantDomainExtension"]);
-            tenancy()->initialize($tenant);
+            $this->createOwner($request, $tenant, $pathLogo);
 
+            $tenantDomain = Str::slug($request->domain).".".Str::lower($request->domain_extension);
+            $tenant->domains()->create(['domain' => $tenantDomain]);
+
+            tenancy()->initialize($tenant);
             DB::connection('tenant')->statement("SET search_path TO \"tenant$tenant->id\"");
 
             Artisan::call('tenants:migrate', [
@@ -111,23 +96,57 @@ class TenantSetupController extends Controller
         }
     }
 
-    private function createOwner($request, $tenant)
+    private function saveLogo($tenantLogo, $tenantId)
     {
-        $tenant_id = $tenant->id;
+        $logoName = uniqid() . '.' . $tenantLogo->getClientOriginalExtension();
+        $logopath = "logos/$logoName";
 
-        $user = User::create([
-            'name' => $request->user_name,
-            'email' => $request->user_email,
-            'password' => Hash::make($request->user_password),
-            'role' => 'owner',
-            'tenant_id' => $tenant_id,
-            'phone' => trim($request->phone_indicator." ".$request->user_phone),
-        ]);
+        $logoSaved = $tenantLogo->storeAs(
+            "$tenantId/images/logos", 
+            $logoName,
+            'tenant'
+        );
 
-        if(!$user->wasRecentlyCreated){
-            return false;
+        if($logoSaved){
+            return $logopath;
         }
+    }
 
-        return $user->id;
+    private function createOwner($request, $tenant, $logoPath)
+    {
+        try{
+            $user = User::create([
+                'name' => $request->user_name,
+                'email' => $request->user_email,
+                'password' => Hash::make($request->user_password),
+                'role' => 'owner',
+                'tenant_id' => $tenant->id,
+                'phone' => trim($request->phone_indicator." ".$request->user_phone),
+            ]);
+    
+            if(!$user->wasRecentlyCreated){
+                throw new Exception("No se pudo crear el usuario propietario.");
+            }
+
+            if(empty($user->id)) {
+                throw new Exception("El usuario se creó pero no tiene ID válido");
+            }
+    
+            $tenant->owner_id = $user->id;
+            $tenant->logo = $logoPath;
+            $updated = $tenant->save();
+            
+            // $updated = $tenant->update([
+            //     'owner_id' => $user->id,
+            //     'logo' => $logoPath            
+            // ]);
+
+            if(!$updated){
+                throw new Exception("No se pudo actualizar el id del propietario en la tabla tenants");
+            }
+        }catch(Exception $e){
+            Log::error("Error al guardar el propietario de la tienda ". $e->getMessage());
+            throw $e;
+        }
     }
 }

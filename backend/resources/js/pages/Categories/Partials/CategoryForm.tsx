@@ -1,45 +1,64 @@
 import InputError from "@/components/InputError";
-import InputLabel from "@/components/InputLabel";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useForm } from "@inertiajs/react";
-import { FormEventHandler } from "react";
+import UploadImages from "@/components/UploadImages";
+import { useCategoryForm } from "@/hooks/form/useCategoryForm";
+import PrimaryButton from "@/components/PrimaryButton";
+import { FormEventHandler, useEffect } from "react";
 
+interface CategoryFormProps {
+    openDialog: (isOpen: boolean) => void
+}
 
-export default function CategoryForm(){
-    const storeCategory: FormEventHandler = (e) => {
-        e.preventDefault();
+export default function CategoryForm( { openDialog } : CategoryFormProps ){
+    const {
+        storeCategory,
+        setData,
+        data,
+        errors,
+        processing,
+        setImageCategory
+    } = useCategoryForm();
+
+    const handleSubmit: FormEventHandler = (e) => {
+        storeCategory(e);
+        setTimeout(() => {
+            if (!processing) {
+                openDialog(false);
+            }
+        }, 1000);
     }
 
-    const {
-        data,
-        setData,
-        errors
-    } = useForm({
-        name: '',
-        description: ''
-    });
-
     return (
-        <form onSubmit={storeCategory} encType="multipart/form-data">
-            <div className="flex justify-between">
+        <>
+            <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="name" className="text-right">Nombre</Label>
-                        <Input id="name" onChange={(e) => setData('name', e.target.value)} value={data.name} className="col-span-3" />
+                        <Input id="name" onChange={(e) => setData('name', e.target.value)} value={data.name} autoComplete="off" className="col-span-3" placeholder="Escribe aquí el nombre de la categoría"/>
                         <InputError message={errors.name} />
                     </div>
 
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="name" className="text-right">Descripción</Label>
-                        <Textarea id="description" value={data.description} onChange={(e) => setData('description', e.target.value)} className="min-h-[100px] col-span-3" />
+                        <Textarea id="description" value={data.description} onChange={(e) => setData('description', e.target.value)} className="min-h-[100px] col-span-3" placeholder="Coloca una pequeña pero concisa descripción de la categoría"/>
                         <InputError message={errors.description} />
+                    </div>
+
+                    <div>
+                        <UploadImages 
+                            preview={true}
+                            onFilesSelected={setImageCategory} 
+                            accept="image/jpeg, image/png, image/jpg, image/webp"
+                            maxSizeInMB={1}/>
                     </div>
                 </div>
 
-                
-            </div>
-        </form>
+                <PrimaryButton type="submit" className="w-full flex justify-center" disabled={processing}>
+                    {processing ? 'Guardando' : 'Guardar'}
+                </PrimaryButton>
+            </form>
+        </>
     );
 }

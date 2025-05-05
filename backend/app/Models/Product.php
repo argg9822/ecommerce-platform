@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Brand;
 
 class Product extends Model
 {
-    protected $connection = 'tenant';
 
     protected $fillable = [
         'name',
@@ -14,4 +14,9 @@ class Product extends Model
         'price',
         'stock'
     ];
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
 }

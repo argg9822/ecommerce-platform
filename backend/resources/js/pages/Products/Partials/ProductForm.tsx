@@ -2,6 +2,7 @@ import InputError from '@/components/InputError';
 import InputLabel from '@/components/InputLabel';
 import PrimaryButton from '@/components/PrimaryButton';
 import SecondaryButton from '@/components/SecondaryButton';
+import UploadImages from '@/components/UploadImages';
 import { FormEventHandler, useRef } from 'react';
 import { useForm } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
@@ -9,9 +10,8 @@ import { useState } from 'react';
 import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from "@/components/ui/input";
-import { Category } from '@/types';
-import { PlusIcon, Upload, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Category, Product, Brand } from '@/types';
+import { PlusIcon, Layers } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,14 +27,11 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-  SelectGroup,
-  SelectLabel
+  SelectValue
 } from "@/components/ui/select";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -42,20 +39,19 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from '@/components/ui/label';
 import CategoryForm from '@/pages/Categories/Partials/CategoryForm';
 
 type props = {
   className?: string,
-  categories: Category[]
+  categories: Category[],
+  brands: Brand[],
+  product?:  Product
 }
 
-export default function ProductForm({ className = '', categories }: props) {
+export default function ProductForm({ className = '', categories, product, brands }: props) {
   const {
     data,
     setData,
@@ -66,7 +62,7 @@ export default function ProductForm({ className = '', categories }: props) {
     recentlySuccessful,
   } = useForm({
     name: '',
-    brand: '',
+    brand_id: '',
     description: '',
     price: '',
     compare_price: '',
@@ -78,7 +74,8 @@ export default function ProductForm({ className = '', categories }: props) {
     is_available: false as boolean,
     is_feature: false as boolean,
     features: '',
-    product_images: []
+    product_images: product?.product_images.map(image => image.url || '') || [],
+    new_images: []
   });
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -90,37 +87,12 @@ export default function ProductForm({ className = '', categories }: props) {
       }
     );
 
+  const [openDialogCategory, setOpenDialogCategory] = useState(false);
   const tenantNameRef = useRef<HTMLInputElement>(null);
 
-  const [images, setImages] = useState<File[]>([]);
-  const imageInputRef = useRef<HTMLInputElement>(null);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const newImages = Array.from(e.target.files);
-      setImages([...images, ...newImages]);
-    }
-  };
-
-  const removeImage = (index:number) => {
-    const newImages = [...images];
-    newImages.splice(index, 1);
-    setImages(newImages);
+  const productImagesValue = (newImages: File[]) => {
+    // setData('product_images', [...data.product_images, ...newImages]);
   }
-
-  const triggerFileInput = () => {
-    imageInputRef.current?.click();
-  }
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.dataTransfer.files) {
-      const newImages = Array.from(e.dataTransfer.files).filter(file => 
-        file.type.startsWith('image/')
-      );
-      setImages([...images, ...newImages]);
-    }
-  };
 
   const storeProduct: FormEventHandler = (e) => {
     e.preventDefault();
@@ -137,7 +109,7 @@ export default function ProductForm({ className = '', categories }: props) {
           tenantNameRef.current?.focus();
         }
 
-        if (errors.brand) reset('brand');
+        if (errors.brand) reset('brand_id');
         if (errors.price) reset('price');
         if (errors.compare_price) reset('compare_price');
         if (errors.stock) reset('stock');
@@ -172,9 +144,38 @@ export default function ProductForm({ className = '', categories }: props) {
                 </div>
 
                 <div>
-                  <InputLabel htmlFor="brand" value="Marca" />
-                  <Input id="brand" type="text" value={data.brand} onChange={(e) => setData('brand', e.target.value)} />
-                  <InputError message={errors.brand} />
+                  <InputLabel htmlFor="category_id" value="Marca" />
+                  <div className='flex'>
+                    <Select onValueChange={(e) => { setData('brand_id', e) }} defaultValue={data.brand_id}>
+                      <SelectTrigger className='h-[30px]'>
+                        <SelectValue placeholder="Seleccione una marca" />
+                      </SelectTrigger>
+
+                      <SelectContent>
+                        {brands.length > 0 ? (brands.map((brand) => (
+                          <SelectItem
+                            key={brand.id}
+                            value={String(brand.id)}>
+                              <div className='flex flex-col text-left'>
+                                <span>{brand.name}</span>
+                              </div>
+                          </SelectItem>
+                          ))
+                        ) : 
+                        (<SelectItem value="null">
+                          <div className='flex flex-col text-left'>
+                            <span>Agrega una marca</span>
+                          </div>
+                        </SelectItem>)
+                        }
+                      </SelectContent>
+                    </Select>
+
+                    <SecondaryButton type='button' className='max-h-[30px]' title='Añadir marca' onClick={() => setOpenDialogCategory(true)}>
+                      <PlusIcon className="w-5 h-5 text-gray-100" />
+                    </SecondaryButton>
+                  </div>
+                  <InputError message={errors.category_id} />
                 </div>
               </div>
 
@@ -187,65 +188,19 @@ export default function ProductForm({ className = '', categories }: props) {
             </CardContent>
           </Card>
 
+          {/* Imágenes del producto */}
           <Card>
             <CardHeader>
               <CardTitle><h2 className="text-lg text-center">Imágenes</h2></CardTitle>
             </CardHeader>
 
             <CardContent className='space-y-4'>
-              <div className='flex flex-col items-center gap-4'>
-                <div 
-                  onDrop={handleDrop}
-                  onDragOver={(e) => e.preventDefault()}
-                  className="border-2 border-dashed rounded-lg p-4 flex text-center text-gray-400 cursor-pointer bg-secondary"
-                  onClick={triggerFileInput}
-                >
-                  <Upload className='mr-2 h-4 w-4 text-white'/>
-                  Arrastra imágenes aquí o haz click para seleccionar
-                </div>
-
-                <input
-                  type="file"
-                  ref={imageInputRef}
-                  accept="image/*"
-                  className='hidden'
-                  multiple
-                  onChange={handleImageUpload}
-                />
-
-                <p className='text-sm text-gray-500 text-muted-foreground'>
-                  Puedes seleccionar múltiples imágenes (máx. 5)
-                </p>
-              </div>
-
-              {images.length > 0 && (
-                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {images.map((image, index) => (
-                    <div key={index} className='relative'>
-                      <div className='aspect-square overflow-hidden rounded-lg border'>
-                        <img 
-                          src={URL.createObjectURL(image)} 
-                          alt={`Preview ${index + 1}`}
-                          className='object-cover w-full h-full'
-                        />
-                      </div>
-
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-1 right-1 h-6 w-6 rounded-full bg-red-500/80 hover:bg-red-500 text-white group-hover:opacity-100 transition-opacity"
-                        onClick={() => removeImage(index)}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                      <span className="absolute bottom-1 left-1 bg-black/50 text-white text-xs px-1 rounded">
-                        {index === 0 ? "Principal" : index + 1}
-                      </span>
-                    </div>
-                  ))}
-                 </div>
-              )}
+              <UploadImages 
+                multiple
+                preview
+                onFilesSelected={productImagesValue}
+              />
+            
             </CardContent>
           </Card>
 
@@ -309,7 +264,7 @@ export default function ProductForm({ className = '', categories }: props) {
                 <InputLabel htmlFor="category_id" value="Categoría" />
                 <div className='flex'>
                   <Select onValueChange={(e) => { setData('category_id', e) }} defaultValue={data.category_id}>
-                    <SelectTrigger>
+                    <SelectTrigger className='h-[45px]'>
                       <SelectValue placeholder="Seleccione una categoría" />
                     </SelectTrigger>
 
@@ -318,31 +273,31 @@ export default function ProductForm({ className = '', categories }: props) {
                         <SelectItem
                           key={category.id}
                           value={String(category.id)}>
-                          {category.name}
+                            <div className='flex flex-row'>{}
+                              <div className='flex place-content-center flex-wrap'>
+                                <div className="w-8 h-8 rounded-sm overflow-hidden mr-3">
+                                {category?.image ? (
+                                    <img
+                                        src={route('tenant_media', {path: category?.image})}
+                                        alt={category.name}
+                                        className="w-full h-full object-cover opacity-75"
+                                    />
+                                ) : (<Layers />)}
+                                </div>
+                              </div>
+                              <div className='flex flex-col text-left'>
+                                <span>{category.name}</span>
+                                <span className='text-sm text-gray-500'>{category?.description}</span>
+                            </div>
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
 
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <SecondaryButton className='max-h-[30px]'>
-                        <PlusIcon className="w-5 h-5 text-gray-100" />
-                      </SecondaryButton>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle className='text-gray-100'>Agregar categoría</DialogTitle>
-                        <DialogDescription>Inserta los datos de la categoría y haz click en guardar</DialogDescription>
-                      </DialogHeader>
-                      
-                      <CategoryForm />
-
-                      <DialogFooter>
-                        <PrimaryButton type="submit">Guardar</PrimaryButton>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                  <SecondaryButton type='button' className='max-h-[45px]' title='Añadir categoría' onClick={() => setOpenDialogCategory(true)}>
+                    <PlusIcon className="w-5 h-5 text-gray-100" />
+                  </SecondaryButton>
                 </div>
                 <InputError message={errors.category_id} />
               </div>
@@ -409,6 +364,16 @@ export default function ProductForm({ className = '', categories }: props) {
           </PrimaryButton>
         </div>
       </form>
+
+      <Dialog open={openDialogCategory} onOpenChange={setOpenDialogCategory}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className='text-gray-100'>Agregar categoría</DialogTitle>
+            <DialogDescription> Considera utilizar nombres de categoría claros y descriptivos para mejorar la organización de tu catálogo.</DialogDescription>
+          </DialogHeader>
+          <CategoryForm openDialog={setOpenDialogCategory}/>
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
         <AlertDialogContent className="bg-gray-400">

@@ -23,6 +23,10 @@ export interface Category {
     image: string;
 }
 
+export interface Brand {
+    id: number;
+    name: string;
+}
 
 export interface Tenant {
     id: number;

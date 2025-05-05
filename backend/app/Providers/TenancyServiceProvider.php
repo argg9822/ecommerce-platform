@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
@@ -165,5 +166,20 @@ class TenancyServiceProvider extends ServiceProvider
         foreach (array_reverse($tenancyMiddleware) as $middleware) {
             $this->app[\Illuminate\Contracts\Http\Kernel::class]->prependToMiddlewarePriority($middleware);
         }
+    }
+
+    public function storeImages(UploadedFile $image, string $folder): ?string
+    {
+        $tenantId = tenant('id');
+        $imageName = uniqid() . '.' . $image->getClientOriginalExtension();
+        $imagePath = "images/$folder/$imageName";
+
+        $imageSaved = $image->storeAs(
+            "$tenantId/images/$folder", 
+            $imageName,
+            'tenant'
+        );
+
+        return $imageSaved ? $imagePath : null;
     }
 }
