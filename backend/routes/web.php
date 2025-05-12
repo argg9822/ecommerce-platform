@@ -50,7 +50,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'store' => 'brands_store'
         ]);
 
-        //Proxy files tenants
+        //Proxy files tenants admin
         Route::get('media/images/{path}/{tenantId}', function($path, $tenantId){
             Log::info("Admin ". $path);
             $filePath = "$tenantId/images/$path";
@@ -63,6 +63,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return response()->file(Storage::disk('tenant')->path($filePath));
         })->where('path', '.*')->name('tenant_media_admin');
 
+        //Proxy files tenants owners
         Route::get('/images/{path}', function ($path) {
             Log::info("No admin ". $path);
             $tenant = tenant();

@@ -50,7 +50,7 @@ export function useBrandForm(){
     }, [flash]); 
 
     const storeBrand = (onSuccess?:  () => void) => {
-        post(route('categories_store'), {
+        post(route('brands_store'), {
             preserveScroll: true,
             onSuccess: () => {
                 reset();

@@ -64,7 +64,7 @@ export default function Index({ tenants }: SetupProps) {
 
                 <TableCell className="font-medium">{tenant.name}</TableCell>
                 <TableCell>{ tenant.plan?.name }</TableCell>
-                <TableCell>{ tenant.owner?.name }</TableCell>
+                <TableCell>{ tenant.owner?.name } <br /> <span className='text-sm text-gray-400'>{ tenant.owner?.email }</span></TableCell>
                 <TableCell>{ tenant.config.currency }</TableCell>
                 <TableCell>
                   <Badge color={ tenant.is_active ? 'success' : 'danger'} text={ tenant.is_active ? 'Activa' : 'Inactivo'}/>                

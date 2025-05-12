@@ -13,7 +13,7 @@ interface BrandFormProps {
     openDialog: (isOpen: boolean) => void
 }
 
-export default function CategoryForm( { openDialog } : BrandFormProps ){
+export default function BrandForm( { openDialog } : BrandFormProps ){
     const { toast } = useToast();
     const {
         storeBrand,

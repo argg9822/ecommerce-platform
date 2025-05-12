@@ -43,6 +43,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import CategoryForm from '@/pages/Categories/Partials/CategoryForm';
+import BrandForm from '@/pages/Brands/Partials/BrandForm';
 
 type props = {
   className?: string,
@@ -381,7 +382,7 @@ export default function ProductForm({ className = '', categories, product, brand
           <DialogHeader>
             <DialogTitle className='text-gray-100'>Agregar marca</DialogTitle>
           </DialogHeader>
-          <CategoryForm openDialog={setOpenDialogBrand}/>
+          <BrandForm openDialog={setOpenDialogBrand}/>
         </DialogContent>
       </Dialog>
 
