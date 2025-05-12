@@ -28,7 +28,7 @@ class StoreCategoryRequest extends FormRequest
             'image' => [
                 'nullable',
                 'mimes:jpg,png,jpeg,webp',
-                File::image()->max(2 * 1024)
+                File::image()->max(1024)
                     // ->dimensions(Rule::dimensions()->maxWidth(1000)->maxHeight(500)),
             ],
             'description' => 'nullable|string'
@@ -43,7 +43,7 @@ class StoreCategoryRequest extends FormRequest
             'name.max' => 'El nombre de la categoría no puede exceder los 255 caracteres',
             'image.mimes' => 'El archivo debe ser una imagen válida (jpg, jpeg, png, webp)',
             'image.image' => 'El archivo debe ser una imagen',
-            'image.max' => 'La imagen no debe pesar más de 12MB',
+            'image.max' => 'La imagen no debe pesar más de 1MB',
             'description.string' => 'Ingrese una descripción válida',
             // 'image.dimensions' => 'La imagen debe tener como máximo 1000px de ancho y 500px de alto',
         ];

@@ -18,6 +18,11 @@ main{
     margin-left: var(--sidebar-width);
 }
 
+.app-topbar{
+    background-color: a.$bg-secondary;
+    margin-left: var(--sidebar-width);
+}
+
 .app-sidebar{
     background-color: a.$bg-primary;
     width: var(--sidebar-width);

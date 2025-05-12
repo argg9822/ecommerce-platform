@@ -5,43 +5,45 @@ import { Textarea } from "@/components/ui/textarea";
 import UploadImages from "@/components/UploadImages";
 import { useCategoryForm } from "@/hooks/form/useCategoryForm";
 import PrimaryButton from "@/components/PrimaryButton";
-import { FormEventHandler, useEffect } from "react";
+import { FormEventHandler } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 interface CategoryFormProps {
     openDialog: (isOpen: boolean) => void
 }
 
 export default function CategoryForm( { openDialog } : CategoryFormProps ){
+    const { toast } = useToast();
     const {
         storeCategory,
         setData,
         data,
         errors,
         processing,
-        setImageCategory
+        setImageCategory,
+        recentlySuccessful
     } = useCategoryForm();
 
     const handleSubmit: FormEventHandler = (e) => {
-        storeCategory(e);
-        setTimeout(() => {
-            if (!processing) {
-                openDialog(false);
-            }
-        }, 1000);
+        e.preventDefault();
+        storeCategory(() => {
+            openDialog(false);
+        });
     }
 
     return (
         <>
             <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="name" className="text-right">Nombre</Label>
+                    <div className="flex flex-col">
+                        <Label htmlFor="name">Nombre</Label>
                         <Input id="name" onChange={(e) => setData('name', e.target.value)} value={data.name} autoComplete="off" className="col-span-3" placeholder="Escribe aquí el nombre de la categoría"/>
                         <InputError message={errors.name} />
                     </div>
 
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="name" className="text-right">Descripción</Label>
+                    <div className="flex flex-col">
+                        <Label htmlFor="name">Descripción</Label>
                         <Textarea id="description" value={data.description} onChange={(e) => setData('description', e.target.value)} className="min-h-[100px] col-span-3" placeholder="Coloca una pequeña pero concisa descripción de la categoría"/>
                         <InputError message={errors.description} />
                     </div>

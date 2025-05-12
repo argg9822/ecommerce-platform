@@ -75,11 +75,20 @@ export interface ProductImage {
     updated_at: string;
 }
 
+interface FlashMessage  {
+    title?: string;
+    message?: string;
+}
+
 export type PageProps<
     T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {
     auth: {
         user: User;
     };
-    tenant?: Tenant
+    tenant?: Tenant,
+    flash?: {
+        success?: FlashMessage,
+        error?: FlashMessage
+    }
 };

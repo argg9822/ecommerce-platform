@@ -51,12 +51,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
 
         //Proxy files tenants
-        Route::get('/media/{path}/{tenantId}', function($path, $tenantId){
-            $tenantId = $tenantId ?? null;
-            
+        Route::get('media/images/{path}/{tenantId}', function($path, $tenantId){
+            Log::info("Admin ". $path);
             $filePath = "$tenantId/images/$path";
-
-            if(!Storage::disk('public')->exists($filePath)){
+        
+            if (!Storage::disk('tenant')->exists($filePath)) {
+                Log::error('Archivo no encontrado:', ['ruta' => $filePath]);
                 abort(404);
             }
 
@@ -64,13 +64,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         })->where('path', '.*')->name('tenant_media_admin');
 
         Route::get('/images/{path}', function ($path) {
+            Log::info("No admin ". $path);
             $tenant = tenant();
 
             if (!$tenant) {
                 Log::error('Tenant no inicializado al acceder a:', ['path' => $path]);
                 abort(404, 'Tenant no encontrado');
             }
-        
+
             $filePath = "$tenant->id/images/$path";
         
             if (!Storage::disk('tenant')->exists($filePath)) {
@@ -79,7 +80,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             }
 
             return response()->file(Storage::disk('tenant')->path($filePath));
-        })->where('path', '.*')->name('tenant_media');
+        })->where('path', '.*')->name('tenant_media_owner');
     });
 });
 

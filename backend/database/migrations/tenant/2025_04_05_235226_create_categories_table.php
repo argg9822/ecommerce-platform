@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('slug')->unique(); //Personalizar el link
             $table->text('description')->nullable();
             $table->string('image')->nullable();
+            $table->foreignId('parent_id')->nullable()->constrained('categories')->restrictOnDelete();
+            $table->integer('order_index')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

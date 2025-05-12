@@ -88,6 +88,7 @@ export default function ProductForm({ className = '', categories, product, brand
     );
 
   const [openDialogCategory, setOpenDialogCategory] = useState(false);
+  const [openDialogBrand, setOpenDialogBrand] = useState(false);
   const tenantNameRef = useRef<HTMLInputElement>(null);
 
   const productImagesValue = (newImages: File[]) => {
@@ -164,14 +165,14 @@ export default function ProductForm({ className = '', categories, product, brand
                         ) : 
                         (<SelectItem value="null">
                           <div className='flex flex-col text-left'>
-                            <span>Agrega una marca</span>
+                            <span>Agrega una marca (si no es propia)</span>
                           </div>
                         </SelectItem>)
                         }
                       </SelectContent>
                     </Select>
 
-                    <SecondaryButton type='button' className='max-h-[30px]' title='Añadir marca' onClick={() => setOpenDialogCategory(true)}>
+                    <SecondaryButton type='button' className='max-h-[30px]' title='Añade una marca' onClick={() => setOpenDialogBrand(true)}>
                       <PlusIcon className="w-5 h-5 text-gray-100" />
                     </SecondaryButton>
                   </div>
@@ -278,7 +279,7 @@ export default function ProductForm({ className = '', categories, product, brand
                                 <div className="w-8 h-8 rounded-sm overflow-hidden mr-3">
                                 {category?.image ? (
                                     <img
-                                        src={route('tenant_media', {path: category?.image})}
+                                        src={route('tenant_media_owner', {path: category?.image})}
                                         alt={category.name}
                                         className="w-full h-full object-cover opacity-75"
                                     />
@@ -369,9 +370,18 @@ export default function ProductForm({ className = '', categories, product, brand
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle className='text-gray-100'>Agregar categoría</DialogTitle>
-            <DialogDescription> Considera utilizar nombres de categoría claros y descriptivos para mejorar la organización de tu catálogo.</DialogDescription>
+            <DialogDescription>Considera utilizar nombres de categoría claros y descriptivos para mejorar la organización de tu catálogo.</DialogDescription>
           </DialogHeader>
           <CategoryForm openDialog={setOpenDialogCategory}/>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={openDialogBrand} onOpenChange={setOpenDialogBrand}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className='text-gray-100'>Agregar marca</DialogTitle>
+          </DialogHeader>
+          <CategoryForm openDialog={setOpenDialogBrand}/>
         </DialogContent>
       </Dialog>
 

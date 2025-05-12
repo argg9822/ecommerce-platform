@@ -25,7 +25,7 @@ class TenantSetupController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('Tenant/Setup', [
+        return Inertia::render('Tenant/Index', [
             'tenants' => Tenant::with(['plan', 'owner'])->get(),
         ]);
     }

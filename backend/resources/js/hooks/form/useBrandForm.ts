@@ -1,13 +1,9 @@
 import { useForm, usePage } from "@inertiajs/react";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { PageProps } from "@/types";
 
-interface FlashMessage  {
-    title?: string;
-    message?: string;
-}
-
-export function useCategoryForm(){
+export function useBrandForm(){
     const { toast } = useToast();
 
     const {
@@ -19,27 +15,26 @@ export function useCategoryForm(){
         processing,
         recentlySuccessful
     } = useForm({
-        name: '',
-        description: '',
-        image: null as File | null
+        name: '',        
+        logo: null as File | null
     });
 
-    const { flash } = usePage().props as {
-        flash?: {
-            success?: FlashMessage;
-            error?: FlashMessage;
-        };
-    };
+    const { props } = usePage<PageProps>();
+    const { flash } = props; 
 
     useEffect(() => {
-        
         if(!flash) return;
+        
         if (flash?.success) {
             toast({
                 variant: "default",
                 title: flash.success.title || 'Éxito',
                 description: flash.success.message || 'Operación completada correctamente',
             });
+
+            setTimeout(() => {
+                flash.success = {};
+            }, 2500);
         }
 
         if (flash?.error) {
@@ -48,10 +43,13 @@ export function useCategoryForm(){
                 title: flash.error.title || 'Error',
                 description: flash.error.message || 'Ocurrió un error',
             });
+            setTimeout(() => {
+                flash.error = {};
+            }, 2500);
         }
     }, [flash]); 
 
-    const storeCategory = (onSuccess?:  () => void) => {
+    const storeBrand = (onSuccess?:  () => void) => {
         post(route('categories_store'), {
             preserveScroll: true,
             onSuccess: () => {
@@ -60,15 +58,14 @@ export function useCategoryForm(){
             },
             onError: () => {
                 if (errors.name) reset('name');
-                if (errors.image) reset('image');
-                if (errors.description) reset('description');
+                if (errors.logo) reset('logo');
             }
         });
    }
 
-    const setImageCategory = (newImage: File[]) => {
+    const setLogoBrand = (newImage: File[]) => {
         if (newImage.length > 0 && newImage[0].type.startsWith('image/')) {
-            setData('image', newImage[0]);
+            setData('logo', newImage[0]);
         } else {
             toast({
                 variant: "destructive",
@@ -79,12 +76,12 @@ export function useCategoryForm(){
     }
 
     return {
-        storeCategory,
+        storeBrand,
         setData,
         data,
         errors,
         processing,
-        setImageCategory,
+        setLogoBrand,
         recentlySuccessful
     }
 }

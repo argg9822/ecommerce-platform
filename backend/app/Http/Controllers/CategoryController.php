@@ -50,17 +50,12 @@ class CategoryController extends Controller
             ]);
             
             DB::commit();
-            session()->flash('flash.success', [
+
+            return redirect()->back()->with('flash.success', [
                 'title' => 'Categoría creada correctamente',
                 'message' => 'Recuerda que organizar bien tus categorías te ayudará a gestionar mejor tus productos y facilitará la navegación de tus clientes'
             ]);
-
-            return response()->json([
-                'success' => [
-                    'title' => 'Categoría creada correctamente',
-                    'message' => 'Recuerda que organizar bien tus categorías te ayudará a gestionar mejor tus productos y facilitará la navegación de tus clientes'
-                ]
-            ]);
+                
         }catch(\Exception $e){
             DB::rollBack();
             Log::error("Error creando la categoria", [
@@ -74,14 +69,6 @@ class CategoryController extends Controller
                     'message' => 'Por verifica los datos ingresados e intenta nuevamente'
                 ]
             ]);
-            // return redirect()->back()->with([
-            //     'flash' => [
-            //         'error' => [
-            //             'title' => 'No se pudo crear la categoría',
-            //             'description' => 'Por verifica los datos ingresados e intenta nuevamente'
-            //         ]
-            //     ]]
-            // );
         }        
     }
 

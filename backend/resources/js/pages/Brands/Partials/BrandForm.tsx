@@ -3,104 +3,43 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import UploadImages from "@/components/UploadImages";
-import { useForm, usePage } from "@inertiajs/react";
-import { FormEventHandler, useEffect, useRef, useState } from "react";
-import {
-    AlertDialog,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle
-} from "@/components/ui/alert-dialog"
+import { useBrandForm } from "@/hooks/form/useBrandForm";
 import PrimaryButton from "@/components/PrimaryButton";
+import { FormEventHandler } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
-export default function BrandForm(){
+interface BrandFormProps {
+    openDialog: (isOpen: boolean) => void
+}
+
+export default function CategoryForm( { openDialog } : BrandFormProps ){
     const { toast } = useToast();
-
     const {
-        data,
+        storeBrand,
         setData,
+        data,
         errors,
-        post,
-        reset
-    } = useForm({
-        name: '',
-        description: '',
-        logo: null as File | null
-    });
+        processing,
+        setLogoBrand,
+        recentlySuccessful
+    } = useBrandForm();
 
-    const { success, error } = usePage().props as {
-        success?:  {
-            title?: string,
-            description?: string
-        },
-        error?:  {
-            title?: string,
-            description?: string
-        },
-    }
-
-    useEffect(() => {
-        if (success) {
-            console.log(success);
-            
-            toast({
-                title: success.title,
-                description: success.description
-            });
-        }
-
-        if (error) {
-            toast({
-                title: error.title,
-                description: error.description
-            });
-        }
-    }, [success, error]);
-
-    const productNameRef = useRef<HTMLInputElement>(null);
-
-    const storeCategory: FormEventHandler = (e) => {
+    const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('categories_store'), {
-            preserveScroll: true,
-            onSuccess: () => {
-                reset();
-
-            },
-            onError: () => {
-                if (errors.name) {
-                    reset('name');
-                    productNameRef.current?.focus();
-                }
-
-                if (errors.logo) reset('logo');
-                if (errors.description) reset('description');
-            }
+        storeBrand(() => {
+            openDialog(false);
         });
-    }
-
-    const setLogoBrand = (newImage: File[]) => {
-        setData('logo', newImage[0]);
     }
 
     return (
         <>
-            <form onSubmit={storeCategory} encType="multipart/form-data">
+            <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="name" className="text-right">Nombre</Label>
-                        <Input id="name" onChange={(e) => setData('name', e.target.value)} value={data.name} className="col-span-3" placeholder="Escribe aquí el nombre de la categoría"/>
+                    <div className="flex flex-col">
+                        <Label htmlFor="name">Nombre</Label>
+                        <Input id="name" onChange={(e) => setData('name', e.target.value)} value={data.name} autoComplete="off" className="col-span-3" placeholder="Escribe aquí el nombre de la marca"/>
                         <InputError message={errors.name} />
-                    </div>
-
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="name" className="text-right">Descripción</Label>
-                        <Textarea id="description" value={data.description} onChange={(e) => setData('description', e.target.value)} className="min-h-[100px] col-span-3" placeholder="Coloca una pequeña pero concisa descripción de la categoría"/>
-                        <InputError message={errors.description} />
                     </div>
 
                     <div>
@@ -112,8 +51,8 @@ export default function BrandForm(){
                     </div>
                 </div>
 
-                <PrimaryButton type="submit" className="w-full flex justify-center">
-                    Guardar
+                <PrimaryButton type="submit" className="w-full flex justify-center" disabled={processing}>
+                    {processing ? 'Guardando' : 'Guardar'}
                 </PrimaryButton>
             </form>
         </>
