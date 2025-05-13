@@ -21,6 +21,7 @@ export function useCategoryForm(){
     } = useForm({
         name: '',
         description: '',
+        patern_id: '',
         image: null as File | null
     });
 
@@ -32,7 +33,6 @@ export function useCategoryForm(){
     };
 
     useEffect(() => {
-        
         if(!flash) return;
         if (flash?.success) {
             toast({

@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/dialog";
 import CategoryForm from '@/pages/Categories/Partials/CategoryForm';
 import BrandForm from '@/pages/Brands/Partials/BrandForm';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 type props = {
   className?: string,
@@ -373,7 +374,9 @@ export default function ProductForm({ className = '', categories, product, brand
             <DialogTitle className='text-gray-100'>Agregar categoría</DialogTitle>
             <DialogDescription>Considera utilizar nombres de categoría claros y descriptivos para mejorar la organización de tu catálogo.</DialogDescription>
           </DialogHeader>
-          <CategoryForm openDialog={setOpenDialogCategory}/>
+          <ScrollArea className="rounded-md border border-6 h-100 overflow-hidden">
+            <CategoryForm categories={categories} openDialog={setOpenDialogCategory}/>
+          </ScrollArea>
         </DialogContent>
       </Dialog>
 
