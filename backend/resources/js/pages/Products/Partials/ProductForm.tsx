@@ -11,7 +11,13 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from "@/components/ui/input";
 import { Category, Product, Brand } from '@/types';
-import { PlusIcon, Layers } from 'lucide-react';
+import { PlusIcon, Layers, CircleHelp } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -44,7 +50,6 @@ import {
 } from "@/components/ui/dialog";
 import CategoryForm from '@/pages/Categories/Partials/CategoryForm';
 import BrandForm from '@/pages/Brands/Partials/BrandForm';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 type props = {
   className?: string,
@@ -77,7 +82,8 @@ export default function ProductForm({ className = '', categories, product, brand
     is_feature: false as boolean,
     features: '',
     product_images: product?.product_images.map(image => image.url || '') || [],
-    new_images: []
+    new_images: [],
+    currency: 'COP'
   });
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -132,7 +138,7 @@ export default function ProductForm({ className = '', categories, product, brand
     <>
       <form onSubmit={storeProduct} encType="multipart/form-data">
         <section className={className}>
-          {/* Información de producto */}
+          {/* Información principal */}
           <Card>
             <CardHeader>
               <CardTitle><h2 className="text-lg text-center">Información del producto</h2></CardTitle>
@@ -191,7 +197,7 @@ export default function ProductForm({ className = '', categories, product, brand
             </CardContent>
           </Card>
 
-          {/* Imágenes del producto */}
+          {/* Imágenes */}
           <Card>
             <CardHeader>
               <CardTitle><h2 className="text-lg text-center">Imágenes</h2></CardTitle>
@@ -212,15 +218,68 @@ export default function ProductForm({ className = '', categories, product, brand
             <CardHeader>
               <CardTitle><h2 className="text-lg text-center">Precios y stock</h2></CardTitle>
             </CardHeader>
+
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <InputLabel htmlFor="price" value="Precio" />
-                  <Input id="price" type="number" step="0.01" value={data.price} onChange={(e) => setData('price', e.target.value)} />
+                  <div className="flex flex-column">
+                    <InputLabel htmlFor="price" value="Precio final"/>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <CircleHelp size={16} className="text-gray-100 ml-2 cursor-pointer"/>
+                        </TooltipTrigger>
+
+                        <TooltipContent>
+                          <p className="text-gray-100">Precio final para el cliente</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                  <div>
+                    <div className="relative flex items-center rounded-md outline-1 outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
+                      <span className="absolute left-3 z-10 shrink-0 text-base text-gray-300 select-none sm:text-sm/6">$</span>
+                      <Input 
+                        id="price"
+                        type="number"
+                        placeholder='0.00'
+                        className="w-full pl-6 pr-16 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        step="0.01"
+                        value={data.price}
+                        onChange={(e) => setData('price', e.target.value)}
+                      />
+                      <div className="absolute right-0 top-0 h-full flex items-center">
+                        <Select onValueChange={(e) => { setData('currency', e) }} defaultValue={data.currency}>
+                          <SelectTrigger className='h-[30px] w-[80px] text-base text-gray-400 placeholder:text-gray-400 border-0 bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0'>
+                            <SelectValue placeholder="COP" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value='COP'>COP</SelectItem>
+                            <SelectItem value='USD'>USD</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+                  
                   <InputError message={errors.price} />
                 </div>
+
                 <div>
-                  <InputLabel htmlFor="compare_price" value="Precio comparativo" />
+                  <div className="flex flex-column">
+                    <InputLabel htmlFor="price" value="Precio comparativo"/>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <CircleHelp size={16} className="text-gray-100 ml-2 cursor-pointer"/>
+                        </TooltipTrigger>
+
+                        <TooltipContent>
+                          <p className="text-gray-100">Precio que aparecerá tachado en la tienda</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
                   <Input id="compare_price" type="number" step="0.01" value={data.compare_price} onChange={(e) => setData('compare_price', e.target.value)} />
                   <InputError message={errors.compare_price} />
                 </div>
@@ -374,9 +433,9 @@ export default function ProductForm({ className = '', categories, product, brand
             <DialogTitle className='text-gray-100'>Agregar categoría</DialogTitle>
             <DialogDescription>Considera utilizar nombres de categoría claros y descriptivos para mejorar la organización de tu catálogo.</DialogDescription>
           </DialogHeader>
-          <ScrollArea className="rounded-md border border-6 h-100 overflow-hidden">
-            <CategoryForm categories={categories} openDialog={setOpenDialogCategory}/>
-          </ScrollArea>
+          
+          <CategoryForm categories={categories} openDialog={setOpenDialogCategory}/>
+          
         </DialogContent>
       </Dialog>
 

@@ -31,7 +31,8 @@ class StoreCategoryRequest extends FormRequest
                 File::image()->max(1024)
                     // ->dimensions(Rule::dimensions()->maxWidth(1000)->maxHeight(500)),
             ],
-            'description' => 'nullable|string'
+            'description' => 'nullable|string',
+            'parent_id' => 'integer|exists:categories,id'
         ];
     }
 
@@ -45,6 +46,8 @@ class StoreCategoryRequest extends FormRequest
             'image.image' => 'El archivo debe ser una imagen',
             'image.max' => 'La imagen no debe pesar más de 1MB',
             'description.string' => 'Ingrese una descripción válida',
+            'parent_id.integer' => 'Seleccione una categoría válida',
+            'parent_id.exists' => 'La categoría no existe'
             // 'image.dimensions' => 'La imagen debe tener como máximo 1000px de ancho y 500px de alto',
         ];
     }

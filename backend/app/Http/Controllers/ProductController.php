@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\Brand;
-use App\Models\Tenant\Category;
+use App\Models\Category;
 
 class ProductController extends Controller
 {
@@ -25,9 +25,14 @@ class ProductController extends Controller
      */
     public function create()
     {
+        $categories = Category::with(['parent' => function ($query) {
+            $query->select('id', 'name');
+        }])->select('id', 'name', 'description', 'image', 'parent_id')->get();
+        $brands = Brand::select('id', 'name')->get();
+
         return Inertia::render('Products/Create', [
-            'categories' => Category::select('id', 'name', 'description', 'image')->get(),
-            'brands' => Brand::select('id', 'name')->get(),
+            'categories' => $categories,
+            'brands' => $brands,
         ]);
     }
 

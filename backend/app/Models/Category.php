@@ -10,6 +10,11 @@ class Category extends Model
         'name',
         'slug',
         'description',
-        'image'
+        'image',
+        'parent_id'
     ];
+
+    public function parent(){
+        return $this->belongsTo(Category::class, 'parent_id', 'id');
+    }
 }

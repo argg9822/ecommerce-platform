@@ -21,8 +21,8 @@ export function useCategoryForm(){
     } = useForm({
         name: '',
         description: '',
-        patern_id: '',
-        image: null as File | null
+        image: null as File | null,
+        parent_id: ''
     });
 
     const { flash } = usePage().props as {

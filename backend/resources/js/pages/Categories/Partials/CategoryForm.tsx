@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+import { log } from 'node:console';
 
 interface CategoryFormProps {
     openDialog: (isOpen: boolean) => void,
@@ -39,6 +40,8 @@ export default function CategoryForm({ openDialog, categories }: CategoryFormPro
         });
     }
 
+    const parentsCategories = categories.filter(category => !category.parent);
+
     return (
         <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="grid gap-4 py-4">
@@ -51,32 +54,20 @@ export default function CategoryForm({ openDialog, categories }: CategoryFormPro
                 <div>
                     <InputLabel htmlFor="category_id" value="Categoría padre" />
                     <div className='flex'>
-                        <Select onValueChange={(e) => { setData('patern_id', e) }} defaultValue={data.patern_id}>
-                            <SelectTrigger className='h-[45px]'>
-                                <SelectValue placeholder="Selecciona una categoría" />
+                        <Select onValueChange={(e) => { setData('parent_id', e) }} defaultValue={data.parent_id}>
+                            <SelectTrigger className='h-[30px]'>
+                                <SelectValue placeholder="Seleccionar" />
                             </SelectTrigger>
 
                             <SelectContent>
                                 <SelectItem value='null'>Ninguna</SelectItem>
-                                {categories.map((category) => (
+                                {parentsCategories.map((category) => (
                                     <SelectItem
                                         key={category.id}
                                         value={String(category.id)}>
-                                        <div className='flex flex-row'>{ }
-                                            <div className='flex place-content-center flex-wrap'>
-                                                <div className="w-8 h-8 rounded-sm overflow-hidden mr-3">
-                                                    {category?.image ? (
-                                                        <img
-                                                            src={route('tenant_media_owner', { path: category?.image })}
-                                                            alt={category.name}
-                                                            className="w-full h-full object-cover opacity-75"
-                                                        />
-                                                    ) : (<Layers />)}
-                                                </div>
-                                            </div>
+                                        <div className='flex flex-row'>
                                             <div className='flex flex-col text-left'>
                                                 <span>{category.name}</span>
-                                                <span className='text-sm text-gray-500'>{category?.description}</span>
                                             </div>
                                         </div>
                                     </SelectItem>
@@ -84,7 +75,7 @@ export default function CategoryForm({ openDialog, categories }: CategoryFormPro
                             </SelectContent>
                         </Select>
                     </div>
-                    <InputError message={errors.patern_id} />
+                    <InputError message={errors.parent_id} />
                 </div>
 
                 <div className="flex flex-col">
