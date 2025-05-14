@@ -15,6 +15,9 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from "@/components/ui/input";
 
+//Components Form
+import MainInformationCard from '@/components/Products/Form/MainInformationCard';
+
 //Pages
 import { Category, Product, Brand } from '@/types';
 import CategoryForm from '@/pages/Categories/Partials/CategoryForm';
@@ -22,6 +25,9 @@ import BrandForm from '@/pages/Brands/Partials/BrandForm';
 
 //Hooks
 import useProductForm from '@/hooks/form/useProductForm';
+
+//Context
+import { ProductFormContext } from '@/context/product-form.context';
 
 //UI components
 import {
@@ -73,6 +79,8 @@ type props = {
 }
 
 export default function ProductForm({ className = '', categories, product, brands }: props) {
+  const form = useProductForm();
+
   const {
     storeProduct,
     data,
@@ -96,12 +104,17 @@ export default function ProductForm({ className = '', categories, product, brand
   const productImagesValue = (newImages: File[]) => {
     // setData('product_images', [...data.product_images, ...newImages]);
   }
-
+  
   return (
-    <>
+    <ProductFormContext.Provider value={form} brands>
       <form onSubmit={storeProduct} encType="multipart/form-data">
         <section className={className}>
           {/* Información principal */}
+          <MainInformationCard 
+            name={data.name}
+            setData={setData}
+          />
+
           <Card>
             <CardHeader>
               <CardTitle><h2 className="text-lg text-center">Información del producto</h2></CardTitle>
@@ -410,7 +423,7 @@ export default function ProductForm({ className = '', categories, product, brand
                   <div className="grid gap-1.5 leading-none">
                     <label
                       htmlFor="is_available"
-                      className="text-sm font-medium leading-none text-gray-400"
+                      className="text-sm font-medium text-gray-400 hover:text-gray-200 cursor-pointer"
                     >
                       Disponible
                     </label>
@@ -420,16 +433,16 @@ export default function ProductForm({ className = '', categories, product, brand
                   </div>
                 </div>
 
-                <div className="items-top flex space-x-2">
+                <div className="flex items-center space-x-2">
                   <Checkbox 
                     id="is_feature"
-                    checked={data.is_feature}
+                    checked={Boolean(data.is_feature) || false}
                     onCheckedChange={(checked) => setData('is_feature', !!checked)}
                   />
-                  <div className="grid gap-1.5 leading-none">
+                  <div className="grid leading-none">
                     <label
-                      htmlFor="is_available"
-                      className="text-sm font-medium leading-none text-gray-400"
+                      htmlFor="is_feature"
+                      className="text-sm font-medium text-gray-400 hover:text-gray-200 cursor-pointer"
                     >
                       Destacar en homepage
                     </label>
@@ -482,6 +495,6 @@ export default function ProductForm({ className = '', categories, product, brand
           <BrandForm openDialog={setOpenDialogBrand}/>
         </DialogContent>
       </Dialog>
-    </>
+    </ProductFormContext.Provider>
   );
 }

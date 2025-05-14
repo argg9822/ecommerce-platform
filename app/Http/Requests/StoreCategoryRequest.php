@@ -32,7 +32,7 @@ class StoreCategoryRequest extends FormRequest
                     // ->dimensions(Rule::dimensions()->maxWidth(1000)->maxHeight(500)),
             ],
             'description' => 'nullable|string',
-            'parent_id' => 'integer|exists:categories,id'
+            'parent_id' => 'integer|exists:categories,id|nullable'
         ];
     }
 

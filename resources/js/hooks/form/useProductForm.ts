@@ -23,7 +23,7 @@ export default function useProductForm() {
         stock: 0,
         sku: '',
         barcode: '',
-        is_feature: false,
+        is_feature: true,
         is_available: false,
         brand_id: 0,
         category_id: 0,
