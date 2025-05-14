@@ -14,10 +14,10 @@
 Host: localhost
 Puerto: 5432
 Usuario: postgres
-Contraseña: (la que colocaste en la instalación)
+Contraseña:
 ```
 
-> 💡 Una vez conectado, crear una base de datos con el nombre que necesites (ejemplo: `ecommerce_db`).
+> 💡 Una vez conectado, crear una base de datos con el nombre (ejemplo: `ecommerce_db`).
 
 ---
 
@@ -49,7 +49,7 @@ npm install
 
 ## 3. Configuración del Archivo `.env`
 
-Crear un archivo `.env` en la raíz de tu proyecto y configurar las variables:
+Crear un archivo `.env` en la raíz del proyecto y configurar las variables:
 
 ```dotenv
 APP_NAME=Laravel
@@ -67,7 +67,7 @@ DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_DATABASE=ecommerce_db
 DB_USERNAME=postgres
-DB_PASSWORD=tu_password_aqui
+DB_PASSWORD=***
 
 BROADCAST_DRIVER=log
 CACHE_DRIVER=file
@@ -75,10 +75,6 @@ QUEUE_CONNECTION=sync
 SESSION_DRIVER=file
 SESSION_LIFETIME=120
 ```
-
-> ⚠️ **Nota:** Reemplaza `tu_password_aqui` por la contraseña real de tu base de datos PostgreSQL.
-
----
 
 ## 4. Generar la Clave de la Aplicación
 
@@ -118,9 +114,6 @@ php artisan config:cache
 
 ## 📝 Notas Finales
 
-- Si al ejecutar `php artisan migrate` ves el mensaje `APPLICATION IN PRODUCTION`, es porque `APP_ENV` está en `production`. Cambia el valor a `local` y limpia la configuración nuevamente.
-- En sistemas Windows, recuerda **cerrar y abrir la consola** tras modificar `.env` antes de volver a ejecutar comandos Artisan.
+- Si al ejecutar `php artisan migrate` aparece el mensaje `APPLICATION IN PRODUCTION`, es porque `APP_ENV` está en `production`. Cambiar el valor a `local` y limpiar la configuración nuevamente.
 
 ---
-
-¡Listo! Con esto tu entorno debería estar correctamente configurado.
