@@ -18,26 +18,26 @@ export default function useProductForm() {
     } = useForm<ProductFormData>({
         name: '',
         description: '',
-        price: 0,
-        compare_price: 0,
+        price: null,
+        compare_price: null,
         stock: 0,
         sku: '',
         barcode: '',
-        is_feature: true,
+        is_feature: false,
         is_available: false,
         brand_id: 0,
         category_id: 0,
-        features: '',
+        features: [],
         product_images: [],
         new_images: [],
-        shipment: 0,
+        shipment: null,
         currency: 'COP'
     });
 
     const storeProduct: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('tenantStore'), {
+        post(route('products_store'), {
             preserveScroll: true,
             onSuccess: () => {
                 reset();

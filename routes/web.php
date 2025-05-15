@@ -36,8 +36,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     Route::middleware(TenantSessionMiddleware::class)->group(function () {
         Route::resource('products', ProductController::class)->names([
-            'index' => 'tenantProductsIndex',
-            'create' => 'tenantProductsCreate'
+            'index' => 'products_index',
+            'create' => 'products_create',
+            'store' => 'products_store',
         ]);
 
         Route::resource('categories', CategoryController::class)->names([

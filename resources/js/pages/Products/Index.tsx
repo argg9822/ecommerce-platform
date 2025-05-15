@@ -1,6 +1,6 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout';
-import EmptyProducts from '@/pages/Products/Partials/EmptyProducts';
+import EmptyProducts from '@/pages/Products/components/EmptyProducts';
 import { Product } from '@/types';
 
 type ProductsProps = {

@@ -64,12 +64,11 @@ class CategoryController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return redirect()->back()->with([
-                'flash.error' => [
+            return redirect()->back()->with('flash.error', [
                     'title' => 'No se pudo crear la categoría',
                     'message' => 'Por verifica los datos ingresados e intenta nuevamente'
                 ]
-            ]);
+            );
         }        
     }
 

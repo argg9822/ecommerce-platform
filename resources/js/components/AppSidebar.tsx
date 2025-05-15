@@ -18,7 +18,7 @@ import {
 const items = [
     {title: "Dashboard", url: route("dashboard"), active: route().current("dashboard"), icon: Home, role: ["admin", "superadmin", "owner"]},
     {title: "Tiendas", url: route("tenantIndex"), active: route().current("tenants"), icon: Inbox, role: ["superadmin"]},
-    {title: "Productos", url: route("tenantProductsIndex"), active: route().current("products"), icon: Inbox, role: ["admin", "owner"]},
+    {title: "Productos", url: route("products_index"), active: route().current("products"), icon: Inbox, role: ["admin", "owner"]},
     // {title: "Inbox", url: "#", icon: Inbox},
     // {title: "Calendar", url: "#", icon: Calendar},
     // {title: "Search", url: "#", icon: Search},

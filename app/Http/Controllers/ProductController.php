@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\Brand;
 use App\Models\Category;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -41,7 +42,13 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Log::info($request->all());
+
+        return redirect()->back()->with('flash.success', [
+                'title' => 'Éxito',
+                'message' => 'Producto guardado correctamente'
+            ]
+        );
     }
 
     /**

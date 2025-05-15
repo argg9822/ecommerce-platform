@@ -21,7 +21,7 @@ export default function EmptyProducts(){
                 Comienza a gestionar tu tienda agregando tu primer producto. Aquí podrás visualizar, editar y organizar tus artículos.
             </p>
 
-            <Link href={route('tenantProductsCreate')}>
+            <Link href={route('products_create')}>
                 <PrimaryButton className="mt-6 px-6 py-2 rounded-xl shadow-lg flex items-center gap-2">
                     <PlusCircle size={18} />
                     Agregar nuevo producto

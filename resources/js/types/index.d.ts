@@ -71,19 +71,19 @@ export interface Product {
 export interface ProductForm {
     name: string;
     description: string;
-    price: number;
-    compare_price: number;
+    price: number | null;
+    compare_price: number | null;
     stock: number;
     sku: string;
     barcode: string;
     is_feature: boolean;
     is_available: boolean;
-    brand_id: number;
+    brand_id: number | string;
     category_id: number;
-    features: string;
+    features: {name: string, values: string}[];
     product_images: ProductImage[];
     new_images: File[];
-    shipment: number;
+    shipment: number | null;
     currency: string;
 }
 
