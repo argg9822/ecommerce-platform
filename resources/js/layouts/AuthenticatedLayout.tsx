@@ -9,23 +9,21 @@ export default function Authenticated({
     className = '',
 }: PropsWithChildren<{ header?: ReactNode, className?: string }>) {
     return (
-       
-            <div className={className + "min-h-screen main-container pb-10 pt-10"}>
-                <SidebarProvider>
-                    <AppSidebar />
-                    <main className='w-full'>
-                        <AppTopBar />
+        <div className={className + "min-h-screen main-container pb-10 pt-10"}>
+            <SidebarProvider>
+                <AppSidebar />
+                <main className='w-full'>
+                    <AppTopBar />
 
-                        {header && (
-                            <div className="px-4 sm:px-6">
-                                {header}
-                            </div>
-                        )}
+                    {header && (
+                        <div className="px-4 sm:px-6">
+                            {header}
+                        </div>
+                    )}
 
-                        {children}
-                    </main>
-                </SidebarProvider>
-            </div>
-        
+                    {children}
+                </main>
+            </SidebarProvider>
+        </div>
     );
 }

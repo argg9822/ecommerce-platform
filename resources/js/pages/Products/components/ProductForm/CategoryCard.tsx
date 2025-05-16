@@ -25,6 +25,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group"
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox"
 import InputLabel from '@/components/InputLabel';
@@ -52,7 +56,11 @@ export default function CategoryCard( {setOpenDialogCategory, categories} : Cate
     } = useProductFormContext();
 
     useEffect(() => {
-        setData('features', [{name: '', values: ''}]);
+        setData('features', [
+            {name: 'Color', values: ''},
+            {name: 'Modelo', values: ''},
+            {name: 'Tamaño', values: ''}
+        ]);
     }, []);
 
     const handleFeatureChange = (index: number, field: "name" | "values", value: string) => {
@@ -70,6 +78,14 @@ export default function CategoryCard( {setOpenDialogCategory, categories} : Cate
     const addFeature = () => {
         setData('features', [...data.features, {name: '', values: ''}])
     }
+
+    const colorOptions = [
+        { value: "red", label: "Rojo", color: "text-red-500", selectedColor: "bg-red-700" },
+        { value: "blue", label: "Azul", color: "text-blue-500", selectedColor: "bg-blue-700" },
+        { value: "green", label: "Verde", color: "text-green-500", selectedColor: "bg-green-700" },
+        { value: "yellow", label: "Amarillo", color: "text-yellow-500", selectedColor: "bg-yellow-700" },
+        { value: "purple", label: "Morado", color: "text-purple-500", selectedColor: "bg-purple-700" },
+    ];
 
     return (
         <Card className="col-span-1 md:col-span-2">
@@ -165,6 +181,28 @@ export default function CategoryCard( {setOpenDialogCategory, categories} : Cate
                 <Separator/>
 
                 <div className="flex flex-col gap-4">
+                    <div  className="grid grid-cols-12 gap-3 items-end">
+                        <div className="col-span-6">
+                            <InputLabel htmlFor="feature-color" value="Colores disponibles"/>
+                            <ToggleGroup type="multiple" className="flex flex-row gap-3">
+                                {colorOptions.map(item => (
+                                    <ToggleGroupItem value={item.value} className="data-[state=on]:bg-gray-800 data-[state=on]:shadow-lg
+                                        bg-transparent hover:bg-gray-700/50 text-gray-300
+                                        border-0 rounded-md px-3 py-1 text-sm
+                                        transition-all duration-150
+                                        flex items-center gap-2">
+                                        <span className={item.color}>{item.label}</span>
+                                    </ToggleGroupItem>
+                                ))}
+                            </ToggleGroup>
+                        </div>
+
+                        <div className="col-span-6">
+                            
+                        </div>
+
+                        
+                    </div>
                     {data.features.map((feature, index) => (
                         <div key={index} className="grid grid-cols-12 gap-3 items-end">
                             <div className="col-span-5">
@@ -188,7 +226,7 @@ export default function CategoryCard( {setOpenDialogCategory, categories} : Cate
                             </div>
 
                             <div className="col-span-1">
-                                {data.features.length > 1 && (
+                                {(data.features.length > 1 && index > 3) && (
                                 <Button
                                     type="button"
                                     variant="ghost"
