@@ -17,7 +17,7 @@
                     {
                         "variants": [
                             {
-                                "color": "red",
+                                "color": ["red"],
                                 "size": "Sm",
                                 "weight": "15kg",
                                 "cost_shipping": 100232,

@@ -249,24 +249,6 @@ export default function MainInformationCard({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center space-x-2">
-                        <Checkbox
-                            id="is_feature"
-                            checked={Boolean(data.is_feature) || false}
-                            onCheckedChange={(checked) => setData('is_feature', !!checked)}
-                        />
-                        <div className="grid leading-none">
-                            <label
-                                htmlFor="is_feature"
-                                className="text-sm font-medium text-gray-400 hover:text-gray-200 cursor-pointer"
-                            >
-                                Destacar en homepage
-                            </label>
-                            <p className="text-sm text-gray-600">
-                                Hacer que sea más visible este producto
-                            </p>
-                        </div>
-                    </div>
 
                     <div className="flex items-center space-x-2">
                         <Checkbox

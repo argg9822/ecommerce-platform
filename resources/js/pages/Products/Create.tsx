@@ -28,6 +28,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import PrimaryButton from '@/components/PrimaryButton';
+import StoreFrontCard from './components/ProductForm/StoreFrontCard';
+import SeoDetails from './components/ProductForm/SeoDetails';
 
 type CreateProductProps = {
     categories: Category[],
@@ -67,12 +69,12 @@ export default function Create({ categories, brands }: CreateProductProps) {
                             categories={categories}
                         />
 
-
                         {/* Características adicionales */}
                         <Accordion type="single" collapsible className="w-full accordion-cards">
                             <AccordionItem value="item-1">
                                 <AccordionTrigger className="flex flex-col text-gray-100">
-                                    <h3 className="accordion-cards-title">Características adicionales</h3>
+                                    <h3 className="accordion-cards-title">Variantes (opcional)</h3>
+                                    <p className="text-gray-400">Especificaciones del producto</p>
                                 </AccordionTrigger>
                                 <AccordionContent>
                                     <ProductSpecificationsCard />
@@ -81,10 +83,56 @@ export default function Create({ categories, brands }: CreateProductProps) {
                         </Accordion>
 
                         {/* Precios y stock */}
-                        <PricingCard />
+                         <Accordion type="single" collapsible className="w-full accordion-cards">
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger className="flex flex-col text-gray-100">
+                                    <h3 className="accordion-cards-title">Inventario (opcional)</h3>
+                                    <p className="text-gray-400">Seguimiento del inventario</p>
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    <PricingCard />
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
 
                         {/* Imágenes */}
-                        <ImagesCard />
+                        <Accordion type="single" collapsible className="w-full accordion-cards">
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger className="flex flex-col text-gray-100">
+                                    <h3 className="accordion-cards-title">Imágenes (obligatorio)</h3>
+                                    <p className="text-gray-400">Agrega imágenes de tus productos para llamar la atención de los clientes</p>
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    <ImagesCard />
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+
+                        {/* Detalles del storefront */}
+                        <Accordion type="single" collapsible className="w-full accordion-cards">
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger className="flex flex-col text-gray-100">
+                                    <h3 className="accordion-cards-title">Detalles del storefront (obligatorio)</h3>
+                                    <p className="text-gray-400">Configura lo que los clientes verán en el storefront.</p>
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    <StoreFrontCard />
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+
+                        {/* Detalles del SEO */}
+                        <Accordion type="single" collapsible className="w-full accordion-cards">
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger className="flex flex-col text-gray-100">
+                                    <h3 className="accordion-cards-title">Configuración del SEO</h3>
+                                    <p className="text-gray-400">Aumenta el tráfico de tu negocio en línea</p>
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    <SeoDetails />
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
                     </section>
 
                     <div className="flex items-center justify-center mt-4">

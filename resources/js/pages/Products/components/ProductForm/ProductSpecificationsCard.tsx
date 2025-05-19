@@ -59,15 +59,6 @@ export default function ProductSpecificationsCard() {
 
     return (
         <Card className="col-span-1 md:col-span-2">
-            <CardHeader className="p-0">
-                <CardTitle>
-                    <h2 className="text-lg text-center">
-                        Especificaciones del producto
-                        <span className="text-sm text-gray-400"> (Opcional)</span>
-                    </h2>
-                </CardTitle>
-            </CardHeader>
-
             <Tabs defaultValue="variant-1">
                 <TabsList className={`grid bg-gray-700 rounded-lg ${data.variants.length > 1 ? "grid-cols-12" : "w-full"}`}>
                     {data.variants.map((_: ProductVariants, variant_index:number) => (

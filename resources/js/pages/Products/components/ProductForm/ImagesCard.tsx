@@ -19,10 +19,6 @@ export default function ImagesCard(){
 
     return (
         <Card>
-            <CardHeader>
-                <CardTitle><h2 className="text-lg text-center">Imágenes</h2></CardTitle>
-            </CardHeader>
-
             <CardContent className='space-y-4'>
                 <UploadImages
                     multiple

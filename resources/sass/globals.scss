@@ -71,6 +71,12 @@ main{
 .accordion-cards-title{
     color: #9fb7ff;
     font-size: 1.2rem;
+    transition: all 0.2s ease;
+}
+
+.accordion-cards:hover .accordion-cards-title{
+    color: #9fffcf;
+    font-size: 1.3rem;
 }
 
 .card{

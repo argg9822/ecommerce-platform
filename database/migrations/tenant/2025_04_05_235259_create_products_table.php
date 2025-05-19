@@ -31,19 +31,19 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->decimal('price', 10, 2);
-            $table->decimal('compare_price', 10, 2);
-            $table->string('slug')->unique();
-            $table->text('description')->nullable();
-            $table->boolean('is_available')->default(true);
-            $table->boolean('is_feature')->default(false);
-            $table->decimal('shipment', 10, 2)->default(0);
-            $table->foreignId('brand_id')->constrained()->cascadeOnDelete();
-            $table->timestamps();
-        });
+        // Schema::create('products', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('name');
+        //     $table->decimal('price', 10, 2);
+        //     $table->decimal('compare_price', 10, 2);
+        //     $table->string('slug')->unique();
+        //     $table->text('description')->nullable();
+        //     $table->boolean('is_available')->default(true);
+        //     $table->boolean('is_feature')->default(false);
+        //     $table->decimal('shipment', 10, 2)->default(0);
+        //     $table->foreignId('brand_id')->constrained()->cascadeOnDelete();
+        //     $table->timestamps();
+        // });
     }
 
     /**
