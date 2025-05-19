@@ -27,7 +27,7 @@ export function ColorPicker({ value, onChange, className }: ColorPickerProps) {
         <Button
           variant="outline"
           className={cn(
-            "w-[200px] justify-between pl-3 pr-2",
+            "w-full justify-between pl-3 pr-2",
             "bg-gray-900 hover:bg-gray-800 border-gray-700",
             "text-gray-200 hover:text-white",
             className

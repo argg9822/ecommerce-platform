@@ -20,7 +20,14 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/components/ui/tabs"
+} from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import InputLabel from '@/components/InputLabel';
@@ -48,6 +55,7 @@ export default function ProductSpecificationsCard() {
     } = useProductSpecificationsCard();
 
     const [customColors, setCustomColors] = useState<string>("#3b82f6");
+    const [dimensionsInputs, setDimensionsInputs] = useState<string[]>(["Largo" ,"Ancho", "Alto"]);
 
     return (
         <Card className="col-span-1 md:col-span-2">
@@ -122,53 +130,75 @@ export default function ProductSpecificationsCard() {
 
                             <Separator />
 
-                            <div className="flex flex-col gap-4">
-                                <div className="grid grid-cols-12 gap-3 items-end">
-                                    <div className="col-span-9">
-                                        <InputLabel htmlFor="feature-color" value="Colores disponibles" />
-                                        <ToggleGroup type="multiple" size="sm" className="flex flex-row gap-3 py-0">
-                                            {colorOptions.map(item => (
-                                                <ToggleGroupItem key={item.value} value={item.value} className="data-[state=on]:bg-gray-800 data-[state=on]:shadow-lg
+                            <div className="grid grid-cols-12 gap-5 items-end">
+                                <div className="col-span-9">
+                                    <InputLabel htmlFor="feature-color" value="Colores disponibles" />
+                                    <ToggleGroup type="multiple" size="sm" className="flex flex-row gap-3 py-0">
+                                        {colorOptions.map(item => (
+                                            <ToggleGroupItem key={item.value} value={item.value} className="data-[state=on]:bg-gray-800 data-[state=on]:shadow-lg
                                                 bg-transparent hover:bg-gray-700/50 
                                                 border-0 rounded-md px-3 py-1 text-sm
                                                 transition-all duration-150
-                                                flex items-center gap-2">
-                                                    <span className={item.color}>{item.label}</span>
-                                                </ToggleGroupItem>
-                                            ))}
-                                        </ToggleGroup>
-                                    </div>
+                                                flex items-center gap-2"
+                                            >
+                                                <span className={item.color}>{item.label}</span>
+                                            </ToggleGroupItem>
+                                        ))}
+                                    </ToggleGroup>
+                                </div>
 
-                                    <div className="col-span-3">
-                                        <ColorPicker
-                                            value={customColors}
-                                            onChange={setCustomColors}
-                                        />
-                                    </div>
+                                <div className="col-span-3">
+                                    <ColorPicker
+                                        value={customColors}
+                                        onChange={setCustomColors}
+                                    />
+                                </div>
 
-                                    <div className="col-span-6">
-                                        <InputLabel htmlFor="weight" value="Peso" />
-                                        <Input
-                                            type='number'
-                                            id="weight"
-                                            placeholder="En KG"
-                                            value={variant.weight || ""}
-                                            onChange={(e) => handleVariantChange(variant_index, "weight", e.target.value)}
-                                        />
-                                    </div>
+                                <div className="col-span-5">
+                                    <InputLabel htmlFor="weight" value="Peso" />
+                                    <Input
+                                        type='number'
+                                        id="weight"
+                                        placeholder="En KG"
+                                        value={variant.weight || ""}
+                                        onChange={(e) => handleVariantChange(variant_index, "weight", e.target.value)}
+                                    />
+                                </div>
 
-                                    <div className="col-span-6">
-                                        <InputLabel htmlFor="weight" value="Dimensiones" />
-                                        <Input
-                                            id="Dimensions"
-                                            placeholder="Ej 12x34x56 cm"
-                                            value={variant.dimensions || ""}
-                                            onChange={(e) => handleVariantChange(variant_index, "dimensions", e.target.value)}
-                                        />
+                                <div className="col-span-7">
+                                    <InputLabel htmlFor="weight" value="Dimensiones" />
+
+                                    <div className="flex flex-row outline-1 outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
+                                        {dimensionsInputs.map((input, index) => (
+                                            <div key={index} className="flex items-center relative">
+                                                <span className="absolute left-3 z-10 shrink-0 text-base text-gray-400 select-none sm:text-sm/6">{input}</span>
+                                                <Input
+                                                    id={input}
+                                                    type="number"
+                                                    placeholder='0'
+                                                    className="pl-[60px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                    step="0.01"
+                                                    value={data.price}
+                                                    onChange={(e) => handleVariantChange(variant_index, "dimensions", e.target.value)}
+                                                />
+                                                <div className="absolute right-0 top-0 h-full flex items-center">
+                                                    <Select onValueChange={(e) => { setData('currency', e) }} defaultValue={data.currency}>
+                                                        <SelectTrigger className='h-[30px] w-[80px] text-base text-gray-400 placeholder:text-gray-400 border-0 bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0'>
+                                                            <SelectValue placeholder="COP" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value='COP'>cm</SelectItem>
+                                                            <SelectItem value='USD'>m</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                            </div>
+                                            )
+                                        )}
                                     </div>
                                 </div>
                             </div>
-
+                            
                             <Separator />
 
                             <div className='flex flex-col gap-4'>
@@ -178,7 +208,7 @@ export default function ProductSpecificationsCard() {
                                             <InputLabel htmlFor={`feature-name-${index}`} value="Característica" />
                                             <Input
                                                 id={`feature-name-${index}`}
-                                                placeholder="Ej: Material, Color, Tamaño"
+                                                placeholder="Ej: Material, Color, Talla"
                                                 value={feature.name}
                                                 onChange={(e) => handleFeatureChange(index, "name", e.target.value)}
                                             />
