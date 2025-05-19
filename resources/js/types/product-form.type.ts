@@ -1,6 +1,27 @@
 import useProductForm from '@/hooks/form/useProductForm';
+import { ProductImage } from '@/types/product';
 
 export type ProductFormContextType = ReturnType<typeof useProductForm>;
+
+export interface ProductForm {
+    name: string;
+    description: string;
+    price: number | undefined;
+    compare_price: number | undefined;
+    stock: number;
+    sku: string;
+    barcode: string;
+    is_feature: boolean;
+    is_available_product: boolean;
+    is_available_variant: boolean;
+    brand_id: number | string;
+    category_id: number;
+    features: {name: string, values: string}[];
+    product_images: ProductImage[];
+    new_images: File[];
+    shipment: number | undefined;
+    currency: string;
+}
 
 // export type ProductFormContextType = {
 //     storeProduct: ReturnType<typeof useProductForm>['storeProduct'],

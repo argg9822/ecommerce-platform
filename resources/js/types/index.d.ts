@@ -50,51 +50,6 @@ export interface Tenant {
     }
 }
 
-export interface Product {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    compare_price: number;
-    stock: number;
-    sku: number;
-    barcode: string;
-    is_feature: boolean;
-    is_available: boolean;
-    brand: string;
-    product_images: ProductImage[],
-    category_id: number;
-    created_at: string;
-    updated_at: string;
-}
-
-export interface ProductForm {
-    name: string;
-    description: string;
-    price: number | null;
-    compare_price: number | null;
-    stock: number;
-    sku: string;
-    barcode: string;
-    is_feature: boolean;
-    is_available: boolean;
-    brand_id: number | string;
-    category_id: number;
-    features: {name: string, values: string}[];
-    product_images: ProductImage[];
-    new_images: File[];
-    shipment: number | null;
-    currency: string;
-}
-
-export interface ProductImage {
-    id: number,
-    url: string,
-    product_id: number,
-    created_at: string;
-    updated_at: string;
-}
-
 interface FlashMessage  {
     title?: string;
     message?: string;

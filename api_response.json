@@ -1,0 +1,156 @@
+[
+    {
+        "products": [
+            {
+                "id": 2,
+                "name": "Nepe",
+                "price": 10000,
+                "compare_price": 10000,
+                "slug": "nepe-1000",
+                "description": "aadadasdasdasdasd",
+                "brand": "Algo",
+                "stock": 6,
+                "shipment": 10000,
+                "is_available": true,
+                "is_feature": true,
+                "features": [
+                    {
+                        "variants": [
+                            {
+                                "color": "red",
+                                "size": "Sm",
+                                "weight": "15kg",
+                                "cost_shipping": 100232,
+                                "dimensions": "4x112",
+                                "price": 120000,
+                                "compare_price": 150000,
+                                "stock": 12,
+                                "images": []
+                            },
+                            {
+                                "color": "blue",
+                                "price": 31321,
+                                "compare_price": 150000,
+                                "stock": 21,
+                                "images": []
+                            },
+                            {
+                                "size": "XXL",
+                                "price": 31321,
+                                "compare_price": 150000,
+                                "stock": 21,
+                                "images": []
+                            },
+                            {
+                                "size": "XXL",
+                                "price": 31321,
+                                "compare_price": 150000,
+                                "stock": 21,
+                                "images": []
+                            }
+                        ]
+                    }
+                ],
+                "img": [
+                    "#",
+                    "#"
+                ],
+                "categories": [
+                    {
+                        "id": 2,
+                        "name": "consoladores"
+                    },
+                    {
+                        "id": 5,
+                        "name": "lubricantes"
+                    }
+                ],
+                "subcategories": [
+                    {
+                        "id": 985,
+                        "name": "Nepe pequeño"
+                    },
+                    {
+                        "id": 85,
+                        "name": "Aja"
+                    }
+                ],
+                "qualification": {
+                    "count_users": {
+                        "5": 20,
+                        "4": 10,
+                        "3": 5,
+                        "2": 1,
+                        "1": 25
+                    },
+                    "comments": [
+                        {
+                            "text": "Muy bueno",
+                            "date": "14/04/2025"
+                        }
+                    ] //Ordenado mas reciente al mas antiguo
+                },
+                "questions": [
+                    {
+                        "user_id": 5,
+                        "question": "Por que tan caro",
+                        "answer": "Algo",
+                        "is_approved": false,
+                        "created_at": "14/04/2025"
+                    },
+                    {
+                        "user_id": 4,
+                        "question": "Por que tan barato",
+                        "answer": "Por que si",
+                        "is_approved": true,
+                        "created_at": "14/04/2025"
+                    }
+                ],
+                "seo": {
+                    "meta_title": "Nepe - Tienda de Juguetes",
+                    "meta_description": "Descripción para motores de búsqueda",
+                    "keywords": [
+                        "nepe",
+                        "juguete adulto"
+                    ]
+                },
+                "created_at": "14/04/2025"
+            }
+        ],
+        "categories": [
+            {
+                "id": 4,
+                "name": "pepito",
+                "subcategory_id": [
+                    {
+                        "id": 45,
+                        "name": "mierda"
+                    }
+                ],
+                "img": "##",
+                "slug": "toysnow/sujetadores"
+            }
+        ],
+        "features_products": {
+            "products_id": [
+                1,
+                2,
+                55,
+                5
+            ]
+        },
+        "last_views": {
+            "products_id": [
+                1,
+                2,
+                55,
+                5
+            ]
+        },
+        "favorite_products": [
+            21,
+            65,
+            98
+        ]
+    }
+]

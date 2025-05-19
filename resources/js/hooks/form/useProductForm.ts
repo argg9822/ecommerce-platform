@@ -1,6 +1,6 @@
 import { useForm } from '@inertiajs/react';
 import { ChangeEvent, FormEventHandler, useRef } from 'react';
-import { ProductForm } from '@/types/index';
+import { ProductForm } from '@/types/product-form.type';
 
 type ProductFormData = ProductForm & Record<string, any>;
 
@@ -18,19 +18,21 @@ export default function useProductForm() {
     } = useForm<ProductFormData>({
         name: '',
         description: '',
-        price: null,
-        compare_price: null,
+        price: undefined,
+        compare_price: undefined,
         stock: 0,
         sku: '',
         barcode: '',
         is_feature: false,
-        is_available: false,
-        brand_id: 0,
+        is_available_product: true,
+        is_available_variant: true,
+        brand_id: 'Propia',
         category_id: 0,
+        variants: [],
         features: [],
         product_images: [],
         new_images: [],
-        shipment: null,
+        shipment: undefined,
         currency: 'COP'
     });
 

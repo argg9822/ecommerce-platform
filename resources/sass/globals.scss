@@ -63,6 +63,16 @@ main{
     }
 }
 
+.accordion-cards{
+    background: a.$bg-cards;
+    border: none;
+}
+
+.accordion-cards-title{
+    color: #9fb7ff;
+    font-size: 1.2rem;
+}
+
 .card{
     background: a.$bg-cards;
     border: none;
@@ -70,7 +80,7 @@ main{
 }
 
 .card h2{
-    color: #9fb7ff;
+    color: #878787;
 }
 
 [type='text'], 

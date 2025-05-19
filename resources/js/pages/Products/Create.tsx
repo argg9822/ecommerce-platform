@@ -1,28 +1,16 @@
-import { Head } from "@inertiajs/react";
-import { Brand, Category, Product } from "@/types";
-import Authenticated from "@/layouts/AuthenticatedLayout";
-
-//Libraries
 import { useState } from 'react';
-
-//Components
-import PrimaryButton from '@/components/PrimaryButton';
-
-//Components Form
+import { Head } from "@inertiajs/react";
+import { Brand, Category } from "@/types";
+import Authenticated from "@/layouts/AuthenticatedLayout";
 import { 
     MainInformationCard, 
-    CategoryCard, 
+    ProductSpecificationsCard, 
     PricingCard,
     ImagesCard
 } from '@/pages/Products/components/ProductForm';
 import BrandForm from '@/pages/Brands/Partials/BrandForm';
-
 import CategoryForm from '@/pages/Categories/Partials/CategoryForm';
-
-//Hooks
 import useProductForm from '@/hooks/form/useProductForm';
-
-//Context
 import { ProductFormContext } from '@/context/product-form.context';
 
 //UI components
@@ -33,6 +21,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import PrimaryButton from '@/components/PrimaryButton';
 
 type CreateProductProps = {
     categories: Category[],
@@ -68,19 +63,28 @@ export default function Create({ categories, brands }: CreateProductProps) {
                         <MainInformationCard
                             brands={brands}
                             setOpenDialogBrand={setOpenDialogBrand}
+                            setOpenDialogCategory={setOpenDialogCategory}
+                            categories={categories}
                         />
 
-                        {/* Imágenes */}
-                        <ImagesCard />
+
+                        {/* Características adicionales */}
+                        <Accordion type="single" collapsible className="w-full accordion-cards">
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger className="flex flex-col text-gray-100">
+                                    <h3 className="accordion-cards-title">Características adicionales</h3>
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    <ProductSpecificationsCard />
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
 
                         {/* Precios y stock */}
                         <PricingCard />
 
-                        {/* Características adicionales */}
-                        <CategoryCard
-                            setOpenDialogCategory={setOpenDialogCategory}
-                            categories={categories}
-                        />
+                        {/* Imágenes */}
+                        <ImagesCard />
                     </section>
 
                     <div className="flex items-center justify-center mt-4">

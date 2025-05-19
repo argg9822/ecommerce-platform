@@ -11,18 +11,40 @@ const toggleVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-transparent",
-        outline:
-          "border border-input bg-transparent shadow-sm hover:bg-accent hover:text-accent-foreground",
+        default: `
+          bg-gray-800 hover:bg-gray-700 text-gray-200
+          data-[state=on]:bg-gray-700 data-[state=on]:text-white
+          data-[state=on]:shadow-inner data-[state=on]:ring-1
+          data-[state=on]:ring-gray-500/30
+          border border-gray-700
+        `,
+        elegant: `
+          bg-gray-900 hover:bg-gray-800 text-gray-300
+          data-[state=on]:bg-gradient-to-br data-[state=on]:from-gray-800 data-[state=on]:to-gray-900
+          data-[state=on]:text-white data-[state=on]:shadow-lg
+          data-[state=on]:border-gray-600 data-[state=on]:ring-1
+          data-[state=on]:ring-gray-400/20
+          border border-gray-800
+        `,
+        glow: `
+          bg-gray-900 text-gray-400 hover:text-gray-300
+          data-[state=on]:text-white data-[state=on]:bg-gray-800
+          data-[state=on]:shadow-glow data-[state=on]:shadow-blue-500/20
+          border border-gray-800
+          relative overflow-hidden
+          data-[state=on]:before:absolute data-[state=on]:before:inset-0
+          data-[state=on]:before:bg-blue-500/10 data-[state=on]:before:animate-[pulse_3s_infinite]
+        `
       },
       size: {
-        default: "h-9 px-2 min-w-9",
-        sm: "h-8 px-1.5 min-w-8",
-        lg: "h-10 px-2.5 min-w-10",
+        default: "h-9 px-3",
+        sm: "h-8 px-2 text-xs",
+        lg: "h-10 px-4",
+        icon: "h-9 w-9"
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "elegant",
       size: "default",
     },
   }
