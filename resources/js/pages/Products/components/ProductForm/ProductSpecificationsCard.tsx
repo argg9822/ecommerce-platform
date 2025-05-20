@@ -7,9 +7,7 @@ import {
 } from "@/components/ui/tooltip"
 import {
     Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
+    CardContent
 } from "@/components/ui/card";
 import {
     ToggleGroup,
@@ -21,25 +19,19 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
-import InputLabel from '@/components/InputLabel';
 import { Trash2, PlusCircle, CircleHelp } from 'lucide-react';
-import InputError from '@/components/InputError';
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { ColorPicker } from '@/components/ui/color-picker';
-import useProductSpecificationsCard from '@/hooks/form/useProductSpecificationsCard';
 import { ProductVariants } from '@/types/product';
+import { ProductDimensions } from '@/types/product';
+import InputLabel from '@/components/InputLabel';
+import InputError from '@/components/InputError';
+import useProductSpecificationsCard from '@/hooks/form/useProductSpecificationsCard';
 import DangerButton from '@/components/DangerButton';
-
+import InputWithAddons from '@/components/ui/input-with-addons';
 
 export default function ProductSpecificationsCard() {
     const {
@@ -50,12 +42,15 @@ export default function ProductSpecificationsCard() {
         removeVariant,
         colorOptions,
         errors,
-        data,
-        setData
+        data
     } = useProductSpecificationsCard();
 
     const [customColors, setCustomColors] = useState<string>("#3b82f6");
-    const [dimensionsInputs, setDimensionsInputs] = useState<string[]>(["Largo" ,"Ancho", "Alto"]);
+    const dimensionsInputs = [
+        {label: "Largo", value: "length"},
+        {label: "Ancho", value: "width"},
+        {label: "Alto", value: "height"}
+    ];
 
     return (
         <Card className="col-span-1 md:col-span-2">
@@ -160,30 +155,18 @@ export default function ProductSpecificationsCard() {
                                     <InputLabel htmlFor="weight" value="Dimensiones" />
 
                                     <div className="flex flex-row outline-1 outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
-                                        {dimensionsInputs.map((input, index) => (
-                                            <div key={index} className="flex items-center relative">
-                                                <span className="absolute left-3 z-10 shrink-0 text-base text-gray-400 select-none sm:text-sm/6">{input}</span>
-                                                <Input
-                                                    id={input}
-                                                    type="number"
-                                                    placeholder='0'
-                                                    className="pl-[60px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                                    step="0.01"
-                                                    value={data.price}
-                                                    onChange={(e) => handleVariantChange(variant_index, "dimensions", e.target.value)}
-                                                />
-                                                <div className="absolute right-0 top-0 h-full flex items-center">
-                                                    <Select onValueChange={(e) => { setData('currency', e) }} defaultValue={data.currency}>
-                                                        <SelectTrigger className='h-[30px] w-[80px] text-base text-gray-400 placeholder:text-gray-400 border-0 bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0'>
-                                                            <SelectValue placeholder="COP" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value='COP'>cm</SelectItem>
-                                                            <SelectItem value='USD'>m</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-                                            </div>
+                                        {dimensionsInputs.map((dimension, index) => (
+                                            <InputWithAddons
+                                                key={index}
+                                                value={data.variants[variant_index]?.dimensions[dimension.value as keyof ProductDimensions] || ""}
+                                                placeholder="0"
+                                                className="pl-[60px]"
+                                                onChange={(e) => handleVariantChange(variant_index, dimension.value, String(e))}
+                                                inputId={`${dimension.value}-${variant_index + 1}`}
+                                                prefix={dimension.label}
+                                                suffixes={["cm", "m"]}
+                                                onChangeSuffix={(key, value) => handleVariantChange(variant_index, "unitOfMeasurement" , value)}
+                                            />
                                             )
                                         )}
                                     </div>
@@ -193,7 +176,7 @@ export default function ProductSpecificationsCard() {
                             <Separator />
 
                             <div className='flex flex-col gap-4'>
-                                {data.features.map((feature, index) => (
+                                {variant.attributes.map((feature, index) => (
                                     <div key={index} className="grid grid-cols-12 gap-3 items-end">
                                         <div className="col-span-5">
                                             <InputLabel htmlFor={`feature-name-${index}`} value="Característica" />
@@ -210,18 +193,18 @@ export default function ProductSpecificationsCard() {
                                             <Input
                                                 id={`feature-values-${index}`}
                                                 placeholder="Separados por coma. Ej: Viscoelástico, Queen, Blanco"
-                                                value={feature.values}
+                                                value={feature.value}
                                                 onChange={(e) => handleFeatureChange(index, "values", e.target.value)}
                                             />
                                         </div>
 
                                         <div className="col-span-1">
-                                            {(data.features.length > 1) && (
+                                            {(variant.attributes.length > 1) && (
                                                 <Button
                                                     type="button"
                                                     variant="ghost"
                                                     size="sm"
-                                                    onClick={() => removeFeature(index)}
+                                                    onClick={() => removeFeature(index, variant_index)}
                                                     className="text-red-500 hover:text-red-600"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
@@ -233,7 +216,7 @@ export default function ProductSpecificationsCard() {
 
                                 <Button
                                     type="button"
-                                    onClick={addFeature}
+                                    onClick={(e) => addFeature(variant_index)}
                                     className="mt-2 gap-2 bg-gray-900 hover:bg-gray-800 text-gray-50 transition-all duration-300 shadow-lg hover:shadow-gray-900/30 rounded-lg border border-gray-700 hover:border-gray-600 group"
                                 >
                                     <PlusCircle className="h-4 w-4 text-gray-300 group-hover:text-white" />
@@ -241,7 +224,7 @@ export default function ProductSpecificationsCard() {
                                         Agregar otra característica
                                     </span>
                                 </Button>
-                                <InputError message={errors.features} />
+                                <InputError message={errors.variants} />
 
                             </div>
                         </CardContent>

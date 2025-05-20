@@ -1,6 +1,6 @@
 import { useProductFormContext } from "@/context/product-form.context";
 import { useEffect } from "react";
-import { ProductVariants } from '@/types/product';
+import { ProductVariants, ProductDimensions, VariantAttributes } from '@/types/product';
 
 export default function useProductSpecificationsCard(){
     const {
@@ -11,19 +11,20 @@ export default function useProductSpecificationsCard(){
     } = useProductFormContext();
 
     useEffect(() => {
-        setData('features', [
-            {name: '', values: ''}
-        ]);
-
         setData('variants', [
             {
                 price: undefined,
                 compare_prince: undefined,
                 stock: 0,
                 cost_shipping: undefined,
-                dimensions: '',
+                dimensions: {
+                    length: 0,
+                    width: 0,
+                    height: 0,
+                    unitOfMeasurement: 'cm'
+                },
                 colors: [],
-                variant_attributes: [{name: '', values: ''}],
+                attributes: [{name: '', value: ''}],
                 weight: undefined,
                 is_available: true,
             },
@@ -32,29 +33,46 @@ export default function useProductSpecificationsCard(){
                 compare_prince: undefined,
                 stock: 0,
                 cost_shipping: undefined,
-                dimensions: '',
+                dimensions: {
+                    length: 0,
+                    width: 0,
+                    height: 0,
+                    unitOfMeasurement: 'cm'
+                },
                 colors: [],
-                variant_attributes: [{name: '', values: ''}],
+                attributes: [{name: '', value: ''}],
                 weight: undefined,
                 is_available: true,
-            }
+            },
         ])
     }, []);
 
     const handleFeatureChange = (index: number, field: "name" | "values", value: string) => {
         const updatedFeatures = [...data.features];
         updatedFeatures[index][field] = value;
-        setData('features', updatedFeatures);
+        setData('variants', updatedFeatures);
     }
 
-    const removeFeature = (index: number) => {
-        if(data.features.length === 1) return;
-        const newFeatures = data.features.filter((_, idx) => index !== idx);
-        setData('features', newFeatures);
-    }
-    
-    const addFeature = () => {
-        setData('features', [...data.features, {name: '', values: ''}])
+    const removeFeature = (index: number, variantIndex: number) => {
+        const updatedVariants: ProductVariants[] = [...data.variants];
+        const currentAttributes = updatedVariants[variantIndex].attributes;
+
+        if (currentAttributes.length === 1) return;
+
+        updatedVariants[variantIndex] = {
+            ...updatedVariants[variantIndex],
+            attributes: currentAttributes.filter((_, idx) => idx !== index),
+        };
+
+        setData('variants', updatedVariants);
+    };
+
+    const addFeature = (variantIndex: number) => {
+        const newAttributesVariants = [...data.variants];
+        const newAttributes = [...newAttributesVariants[variantIndex].attributes];
+        newAttributes.push({name: '', value: ''});
+        newAttributesVariants[variantIndex].attributes = newAttributes;
+        setData('variants', newAttributesVariants);
     }
 
     const colorOptions = [
@@ -68,7 +86,20 @@ export default function useProductSpecificationsCard(){
 
     const handleVariantChange = (index: number, field: string, value: string | boolean) => {
         const updatedVariants = [...data.variants];
-        updatedVariants[index][field] = value;
+        const dimensionsAttributes = ['length', 'width', 'height', 'unitOfMeasurement'];
+
+        if (dimensionsAttributes.includes(field)) {
+            const dimensions: ProductDimensions = { ...updatedVariants[index].dimensions };
+            if (field === 'unitOfMeasurement') {
+                dimensions.unitOfMeasurement = value as ProductDimensions['unitOfMeasurement'];
+            } else {
+                (dimensions as any)[field] = parseFloat(value as string);
+            }
+            updatedVariants[index].dimensions = dimensions;
+        }else{
+            (updatedVariants[index] as any)[field] = value;
+        }
+        
         setData('variants', updatedVariants);
     }
 

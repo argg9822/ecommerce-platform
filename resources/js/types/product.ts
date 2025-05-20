@@ -6,20 +6,27 @@ export interface ProductImage {
     updated_at: string;
 }
 
+export interface ProductDimensions {
+    length: number;
+    width: number;
+    height: number;
+    unitOfMeasurement: string;
+}
+
 export interface VariantAttributes {
     name: string;
     value: string;
 }
 
 export interface ProductVariants {
-    price: number;
-    compare_prince: number;
-    stock: number;
+    price: number | undefined;
+    compare_prince: number | undefined;
+    stock: number | undefined;
     colors: string[];
-    cost_shipping: number;
-    dimensions: string;
-    variant_attributes: VariantAttributes[];
-    weight: number;
+    cost_shipping: number | undefined;
+    dimensions: ProductDimensions;
+    attributes: VariantAttributes[];
+    weight: number | undefined;
     is_available: boolean;
 }
 

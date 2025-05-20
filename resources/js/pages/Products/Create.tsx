@@ -5,7 +5,7 @@ import Authenticated from "@/layouts/AuthenticatedLayout";
 import { 
     MainInformationCard, 
     ProductSpecificationsCard, 
-    PricingCard,
+    InventoryCard,
     ImagesCard
 } from '@/pages/Products/components/ProductForm';
 import BrandForm from '@/pages/Brands/Partials/BrandForm';
@@ -90,7 +90,7 @@ export default function Create({ categories, brands }: CreateProductProps) {
                                     <p className="text-gray-400">Seguimiento del inventario</p>
                                 </AccordionTrigger>
                                 <AccordionContent>
-                                    <PricingCard />
+                                    <InventoryCard />
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>

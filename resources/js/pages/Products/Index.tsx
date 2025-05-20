@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react';
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout';
 import EmptyProducts from '@/pages/Products/components/EmptyProducts';
-import { Product } from '@/types';
+import { Product } from '@/types/product';
 
 type ProductsProps = {
   products: Product[]

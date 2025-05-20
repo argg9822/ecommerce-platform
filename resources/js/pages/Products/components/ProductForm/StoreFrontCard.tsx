@@ -68,22 +68,25 @@ export default function StoreFrontCard() {
                     </div>
 
                     <div className="flex flex-col col-span-12 md:col-span-6">
-                        <div className="flex flex-row">
-                            <InputLabel htmlFor="key_words" value="Palabras clave para búsqueda" />
-                            <TooltipProvider>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <CircleHelp size={16} className="text-gray-100 ml-2 cursor-pointer" />
-                                    </TooltipTrigger>
+                        <div className="flex justify-between">
+                            <div className="flex flex-row">
+                                <InputLabel htmlFor="key_words" value="Palabras clave para búsqueda" />
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <CircleHelp size={16} className="text-gray-100 ml-2 cursor-pointer" />
+                                        </TooltipTrigger>
 
-                                    <TooltipContent>
-                                        <p className="text-gray-100">Coloca aquí las palabras clave de este producto para que tus clientes puedan encontrarlo fácilmente</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
+                                        <TooltipContent>
+                                            <p className="text-gray-100">Coloca aquí las palabras clave de este producto para que tus clientes puedan encontrarlo fácilmente</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            </div>
+                            <span className="text-gray-500 ml-2">(Opcional)</span>
                         </div>
-                        <span>(Opcional)</span>
-                        <Input 
+
+                        <Input
                             id="key_words"
                             type="text" 
                             value={data.key_words}

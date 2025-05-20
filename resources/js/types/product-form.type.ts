@@ -1,5 +1,5 @@
 import useProductForm from '@/hooks/form/useProductForm';
-import { ProductImage } from '@/types/product';
+import { ProductImage, ProductVariants } from '@/types/product';
 
 export type ProductFormContextType = ReturnType<typeof useProductForm>;
 
@@ -15,6 +15,7 @@ export interface ProductForm {
     barcode: string;
     is_feature: boolean;
     is_available_product: boolean;
+    variants: ProductVariants[];
     is_available_variant: boolean;
     show_condition: boolean;
     key_words: string;
@@ -23,7 +24,6 @@ export interface ProductForm {
     relevance: number;
     brand_id: number | string;
     category_id: number;
-    features: {name: string, values: string}[];
     product_images: ProductImage[];
     new_images: File[];
     shipment: number | undefined;

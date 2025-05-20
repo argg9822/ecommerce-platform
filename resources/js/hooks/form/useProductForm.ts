@@ -36,7 +36,6 @@ export default function useProductForm() {
         brand_id: 'Propia',
         category_id: 0,
         variants: [],
-        features: [],
         product_images: [],
         new_images: [],
         shipment: undefined,
@@ -81,6 +80,14 @@ export default function useProductForm() {
         setData(key, isNaN(parsed) ? 0 : parsed);
     }
 
+    const handleProfit = (e: React.ChangeEvent<HTMLInputElement>, field: "price" | "cost") => {
+        handleNumberChangeInput(e, field);
+        const cost_product = field === 'cost' ? parseFloat(e.target.value) : data.cost;
+        const price = field === 'price' ? parseFloat(e.target.value) : data?.price;
+        const profit = (price ?? 0) - (cost_product ?? 0);
+        setData('profit', profit);
+    }
+
     return {
         storeProduct,
         data,
@@ -90,5 +97,6 @@ export default function useProductForm() {
         errors,
         processing,
         recentlySuccessful,
+        handleProfit
     }
 }
