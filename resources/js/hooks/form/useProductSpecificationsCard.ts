@@ -1,6 +1,13 @@
 import { useProductFormContext } from "@/context/product-form.context";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ProductVariants, ProductDimensions, VariantAttributes } from '@/types/product';
+
+type ColorOptionsType ={
+    value: string;
+    label?: string;
+    color?: string;
+    selectedColor?: string;
+}
 
 export default function useProductSpecificationsCard(){
     const {
@@ -75,16 +82,16 @@ export default function useProductSpecificationsCard(){
         setData('variants', newAttributesVariants);
     }
 
-    const colorOptions = [
+    const [colorOptions, setColorOptions] = useState<ColorOptionsType[]>([
         { value: "red", label: "Rojo", color: "text-red-600", selectedColor: "bg-red-700" },
         { value: "blue", label: "Azul", color: "text-blue-500", selectedColor: "bg-blue-700" },
         { value: "green", label: "Verde", color: "text-green-600", selectedColor: "bg-green-700" },
         { value: "yellow", label: "Amarillo", color: "text-yellow-400", selectedColor: "bg-yellow-700" },
         { value: "purple", label: "Morado", color: "text-purple-400", selectedColor: "bg-purple-700" },
-        { value: "pink", label: "Rosado", color: "text-pink-400", selectedColor: "bg-pink-700" },
-    ];
+        { value: "pink", label: "Rosado", color: "text-pink-400", selectedColor: "bg-pink-700" }
+    ]);
 
-    const handleVariantChange = (index: number, field: string, value: string | boolean) => {
+    const handleVariantChange = (index: number, field: string, value: string | boolean | string[]) => {
         const updatedVariants = [...data.variants];
         const dimensionsAttributes = ['length', 'width', 'height', 'unitOfMeasurement'];
 
@@ -116,6 +123,7 @@ export default function useProductSpecificationsCard(){
         handleVariantChange,
         removeVariant,
         colorOptions,
+        setColorOptions,
         errors,
         data,
         setData

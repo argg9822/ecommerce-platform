@@ -4,7 +4,7 @@ import { Brand, Category } from "@/types";
 import Authenticated from "@/layouts/AuthenticatedLayout";
 import { 
     MainInformationCard, 
-    ProductSpecificationsCard, 
+    ProductVariantsCard, 
     InventoryCard,
     ImagesCard
 } from '@/pages/Products/components/ProductForm';
@@ -77,7 +77,7 @@ export default function Create({ categories, brands }: CreateProductProps) {
                                     <p className="text-gray-400">Especificaciones del producto</p>
                                 </AccordionTrigger>
                                 <AccordionContent>
-                                    <ProductSpecificationsCard />
+                                    <ProductVariantsCard />
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>

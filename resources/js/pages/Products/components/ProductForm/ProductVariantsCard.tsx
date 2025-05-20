@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Trash2, PlusCircle, CircleHelp } from 'lucide-react';
+import { Trash2, PlusCircle, CircleHelp, PlusIcon } from 'lucide-react';
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { ColorPicker } from '@/components/ui/color-picker';
@@ -32,8 +32,9 @@ import InputError from '@/components/InputError';
 import useProductSpecificationsCard from '@/hooks/form/useProductSpecificationsCard';
 import DangerButton from '@/components/DangerButton';
 import InputWithAddons from '@/components/ui/input-with-addons';
+import { set } from 'react-hook-form';
 
-export default function ProductSpecificationsCard() {
+export default function ProductVariantsCard() {
     const {
         handleFeatureChange,
         addFeature,
@@ -41,11 +42,31 @@ export default function ProductSpecificationsCard() {
         handleVariantChange,
         removeVariant,
         colorOptions,
+        setColorOptions,
         errors,
         data
     } = useProductSpecificationsCard();
+    
+    const handleColorsChange = (variantIndex: number, index: number, color: string) => {
+        const newColorOptions = [...colorOptions];
+        newColorOptions[index].value = color;
+        setColorOptions(newColorOptions);
 
-    const [customColors, setCustomColors] = useState<string>("#3b82f6");
+        const newVariants = [...data.variants];
+        const newColors = [...newVariants[variantIndex].colors, color];
+        handleVariantChange(variantIndex, "colors", newColors);   
+    }
+
+    const addCustomColor = (variantIndex: number) => {
+        const newColor = "#FFFFFF";
+        const newColorOptions = [...colorOptions, {value: newColor}];
+        setColorOptions(newColorOptions);
+
+        const newVariants = [...data.variants];
+        const newColors = [...newVariants[variantIndex].colors, newColor];
+        handleVariantChange(variantIndex, "colors", newColors);
+    }
+
     const dimensionsInputs = [
         {label: "Largo", value: "length"},
         {label: "Ancho", value: "width"},
@@ -117,27 +138,41 @@ export default function ProductSpecificationsCard() {
                             <Separator />
 
                             <div className="grid grid-cols-12 gap-5 items-end">
-                                <div className="col-span-9">
-                                    <InputLabel htmlFor="feature-color" value="Colores disponibles" />
+                                <div className="col-span-12">
+                                    <div className="flex flex-row items-center justify-between">
+                                        <InputLabel htmlFor="feature-color" value="Colores disponibles" />
+                                        <Button 
+                                            type="button" 
+                                            className="max-h-[20px] bg-transparent py-0 text-blue-500 hover:text-blue-700" 
+                                            title="Añade una marca" 
+                                            onClick={() => addCustomColor(variant_index)}
+                                        >
+                                            <PlusIcon />Agregar color personalizado
+                                        </Button>
+                                    </div>
                                     <ToggleGroup type="multiple" size="sm" className="flex flex-row gap-3 py-0">
-                                        {colorOptions.map(item => (
-                                            <ToggleGroupItem key={item.value} value={item.value} className="data-[state=on]:bg-gray-800 data-[state=on]:shadow-lg
-                                                bg-transparent hover:bg-gray-700/50 
-                                                border-0 rounded-md px-3 py-1 text-sm
-                                                transition-all duration-150
-                                                flex items-center gap-2"
-                                            >
-                                                <span className={item.color}>{item.label}</span>
-                                            </ToggleGroupItem>
+                                        {colorOptions.map((item, index) => (
+                                            item.value.startsWith("#") ? (
+                                                <ColorPicker
+                                                    key={index}
+                                                    value={item.value}
+                                                    onChange={(e) => handleColorsChange(variant_index, index, e)}
+                                                />
+                                            ) : (
+                                                <ToggleGroupItem
+                                                    key={index}
+                                                    value={item.value}
+                                                    className="data-[state=on]:bg-gray-800 data-[state=on]:shadow-lg
+                                                        bg-transparent hover:bg-gray-700/50
+                                                        border-0 rounded-md px-3 py-1 text-sm
+                                                        transition-all duration-150
+                                                        flex items-center gap-2"
+                                                >
+                                                    <span className={item.color}>{item.label}</span>
+                                                </ToggleGroupItem>
+                                            )
                                         ))}
                                     </ToggleGroup>
-                                </div>
-
-                                <div className="col-span-3">
-                                    <ColorPicker
-                                        value={customColors}
-                                        onChange={setCustomColors}
-                                    />
                                 </div>
 
                                 <div className="col-span-5">
