@@ -29,7 +29,6 @@ export default function useProductForm() {
         barcode: '',
         is_feature: false,
         is_available_product: true,
-        is_available_variant: true,
         relevance: 0,
         key_words: '',
         condition: 'nuevo',
@@ -39,7 +38,8 @@ export default function useProductForm() {
         product_images: [],
         new_images: [],
         shipment: undefined,
-        currency: 'COP'
+        currency: 'COP',
+        disponibility_text: '',
     });
 
     const storeProduct: FormEventHandler = (e) => {
@@ -57,14 +57,22 @@ export default function useProductForm() {
                 }
 
                 if (errors.brand) reset('brand_id');
+                if (errors.description) reset('description');
+                if (errors.category_id) reset('category_id');
+                if (errors.is_available_product) reset('is_available_product');
                 if (errors.price) reset('price');
                 if (errors.compare_price) reset('compare_price');
-                if (errors.stock) reset('stock');
+                if (errors.cost) reset('cost');
                 if (errors.shipment) reset('shipment');
+                if (errors.stock) reset('stock');
                 if (errors.sku) reset('sku');
                 if (errors.barcode) reset('barcode');
-                if (errors.category_id) reset('category_id');
                 if (errors.is_feature) reset('is_feature');
+                if (errors.key_words) reset('key_words');
+                if (errors.warranty_policy) reset('warranty_policy');
+                if (errors.condition) reset('condition');
+                if (errors.show_condition) reset('show_condition');
+                if (errors.disponibility_text) reset('disponibility_text');
             }
         });
     }

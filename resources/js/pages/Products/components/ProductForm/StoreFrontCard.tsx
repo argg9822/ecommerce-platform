@@ -27,8 +27,7 @@ export default function StoreFrontCard() {
     const {
         data,
         setData,
-        errors,
-        handleNumberChangeSelect
+        errors
     } = useProductFormContext();
 
     return (

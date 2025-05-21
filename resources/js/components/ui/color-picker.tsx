@@ -40,7 +40,7 @@ export function ColorPicker({ value, onChange, className }: ColorPickerProps) {
             />
             <span className="font-mono text-sm">{internalColor.toUpperCase()}</span>
           </div>
-          <Paintbrush className="h-4 w-4 opacity-70" />
+          <Paintbrush className="h-4 w-4 opacity-70 paintbrush-icon" />
         </Button>
       </PopoverTrigger>
       <PopoverContent 

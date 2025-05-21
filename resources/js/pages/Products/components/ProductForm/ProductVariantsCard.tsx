@@ -22,7 +22,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Trash2, PlusCircle, CircleHelp, PlusIcon } from 'lucide-react';
-import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { ColorPicker } from '@/components/ui/color-picker';
 import { ProductVariants } from '@/types/product';
@@ -32,41 +31,22 @@ import InputError from '@/components/InputError';
 import useProductSpecificationsCard from '@/hooks/form/useProductSpecificationsCard';
 import DangerButton from '@/components/DangerButton';
 import InputWithAddons from '@/components/ui/input-with-addons';
-import { set } from 'react-hook-form';
 
 export default function ProductVariantsCard() {
     const {
         handleFeatureChange,
+        handleChangeVariantDimensions,
+        handleVariantChange,
+        handleColorsChange,
+        addCustomColor,
         addFeature,
         removeFeature,
-        handleVariantChange,
         removeVariant,
-        colorOptions,
-        setColorOptions,
+        removeVariantColor,
         errors,
         data
     } = useProductSpecificationsCard();
     
-    const handleColorsChange = (variantIndex: number, index: number, color: string) => {
-        const newColorOptions = [...colorOptions];
-        newColorOptions[index].value = color;
-        setColorOptions(newColorOptions);
-
-        const newVariants = [...data.variants];
-        const newColors = [...newVariants[variantIndex].colors, color];
-        handleVariantChange(variantIndex, "colors", newColors);   
-    }
-
-    const addCustomColor = (variantIndex: number) => {
-        const newColor = "#FFFFFF";
-        const newColorOptions = [...colorOptions, {value: newColor}];
-        setColorOptions(newColorOptions);
-
-        const newVariants = [...data.variants];
-        const newColors = [...newVariants[variantIndex].colors, newColor];
-        handleVariantChange(variantIndex, "colors", newColors);
-    }
-
     const dimensionsInputs = [
         {label: "Largo", value: "length"},
         {label: "Ancho", value: "width"},
@@ -150,29 +130,48 @@ export default function ProductVariantsCard() {
                                             <PlusIcon />Agregar color personalizado
                                         </Button>
                                     </div>
-                                    <ToggleGroup type="multiple" size="sm" className="flex flex-row gap-3 py-0">
-                                        {colorOptions.map((item, index) => (
+                                    <div className="flex flex-row gap-3 bg-gray-950/50 rounded-lg items-center justify-center p-1">
+                                        {variant.colors.map((item, index) => (
                                             item.value.startsWith("#") ? (
-                                                <ColorPicker
-                                                    key={index}
-                                                    value={item.value}
-                                                    onChange={(e) => handleColorsChange(variant_index, index, e)}
-                                                />
+                                                <div className="variant__color-picker relative flex items-center gap-2" key={index}>
+                                                    <ColorPicker
+                                                        value={item.value}
+                                                        onChange={(e) => handleColorsChange(variant_index, index, e)}
+                                                    />
+                                                    <Button
+                                                        type="button"
+                                                        title="Eliminar color"
+                                                        onClick={() => removeVariantColor(variant_index, index)}
+                                                        className="variant__color-picker__delete"
+                                                    >
+                                                        <Trash2 className="h-2 w-2" />
+                                                    </Button>
+                                                </div>
                                             ) : (
-                                                <ToggleGroupItem
+                                                <ToggleGroup 
                                                     key={index}
-                                                    value={item.value}
-                                                    className="data-[state=on]:bg-gray-800 data-[state=on]:shadow-lg
-                                                        bg-transparent hover:bg-gray-700/50
-                                                        border-0 rounded-md px-3 py-1 text-sm
-                                                        transition-all duration-150
-                                                        flex items-center gap-2"
+                                                    type="single" 
+                                                    size="sm"
+                                                    value={item.selected ? item.value : ''}
+                                                    onValueChange={(selectedValues) => {
+                                                        const isSelected = selectedValues.includes(item.value);
+                                                        handleColorsChange(variant_index, index, isSelected);
+                                                    }}
                                                 >
-                                                    <span className={item.color}>{item.label}</span>
-                                                </ToggleGroupItem>
+                                                    <ToggleGroupItem
+                                                        value={item.value}
+                                                        className="data-[state=on]:bg-gray-800 data-[state=on]:shadow-lg
+                                                            bg-transparent hover:bg-gray-700/50
+                                                            border-0 rounded-md px-3 py-1 text-sm
+                                                            transition-all duration-150
+                                                            flex items-center gap-2"
+                                                    >
+                                                        <span className={item.color}>{item.label}</span>
+                                                    </ToggleGroupItem>
+                                                </ToggleGroup>
                                             )
                                         ))}
-                                    </ToggleGroup>
+                                    </div>
                                 </div>
 
                                 <div className="col-span-5">
@@ -196,7 +195,7 @@ export default function ProductVariantsCard() {
                                                 value={data.variants[variant_index]?.dimensions[dimension.value as keyof ProductDimensions] || ""}
                                                 placeholder="0"
                                                 className="pl-[60px]"
-                                                onChange={(e) => handleVariantChange(variant_index, dimension.value, String(e))}
+                                                onChange={(e) => handleChangeVariantDimensions(variant_index, dimension.value, String(e))}
                                                 inputId={`${dimension.value}-${variant_index + 1}`}
                                                 prefix={dimension.label}
                                                 suffixes={["cm", "m"]}

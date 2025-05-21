@@ -1,13 +1,15 @@
 import { useProductFormContext } from "@/context/product-form.context";
 import { useEffect, useState } from "react";
-import { ProductVariants, ProductDimensions, VariantAttributes } from '@/types/product';
+import { ProductVariants, ProductDimensions, VariantAttributes, ColorOptionsType } from '@/types/product';
 
-type ColorOptionsType ={
-    value: string;
-    label?: string;
-    color?: string;
-    selectedColor?: string;
-}
+const BASE_COLOR_OPTIONS: ColorOptionsType[] = [
+    { value: "red", label: "Rojo", color: "text-red-600", selectedColor: "bg-red-700", selected: false },
+    { value: "blue", label: "Azul", color: "text-blue-500", selectedColor: "bg-blue-700", selected: false },
+    { value: "green", label: "Verde", color: "text-green-600", selectedColor: "bg-green-700", selected: false },
+    { value: "yellow", label: "Amarillo", color: "text-yellow-400", selectedColor: "bg-yellow-700", selected: false },
+    { value: "purple", label: "Morado", color: "text-purple-400", selectedColor: "bg-purple-700", selected: false },
+    { value: "pink", label: "Rosado", color: "text-pink-400", selectedColor: "bg-pink-700", selected: false }
+];
 
 export default function useProductSpecificationsCard(){
     const {
@@ -17,8 +19,10 @@ export default function useProductSpecificationsCard(){
         recentlySuccessful
     } = useProductFormContext();
 
+    const createColorOptions = () => JSON.parse(JSON.stringify(BASE_COLOR_OPTIONS));
+
     useEffect(() => {
-        setData('variants', [
+        const newVariants = [
             {
                 price: undefined,
                 compare_prince: undefined,
@@ -30,7 +34,7 @@ export default function useProductSpecificationsCard(){
                     height: 0,
                     unitOfMeasurement: 'cm'
                 },
-                colors: [],
+                colors: createColorOptions(),
                 attributes: [{name: '', value: ''}],
                 weight: undefined,
                 is_available: true,
@@ -46,12 +50,14 @@ export default function useProductSpecificationsCard(){
                     height: 0,
                     unitOfMeasurement: 'cm'
                 },
-                colors: [],
+                colors: createColorOptions(),
                 attributes: [{name: '', value: ''}],
                 weight: undefined,
                 is_available: true,
             },
-        ])
+        ];
+
+        setData('variants', newVariants)
     }, []);
 
     const handleFeatureChange = (index: number, field: "name" | "values", value: string) => {
@@ -82,31 +88,21 @@ export default function useProductSpecificationsCard(){
         setData('variants', newAttributesVariants);
     }
 
-    const [colorOptions, setColorOptions] = useState<ColorOptionsType[]>([
-        { value: "red", label: "Rojo", color: "text-red-600", selectedColor: "bg-red-700" },
-        { value: "blue", label: "Azul", color: "text-blue-500", selectedColor: "bg-blue-700" },
-        { value: "green", label: "Verde", color: "text-green-600", selectedColor: "bg-green-700" },
-        { value: "yellow", label: "Amarillo", color: "text-yellow-400", selectedColor: "bg-yellow-700" },
-        { value: "purple", label: "Morado", color: "text-purple-400", selectedColor: "bg-purple-700" },
-        { value: "pink", label: "Rosado", color: "text-pink-400", selectedColor: "bg-pink-700" }
-    ]);
-
-    const handleVariantChange = (index: number, field: string, value: string | boolean | string[]) => {
+    const handleChangeVariantDimensions = (index: number, field: string, value: string ) => {
         const updatedVariants = [...data.variants];
-        const dimensionsAttributes = ['length', 'width', 'height', 'unitOfMeasurement'];
-
-        if (dimensionsAttributes.includes(field)) {
-            const dimensions: ProductDimensions = { ...updatedVariants[index].dimensions };
-            if (field === 'unitOfMeasurement') {
+        const dimensions: ProductDimensions = { ...updatedVariants[index].dimensions };
+        if (field === 'unitOfMeasurement') {
                 dimensions.unitOfMeasurement = value as ProductDimensions['unitOfMeasurement'];
-            } else {
-                (dimensions as any)[field] = parseFloat(value as string);
-            }
-            updatedVariants[index].dimensions = dimensions;
-        }else{
-            (updatedVariants[index] as any)[field] = value;
+        } else {
+            (dimensions as any)[field] = parseFloat(value as string);
         }
-        
+        updatedVariants[index].dimensions = dimensions;
+        setData('variants', updatedVariants);
+    }
+
+    const handleVariantChange = (index: number, field: string, value: string | boolean | string[] | ColorOptionsType[]) => {
+        const updatedVariants = [...data.variants];
+        (updatedVariants[index] as any)[field] = value;
         setData('variants', updatedVariants);
     }
 
@@ -116,14 +112,42 @@ export default function useProductSpecificationsCard(){
         setData('variants', newVariants);
     }
 
+    const handleColorsChange = (variantIndex: number, index: number, color: string | boolean) => {
+        const newVariants = [...data.variants];
+        const newColors = [...newVariants[variantIndex].colors];
+
+        if (index > 5) {
+            newColors[index] = {value: color as string};
+        }else{
+            newColors[index].selected = color as boolean;
+        }
+
+        handleVariantChange(variantIndex, "colors", newColors);
+    }
+
+    const addCustomColor = (variantIndex: number) => {
+        const newVariants = [...data.variants];
+        const newColors = [...newVariants[variantIndex].colors, {value: "#FFFFFF"}];
+        handleVariantChange(variantIndex, "colors", newColors);
+    }
+
+    const removeVariantColor = (variantIndex: number, index: number) => {
+        const newVariants = [...data.variants];
+        const newColors = [...newVariants[variantIndex].colors];
+        newColors.splice(index, 1);
+        handleVariantChange(variantIndex, "colors", newColors);
+    }
+
     return {
         handleFeatureChange,
+        handleChangeVariantDimensions,
+        handleColorsChange,
+        addCustomColor,
+        removeVariantColor,
+        handleVariantChange,
         addFeature,
         removeFeature,
-        handleVariantChange,
         removeVariant,
-        colorOptions,
-        setColorOptions,
         errors,
         data,
         setData

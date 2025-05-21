@@ -89,6 +89,31 @@ main{
     color: #878787;
 }
 
+.variant__color-picker__delete{
+    display: none;
+    position: absolute;
+    top: 25%;
+    right: 5%;
+    transition: all 0.2s ease;
+    width: 20px;
+    height: 20px;
+    border-radius: 40%;
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -ms-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+    -webkit-border-radius: 40%;
+    -moz-border-radius: 40%;
+    -ms-border-radius: 40%;
+    -o-border-radius: 40%;
+}
+
+.variant__color-picker:hover .variant__color-picker__delete{
+    display: flex;
+    background-color: #630000;
+    color: a.$text-primary;
+}
+
 [type='text'], 
 input:where(:not([type])), 
 [type='email'], 

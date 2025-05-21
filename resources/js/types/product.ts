@@ -18,11 +18,19 @@ export interface VariantAttributes {
     value: string;
 }
 
+export interface ColorOptionsType {
+    value: string;
+    label?: string;
+    color?: string;
+    selectedColor?: string;
+    selected?: boolean;
+}
+
 export interface ProductVariants {
     price: number | undefined;
     compare_prince: number | undefined;
     stock: number | undefined;
-    colors: string[];
+    colors: ColorOptionsType[];
     cost_shipping: number | undefined;
     dimensions: ProductDimensions;
     attributes: VariantAttributes[];

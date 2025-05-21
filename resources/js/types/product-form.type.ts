@@ -16,7 +16,6 @@ export interface ProductForm {
     is_feature: boolean;
     is_available_product: boolean;
     variants: ProductVariants[];
-    is_available_variant: boolean;
     show_condition: boolean;
     key_words: string;
     warranty_policy: string;
@@ -28,6 +27,7 @@ export interface ProductForm {
     new_images: File[];
     shipment: number | undefined;
     currency: string;
+    disponibility_text: string;
 }
 
 // export type ProductFormContextType = {
