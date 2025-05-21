@@ -1,11 +1,12 @@
 import useProductForm from '@/hooks/form/useProductForm';
-import { ProductImage, ProductVariants } from '@/types/product';
+import { ProductImage, ProductVariants, ProductFeatures } from '@/types/product';
 
 export type ProductFormContextType = ReturnType<typeof useProductForm>;
 
 export interface ProductForm {
     name: string;
     description: string;
+    features: ProductFeatures[],
     price: number | undefined;
     compare_price: number | undefined;
     profit: number | undefined;

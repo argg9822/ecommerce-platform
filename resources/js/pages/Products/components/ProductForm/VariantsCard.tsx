@@ -31,15 +31,16 @@ import InputError from '@/components/InputError';
 import useProductSpecificationsCard from '@/hooks/form/useProductSpecificationsCard';
 import DangerButton from '@/components/DangerButton';
 import InputWithAddons from '@/components/ui/input-with-addons';
+import Features from '@/pages/Products/components/ProductForm/Features';
 
-export default function ProductVariantsCard() {
+export default function VariantsCard() {
     const {
         handleFeatureChange,
         handleChangeVariantDimensions,
         handleVariantChange,
         handleColorsChange,
         addCustomColor,
-        addFeature,
+        addFeatureVariant,
         removeFeature,
         removeVariant,
         removeVariantColor,
@@ -211,27 +212,14 @@ export default function ProductVariantsCard() {
 
                             <div className='flex flex-col gap-4'>
                                 {variant.attributes.map((feature, index) => (
-                                    <div key={index} className="grid grid-cols-12 gap-3 items-end">
-                                        <div className="col-span-5">
-                                            <InputLabel htmlFor={`feature-name-${index}`} value="Característica" />
-                                            <Input
-                                                id={`feature-name-${index}`}
-                                                placeholder="Ej: Material, Color, Talla"
-                                                value={feature.name}
-                                                onChange={(e) => handleFeatureChange(index, "name", e.target.value)}
-                                            />
-                                        </div>
-
-                                        <div className="col-span-6">
-                                            <InputLabel htmlFor={`feature-values-${index}`} value="Valores" />
-                                            <Input
-                                                id={`feature-values-${index}`}
-                                                placeholder="Separados por coma. Ej: Viscoelástico, Queen, Blanco"
-                                                value={feature.value}
-                                                onChange={(e) => handleFeatureChange(index, "values", e.target.value)}
-                                            />
-                                        </div>
-
+                                    <Features
+                                        key={index}
+                                        name={feature.name}
+                                        value={feature.value}
+                                        index={index}
+                                        variantIndex={variant_index}
+                                        handleFeatureChange={handleFeatureChange}
+                                    >
                                         <div className="col-span-1">
                                             {(variant.attributes.length > 1) && (
                                                 <Button
@@ -245,17 +233,17 @@ export default function ProductVariantsCard() {
                                                 </Button>
                                             )}
                                         </div>
-                                    </div>
+                                    </Features>
                                 ))}
 
                                 <Button
                                     type="button"
-                                    onClick={(e) => addFeature(variant_index)}
-                                    className="mt-2 gap-2 bg-gray-900 hover:bg-gray-800 text-gray-50 transition-all duration-300 shadow-lg hover:shadow-gray-900/30 rounded-lg border border-gray-700 hover:border-gray-600 group"
+                                    onClick={(e) => addFeatureVariant(variant_index)}
+                                    className="gap-2 bg-gray-900 hover:bg-gray-800 text-gray-50 transition-all duration-300 shadow-lg hover:shadow-gray-900/30 rounded-lg border border-gray-700 hover:border-gray-600 group"
                                 >
                                     <PlusCircle className="h-4 w-4 text-gray-300 group-hover:text-white" />
                                     <span className="text-gray-100 group-hover:text-white font-medium text-sm">
-                                        Agregar otra característica
+                                        Agregar nueva característica
                                     </span>
                                 </Button>
                                 <InputError message={errors.variants} />

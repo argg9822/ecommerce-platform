@@ -18,6 +18,7 @@ export default function useProductForm() {
     } = useForm<ProductFormData>({
         name: '',
         description: '',
+        features: [],
         price: undefined,
         compare_price: undefined,
         cost: undefined,

@@ -6,6 +6,11 @@ export interface ProductImage {
     updated_at: string;
 }
 
+export interface ProductFeatures {
+    name: string;
+    value: string;
+}
+
 export interface ProductDimensions {
     length: number;
     width: number;

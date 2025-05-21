@@ -2,12 +2,13 @@ import { Brand } from '@/types';
 import { Category } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Textarea } from '@/components/ui/textarea';
-import { PlusIcon, CircleHelp, Layers, Check, ChevronsUpDown } from 'lucide-react';
+import { PlusIcon, CircleHelp, Layers, Check, ChevronsUpDown, PlusCircle, Trash2 } from 'lucide-react';
 import { useProductFormContext } from '@/context/product-form.context';
 import { Button } from '@/components/ui/button';
 import InputLabel from '@/components/InputLabel';
 import InputError from '@/components/InputError';
 import { Checkbox } from "@/components/ui/checkbox"
+import Features from '@/pages/Products/components/ProductForm/Features';
 import {
     Command,
     CommandEmpty,
@@ -41,6 +42,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useState } from 'react';
+import { Separator } from '@/components/ui/separator';
 
 type MainInformationCardProps = {
     brands: Brand[],
@@ -78,6 +80,22 @@ export default function MainInformationCard({
         return item?.label.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
     }
 
+    const addFeature = () => {
+        setData('features', [
+            ...data.features,
+            {
+                name: '',
+                value: ''
+            }
+        ]);
+    }
+
+    const removeFeature = (index: number) => {
+        const updatedFeatures = [...data.features];
+        updatedFeatures.splice(index, 1);
+        setData('features', updatedFeatures);
+    }
+
     return (
         <Card>
             <CardHeader>
@@ -85,14 +103,14 @@ export default function MainInformationCard({
             </CardHeader>
 
             <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
+                <div className="grid grid-cols-12 gap-4">
+                    <div className="col-span-6">
                         <InputLabel htmlFor="name" value="Nombre del producto" />
                         <Input id="name" type="text" value={data.name} onChange={(e) => setData('name', e.target.value)} />
                         <InputError message={errors.name} />
                     </div>
 
-                    <div>
+                    <div className="col-span-6">
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-column">
                                 <InputLabel htmlFor="brand_id" value="Marca" />
@@ -138,125 +156,123 @@ export default function MainInformationCard({
                         </div>
                         <InputError message={errors.category_id} />
                     </div>
-                </div>
 
-                <div>
-                    <InputLabel htmlFor="description" value="Descripción" />
-                    <Textarea
-                        id="description"
-                        value={data.description}
-                        onChange={(e) => setData('description', e.target.value)}
-                        className="min-h-[100px]"
-                        placeholder="Describe tu producto con detalles útiles: características, beneficios y uso ideal. Ejemplo: «Reloj resistente al agua, correa ajustable y diseño moderno. Perfecto para deportistas y ocasiones casuales.»"
-                    />
-                    <InputError message={errors.description} />
-                </div>
-
-                <div>
-                    <div className="flex flex-row justify-between">
-                        <InputLabel htmlFor="category_id" value="Categoría" />
-                        <Button type="button" className="max-h-[20px] bg-transparent text-blue-500 hover:text-blue-700" title="Añade una categoría" onClick={() => setOpenDialogCategory(true)}>
-                            <PlusIcon />Agregar categoría
-                        </Button>
+                    <div className="col-span-12">
+                        <InputLabel htmlFor="description" value="Descripción" />
+                        <Textarea
+                            id="description"
+                            value={data.description}
+                            onChange={(e) => setData('description', e.target.value)}
+                            className="min-h-[100px]"
+                            placeholder="Describe tu producto con detalles útiles: características, beneficios y uso ideal. Ejemplo: «Reloj resistente al agua, correa ajustable y diseño moderno. Perfecto para deportistas y ocasiones casuales.»"
+                        />
+                        <InputError message={errors.description} />
                     </div>
-                    <Popover open={openCategoriesSelect} onOpenChange={setOpenCategoriesSelect}>
-                        <PopoverTrigger asChild>
-                            <Button
-                                variant="outline"
-                                role="combobox"
-                                aria-expanded={openCategoriesSelect}
-                                className={`
-                                    w-full justify-between px-4 py-2
-                                    hover:bg-gray-900
-                                    border border-gray-600 hover:border-gray-600
-                                    text-gray-200 hover:text-white
-                                    rounded-lg transition-all duration-200
-                                    ${!data.category_id ? "text-gray-400" : ""}
-                                `}
-                            >
-                                {data.category_id
-                                    ? selectCategories.find((category) => category.value === data.category_id)?.label
-                                    : "Selecciona una categoría"}
-                                <ChevronsUpDown className="ml-2 h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
+
+                    <div className="col-span-6">
+                        <div className="flex flex-row justify-between">
+                            <InputLabel htmlFor="category_id" value="Categoría" />
+                            <Button type="button" className="max-h-[20px] bg-transparent text-blue-500 hover:text-blue-700" title="Añade una categoría" onClick={() => setOpenDialogCategory(true)}>
+                                <PlusIcon />Agregar categoría
                             </Button>
-                        </PopoverTrigger>
-                        
-                        <PopoverContent
-                            className={`
-                                w-[var(--radix-popover-trigger-width)] p-0
-                                bg-gray-900 border border-gray-700 rounded-lg
-                                shadow-lg shadow-black/50
-                                overflow-hidden
-                                animate-in fade-in-80 zoom-in-95
-                            `}
-                            align="start"
-                            sideOffset={5}
-                        >
-                            <Command filter={categoryFilter} className="bg-transparent">
-                                <CommandInput
-                                    placeholder="Buscar categoría..."
-                                />
-                                <CommandList className="max-h-[250px] overflow-y-auto custom-scrollbar">
-                                    <CommandEmpty className="px-3 py-2.5 text-sm text-gray-500">
-                                        No hay coincidencias
-                                    </CommandEmpty>
-                                    <CommandGroup className="p-1">
-                                        {selectCategories.map((category) => (
-                                            <CommandItem
-                                                key={category.value}
-                                                value={String(category.value)}
-                                                onSelect={(currentValue) => {
-                                                    setData('category_id', parseInt(currentValue))
-                                                    setOpenCategoriesSelect(false)
-                                                }}
-                                                className={`
-                                                    flex items-center
-                                                    aria-selected:bg-gray-800 aria-selected:text-white
-                                                `}
-                                                >
-                                                <div className='flex flex-row'>{ }
-                                                    <div className='flex place-content-center flex-wrap'>
-                                                        <div className="w-8 h-8 rounded-sm overflow-hidden mr-3">
-                                                            {category?.image ? (
-                                                                <img
-                                                                    src={route('tenant_media_owner', { path: category?.image })}
-                                                                    alt={category.label}
-                                                                    className="w-full h-full object-cover opacity-75"
-                                                                />
-                                                            ) : (<Layers />)}
+                        </div>
+                        <Popover open={openCategoriesSelect} onOpenChange={setOpenCategoriesSelect}>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    aria-expanded={openCategoriesSelect}
+                                    className={`
+                                        w-full justify-between px-4 py-2
+                                        hover:bg-gray-900
+                                        border border-gray-600 hover:border-gray-600
+                                        text-gray-200 hover:text-white
+                                        rounded-lg transition-all duration-200
+                                        ${!data.category_id ? "text-gray-400" : ""}
+                                    `}
+                                >
+                                    {data.category_id
+                                        ? selectCategories.find((category) => category.value === data.category_id)?.label
+                                        : "Selecciona una categoría"}
+                                    <ChevronsUpDown className="ml-2 h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
+                                </Button>
+                            </PopoverTrigger>
+                            
+                            <PopoverContent
+                                className={`
+                                    w-[var(--radix-popover-trigger-width)] p-0
+                                    bg-gray-900 border border-gray-700 rounded-lg
+                                    shadow-lg shadow-black/50
+                                    overflow-hidden
+                                    animate-in fade-in-80 zoom-in-95
+                                `}
+                                align="start"
+                                sideOffset={5}
+                            >
+                                <Command filter={categoryFilter} className="bg-transparent">
+                                    <CommandInput
+                                        placeholder="Buscar categoría..."
+                                    />
+                                    <CommandList className="max-h-[250px] overflow-y-auto custom-scrollbar">
+                                        <CommandEmpty className="px-3 py-2.5 text-sm text-gray-500">
+                                            No hay coincidencias
+                                        </CommandEmpty>
+                                        <CommandGroup className="p-1">
+                                            {selectCategories.map((category) => (
+                                                <CommandItem
+                                                    key={category.value}
+                                                    value={String(category.value)}
+                                                    onSelect={(currentValue) => {
+                                                        setData('category_id', parseInt(currentValue))
+                                                        setOpenCategoriesSelect(false)
+                                                    }}
+                                                    className={`
+                                                        flex items-center
+                                                        aria-selected:bg-gray-800 aria-selected:text-white
+                                                    `}
+                                                    >
+                                                    <div className='flex flex-row'>{ }
+                                                        <div className='flex place-content-center flex-wrap'>
+                                                            <div className="w-8 h-8 rounded-sm overflow-hidden mr-3">
+                                                                {category?.image ? (
+                                                                    <img
+                                                                        src={route('tenant_media_owner', { path: category?.image })}
+                                                                        alt={category.label}
+                                                                        className="w-full h-full object-cover opacity-75"
+                                                                    />
+                                                                ) : (<Layers />)}
+                                                            </div>
+                                                        </div>
+                                                        <div className='flex flex-col text-left'>
+                                                            <span>{category.label}</span>
+                                                            <span className='text-sm text-gray-500'>{category?.description}</span>
                                                         </div>
                                                     </div>
-                                                    <div className='flex flex-col text-left'>
-                                                        <span>{category.label}</span>
-                                                        <span className='text-sm text-gray-500'>{category?.description}</span>
-                                                    </div>
-                                                </div>
-                                                <Check
-                                                    className={`
-                                                        ml-auto h-4 w-4
-                                                        ${data.category_id === category.value ? "opacity-100 text-blue-400" : "opacity-0"}
-                                                        transition-opacity duration-200
-                                                    `}
-                                                />
-                                            </CommandItem>
-                                        ))}
-                                    </CommandGroup>
-                                </CommandList>
-                            </Command>
-                        </PopoverContent>
-                    </Popover>
-                    <InputError message={errors.category_id} />
-                </div>
+                                                    <Check
+                                                        className={`
+                                                            ml-auto h-4 w-4
+                                                            ${data.category_id === category.value ? "opacity-100 text-blue-400" : "opacity-0"}
+                                                            transition-opacity duration-200
+                                                        `}
+                                                    />
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                        <InputError message={errors.category_id} />
+                    </div>
 
-                <div className="grid grid-cols-2 gap-4">
-
-                    <div className="flex items-center space-x-2">
+                    <div className="col-span-6 flex items-center space-x-3">
                         <Checkbox
                             id="is_available"
                             checked={data.is_available_product}
                             onCheckedChange={(checked) => setData('is_available_product', !!checked)}
+                            className="h-6 w-6"
                         />
-                        <div className="grid leading-none">
+                        <div className="flex flex-col">
                             <label
                                 htmlFor="is_available"
                                 className="text-sm font-medium text-gray-400 hover:text-gray-200 cursor-pointer"
@@ -267,6 +283,40 @@ export default function MainInformationCard({
                                 Establecer producto como disponible en la tienda
                             </p>
                         </div>
+                    </div>
+
+                    <div className="col-span-12 flex flex-col gap-4">
+                        <Separator />
+
+                        {data.features.map((feature, index) => (
+                            <Features
+                                key={index}
+                                name={feature.name}
+                                value={feature.value}
+                                index={index}
+                                handleFeatureChange={(index, field, value, variant_index) => {
+                                    const updatedFeatures = [...data.features];
+                                    updatedFeatures[index][field] = value;
+                                    setData('features', updatedFeatures);
+                                }}
+                            >
+                                <div className="col-span-1">
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => removeFeature(index)}
+                                        className="text-red-500 hover:text-red-600"
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            </Features>
+                        ))}
+
+                        <Button type="button" className="max-h-[20px] bg-transparent py-0 text-blue-500 hover:text-blue-700 w-full mt-6" title="Añade una categoría" onClick={(e) => addFeature()}>
+                            <PlusIcon />Agregar característica
+                        </Button>
                     </div>
                 </div>
             </CardContent>

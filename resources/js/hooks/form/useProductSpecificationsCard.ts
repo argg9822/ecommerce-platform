@@ -60,10 +60,21 @@ export default function useProductSpecificationsCard(){
         setData('variants', newVariants)
     }, []);
 
-    const handleFeatureChange = (index: number, field: "name" | "values", value: string) => {
-        const updatedFeatures = [...data.features];
-        updatedFeatures[index][field] = value;
-        setData('variants', updatedFeatures);
+    const handleFeatureChange = (index: number, field: "name" | "value", value: string, variantIndex: number) => {
+        const updatedVariants: ProductVariants[] = [...data.variants];
+        const currentAttributes: VariantAttributes[] = updatedVariants[variantIndex].attributes;
+        const currentAttribute = currentAttributes[index];
+        const updatedAttribute = {
+            ...currentAttribute,
+            [field]: value,
+        };
+        const updatedAttributes = [...currentAttributes];
+        updatedAttributes[index] = updatedAttribute;
+        updatedVariants[variantIndex] = {
+            ...updatedVariants[variantIndex],
+            attributes: updatedAttributes,
+        };
+        setData('variants', updatedVariants);
     }
 
     const removeFeature = (index: number, variantIndex: number) => {
@@ -80,12 +91,12 @@ export default function useProductSpecificationsCard(){
         setData('variants', updatedVariants);
     };
 
-    const addFeature = (variantIndex: number) => {
-        const newAttributesVariants = [...data.variants];
-        const newAttributes = [...newAttributesVariants[variantIndex].attributes];
+    const addFeatureVariant = (variantIndex: number) => {
+        const updatedVariants = [...data.variants];
+        const newAttributes = [...updatedVariants[variantIndex].attributes];
         newAttributes.push({name: '', value: ''});
-        newAttributesVariants[variantIndex].attributes = newAttributes;
-        setData('variants', newAttributesVariants);
+        updatedVariants[variantIndex].attributes = newAttributes;
+        setData('variants', updatedVariants);
     }
 
     const handleChangeVariantDimensions = (index: number, field: string, value: string ) => {
@@ -145,7 +156,7 @@ export default function useProductSpecificationsCard(){
         addCustomColor,
         removeVariantColor,
         handleVariantChange,
-        addFeature,
+        addFeatureVariant,
         removeFeature,
         removeVariant,
         errors,
