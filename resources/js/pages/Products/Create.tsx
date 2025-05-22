@@ -86,7 +86,7 @@ export default function Create({ categories, brands }: CreateProductProps) {
                          <Accordion type="single" collapsible className="w-full accordion-cards">
                             <AccordionItem value="item-1">
                                 <AccordionTrigger className="flex flex-col text-gray-100">
-                                    <h3 className="accordion-cards-title">Inventario (opcional)</h3>
+                                    <h3 className="accordion-cards-title">Precio e inventario</h3>
                                     <p className="text-gray-400">Seguimiento del inventario</p>
                                 </AccordionTrigger>
                                 <AccordionContent>

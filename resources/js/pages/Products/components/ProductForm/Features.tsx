@@ -1,7 +1,5 @@
 import InputLabel from '@/components/InputLabel';
-import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
-import { PlusCircle } from 'lucide-react';
 import { PropsWithChildren } from 'react';
 
 type FeatureProps = {
@@ -25,8 +23,9 @@ export default function Features({
     return (
         <div className='flex flex-col gap-4'>
             <div className="grid grid-cols-12 gap-3 items-end">
-                <div className={children ? "col-span-5" : "col-span-6"}>
+                <div className={`${children ? "col-span-5" : "col-span-6"} relative`}>
                     <InputLabel htmlFor={`feature-name-${index}`} value="Característica" />
+      
                     <Input
                         id={`feature-name-${index}`}
                         placeholder="Ej: Material, Color, Talla"

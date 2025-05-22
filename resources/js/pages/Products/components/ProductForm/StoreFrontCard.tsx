@@ -110,7 +110,7 @@ export default function StoreFrontCard() {
 
                     <div className="flex flex-col col-span-6">
                         <div className="flex flex-row">
-                            <InputLabel htmlFor="key_words" value="Palabras clave para búsqueda" />
+                            <InputLabel htmlFor="key_words" value="Condiciones del producto" />
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
@@ -118,7 +118,7 @@ export default function StoreFrontCard() {
                                     </TooltipTrigger>
 
                                     <TooltipContent>
-                                        <p className="text-gray-100">Coloca aquí las palabras clave de este producto para que tus clientes puedan encontrarlo fácilmente</p>
+                                        <p className="text-gray-100">Indica si el producto es nuevo o usado</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -126,7 +126,7 @@ export default function StoreFrontCard() {
                     
                         <Select onValueChange={(e) => { setData('condition', e, ) }} defaultValue={String(data.condition)}>
                             <SelectTrigger className='h-[30px]'>
-                                <SelectValue placeholder="Selecciona una marca" />
+                                <SelectValue placeholder="Seleccionar" />
                             </SelectTrigger>
 
                             <SelectContent>

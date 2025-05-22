@@ -38,23 +38,7 @@ export default function useProductSpecificationsCard(){
                 attributes: [{name: '', value: ''}],
                 weight: undefined,
                 is_available: true,
-            },
-            {
-                price: undefined,
-                compare_prince: undefined,
-                stock: 0,
-                cost_shipping: undefined,
-                dimensions: {
-                    length: 0,
-                    width: 0,
-                    height: 0,
-                    unitOfMeasurement: 'cm'
-                },
-                colors: createColorOptions(),
-                attributes: [{name: '', value: ''}],
-                weight: undefined,
-                is_available: true,
-            },
+            }
         ];
 
         setData('variants', newVariants)
@@ -149,6 +133,27 @@ export default function useProductSpecificationsCard(){
         handleVariantChange(variantIndex, "colors", newColors);
     }
 
+    const addVariant = () => {
+        const newVariants = [...data.variants];
+        newVariants.push({
+            price: undefined,
+            compare_prince: undefined,
+            stock: 0,
+            cost_shipping: undefined,
+            dimensions: {
+                length: 0,
+                width: 0,
+                height: 0,
+                unitOfMeasurement: 'cm'
+            },
+            colors: createColorOptions(),
+            attributes: [{name: '', value: ''}],
+            weight: undefined,
+            is_available: true,
+        });
+        setData('variants', newVariants);
+    }
+
     return {
         handleFeatureChange,
         handleChangeVariantDimensions,
@@ -157,6 +162,7 @@ export default function useProductSpecificationsCard(){
         removeVariantColor,
         handleVariantChange,
         addFeatureVariant,
+        addVariant,
         removeFeature,
         removeVariant,
         errors,

@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import ButtonAdd from '@/components/ui/button-add';
 import {
     Tooltip,
     TooltipContent,
@@ -41,6 +42,7 @@ export default function VariantsCard() {
         handleColorsChange,
         addCustomColor,
         addFeatureVariant,
+        addVariant,
         removeFeature,
         removeVariant,
         removeVariantColor,
@@ -56,15 +58,22 @@ export default function VariantsCard() {
 
     return (
         <Card className="col-span-1 md:col-span-2">
+            <div className="flex items-center justify-end w-full">
+                <ButtonAdd
+                    onClick={() => addVariant()}
+                    className="mb-1" 
+                    title="Añade un nuevo grupo de especificaciones"
+                    text="Agregar nueva variante"
+                />
+            </div>
             <Tabs defaultValue="variant-1">
-                <TabsList className={`grid bg-gray-700 rounded-lg ${data.variants.length > 1 ? "grid-cols-12" : "w-full"}`}>
+                <TabsList className={`grid bg-gray-700 rounded-lg grid-cols-12`}>
                     {data.variants.map((_: ProductVariants, variant_index:number) => (
-                        <TabsTrigger 
-                            key={variant_index} 
+                        <TabsTrigger
+                            key={variant_index}
                             value={`variant-${variant_index}`} 
-                            className={`col-span-${12/data.variants.length} 
-                            text-center text-gray-200 hover:text-gray-100 hover:bg-gray-600
-                            focus:bg-black/50 transition-all duration-200`}
+                            className={`text-center text-gray-200 hover:text-gray-100 hover:bg-gray-600
+                            focus:bg-black/50 transition-all duration-200 w-full col-span-${12/data.variants.length}`}
                         >
                             Variante {variant_index + 1}
                         </TabsTrigger>
