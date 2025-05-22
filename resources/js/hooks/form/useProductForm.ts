@@ -1,5 +1,5 @@
 import { useForm } from '@inertiajs/react';
-import { ChangeEvent, FormEventHandler, useRef } from 'react';
+import { ChangeEvent, FormEventHandler, useEffect, useRef } from 'react';
 import { ProductForm } from '@/types/product-form.type';
 
 type ProductFormData = ProductForm & Record<string, any>;
@@ -17,47 +17,44 @@ export default function useProductForm() {
         recentlySuccessful,
     } = useForm<ProductFormData>({
         name: '',
+        brand_id: 'Propia',
         description: '',
-        features: [],
+        category_id: 0,
+        is_available: true,
         price: undefined,
         compare_price: undefined,
         cost: undefined,
         profit: undefined,
-        show_condition: false,
         stock: 0,
+        shipment: undefined,
         sku: '',
-        warranty_policy: '',
         barcode: '',
+        show_condition: false,
+        features: [],
+        warranty_policy: '',
         is_feature: false,
-        is_available_product: true,
         relevance: 0,
         key_words: '',
         condition: 'nuevo',
-        brand_id: 'Propia',
-        category_id: 0,
         variants: [],
         product_images: [],
         new_images: [],
-        shipment: undefined,
         currency: 'COP',
         disponibility_text: '',
-    });
+    });  
 
-    const storeProduct: FormEventHandler = (e) => {
+    const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
         post(route('products_store'), {
             preserveScroll: true,
-            onSuccess: () => {
-                reset();
-            },
+            onSuccess: () => reset(),
             onError: (errors) => {
                 if (errors.name) {
                     reset();
                     tenantNameRef.current?.focus();
                 }
-
-                if (errors.brand) reset('brand_id');
+                if (errors.brand_id) reset('brand_id');
                 if (errors.description) reset('description');
                 if (errors.category_id) reset('category_id');
                 if (errors.is_available_product) reset('is_available_product');
@@ -74,9 +71,9 @@ export default function useProductForm() {
                 if (errors.condition) reset('condition');
                 if (errors.show_condition) reset('show_condition');
                 if (errors.disponibility_text) reset('disponibility_text');
-            }
+            },
         });
-    }
+    };
 
     const handleNumberChangeInput = (e: ChangeEvent<HTMLInputElement>, key: keyof ProductForm) => {
         const number = e.target.value;
@@ -98,14 +95,15 @@ export default function useProductForm() {
     }
 
     return {
-        storeProduct,
         data,
         setData,
-        handleNumberChangeInput,
-        handleNumberChangeSelect,
         errors,
         processing,
         recentlySuccessful,
-        handleProfit
+        submit,
+        reset,
+        handleProfit,
+        handleNumberChangeInput,
+        handleNumberChangeSelect,
     }
 }

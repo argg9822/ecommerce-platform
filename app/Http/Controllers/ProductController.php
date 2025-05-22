@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Product;
@@ -40,15 +41,22 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        Log::info($request->all());
-
-        return redirect()->back()->with('flash.success', [
-                'title' => 'Éxito',
-                'message' => 'Producto guardado correctamente'
-            ]
-        );
+        try {
+            $product = Product::create($request->validated());
+            return redirect()->back()->with('flash.success', [
+                    'title' => 'Éxito',
+                    'message' => 'Producto guardado correctamente'
+                ]
+            );
+        } catch (\Exception $e) {
+            Log::error('Error creating product: ' . $e->getMessage());
+            return redirect()->back()->with('flash.error', [
+                'title' => 'Error',
+                'message' => 'No se pudo guardar el producto'
+            ]);
+        }
     }
 
     /**

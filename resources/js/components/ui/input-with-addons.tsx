@@ -47,7 +47,6 @@ export default function InputWithAddons({
     onChangeSuffix,
     onChangeWithEvent
 } : InputWithAddonsProps) {
-
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (onChangeWithEvent) {
             onChangeWithEvent(e);
@@ -91,9 +90,9 @@ export default function InputWithAddons({
                 />
 
                 <div className="absolute right-0 top-0 h-full flex items-center">
-                    <Select onValueChange={(e) => { onChangeSuffix && onChangeSuffix('currency', e) }} defaultValue={sufixValue || "cm"}>
+                    <Select onValueChange={(e) => { onChangeSuffix && onChangeSuffix }} defaultValue={sufixValue}>
                         <SelectTrigger className='h-[30px] w-[80px] text-base text-gray-400 placeholder:text-gray-400 border-0 bg-transparent hover:bg-transparent focus:ring-0 focus:ring-offset-0'>
-                            <SelectValue placeholder="COP" />
+                            <SelectValue placeholder="--" />
                         </SelectTrigger>
                         <SelectContent>
                             {suffixes.map((item, index) => (

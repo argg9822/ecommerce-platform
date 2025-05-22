@@ -34,7 +34,7 @@ export default function InventoryCard() {
                             onChangeWithEvent={(e) => handleProfit(e, 'price')}
                             inputId="price"
                             prefix="$"
-                            suffixes={["COP", "USD"]}
+                            suffixes={["COP", "USD", "EUR"]}
                             onChangeSuffix={(e) => { setData('currency', e) }} 
                             sufixValue={data.currency}
                         />
@@ -53,7 +53,7 @@ export default function InventoryCard() {
                             onChangeWithEvent={(e) => handleNumberChangeInput(e, 'compare_price')}
                             inputId="compare_price"
                             prefix="$"
-                            suffixes={["COP", "USD"]}
+                            suffixes={["COP", "USD", "EUR"]}
                             onChangeSuffix={(e) => { setData('currency', e) }} 
                             sufixValue={data.currency}
                         />
@@ -72,7 +72,7 @@ export default function InventoryCard() {
                             onChangeWithEvent={(e) => handleProfit(e, 'cost')}
                             inputId="cost"
                             prefix="$"
-                            suffixes={["COP", "USD"]}
+                            suffixes={["COP", "USD", "EUR"]}
                             onChangeSuffix={(e) => { setData('currency', e) }} 
                             sufixValue={data.currency}
                         />

@@ -10,9 +10,24 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'brand_id',
         'description',
+        'category_id',
+        'is_available',
         'price',
-        'stock'
+        'compare_price',
+        'cost',
+        'stock',
+        'sku',
+        'barcode',
+        'is_feature',
+        'shipment',
+        'show_condition',
+        'warranty_policy',
+        'relevance',
+        'key_words',
+        'condition',
+        'disponibility_text',
     ];
 
     public function brand()

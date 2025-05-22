@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Trash2, PlusCircle, CircleHelp, PlusIcon } from 'lucide-react';
+import { Trash2, PlusCircle, CircleHelp, PlusIcon, X } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { ColorPicker } from '@/components/ui/color-picker';
 import { ProductVariants } from '@/types/product';
@@ -36,7 +36,7 @@ import Features from '@/pages/Products/components/ProductForm/Features';
 
 export default function VariantsCard() {
     const {
-        handleFeatureChange,
+        handleFeatureVariantChange,
         handleChangeVariantDimensions,
         handleVariantChange,
         handleColorsChange,
@@ -51,9 +51,10 @@ export default function VariantsCard() {
     } = useProductSpecificationsCard();
     
     const dimensionsInputs = [
-        {label: "Largo", value: "length"},
-        {label: "Ancho", value: "width"},
-        {label: "Alto", value: "height"}
+        {label: "Largo", value: "length", units: ["cm", "m", "in", "ft"]},
+        {label: "Ancho", value: "width", units: ["cm", "m", "in", "ft"]},
+        {label: "Alto", value: "height", units: ["cm", "m", "in", "ft"]},
+        {label: "Peso", value: "weight", units: ["g", "kg", "lb", "oz"]},
     ];
 
     return (
@@ -81,37 +82,50 @@ export default function VariantsCard() {
                     )}
                 </TabsList>
                 {data.variants.map((variant: ProductVariants, variant_index:number) => (
-                    <TabsContent value={`variant-${variant_index}`} key={variant_index}>
+                    <TabsContent value={`variant-${variant_index}`} key={variant_index} className="bg-gray-900/50">
                         <CardContent key={variant_index} className="space-y-4 rounded-lg">
                             <div className="flex justify-between items-center">
                                 <h3 className="text-gray-200 text-lg">Variante {variant_index+1}</h3>
-                                <div className="flex items-center space-x-2">
+                                
+                                <div className="flex flex-row space-x-2 items-center">
                                     <Checkbox
                                         id={`is_available_${variant_index+1}`}
                                         checked={variant.is_available}
                                         onCheckedChange={(checked) => handleVariantChange(variant_index, 'is_available', !!checked)}
                                     />
-                                    <div className="flex flex-row">
-                                        <label
-                                            htmlFor={`is_available_${variant_index+1}`}
-                                            className="text-sm font-medium text-gray-400 hover:text-gray-200 cursor-pointer"
-                                        >
-                                            Disponible
-                                        </label>
-                                        <TooltipProvider>
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <CircleHelp size={16} className="text-gray-100 ml-2 cursor-pointer" />
-                                                </TooltipTrigger>
+                                    <label
+                                        htmlFor={`is_available_${variant_index+1}`}
+                                        className="text-sm font-medium text-gray-400 hover:text-gray-200 cursor-pointer"
+                                    >
+                                        Disponible
+                                    </label>
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <CircleHelp size={16} className="text-gray-100 ml-2 cursor-pointer" />
+                                            </TooltipTrigger>
 
-                                                <TooltipContent>
-                                                    <p className="text-gray-100">Establecer variación como disponible en la tienda</p>
-                                                </TooltipContent>
-                                            </Tooltip>
-                                        </TooltipProvider>
-                                    </div>
+                                            <TooltipContent>
+                                                <p className="text-gray-100">Establecer variación como disponible en la tienda</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+
+                                    <InputWithAddons
+                                        value={variant.price || ""}
+                                        placeholder="0.00"
+                                        type="number"
+                                        className="pl-[60px]"
+                                        onChangeWithEvent={(e) => handleVariantChange(variant_index, 'price', e.target.value)}
+                                        inputId={`price-${variant_index + 1}`}
+                                        prefix="Precio"
+                                        suffixes={["COP", "USD", "EUR"]}
+                                        sufixValue="COP"
+                                        onChangeSuffix={(e) => handleVariantChange(variant_index, 'currency_price', e)}
+                                    />
                                 </div>
-                                <div className="col-span-1">
+                                
+                                <div>
                                     {(data.variants.length > 1) && (
                                         <DangerButton
                                             type="button"
@@ -119,7 +133,7 @@ export default function VariantsCard() {
                                             onClick={() => removeVariant(variant_index)}
                                             className="text-red-500 hover:text-gray-100"
                                         >
-                                            <Trash2 className="h-4 w-4" />
+                                            <X className="h-4 w-4" />
                                         </DangerButton>
                                     )}
                                 </div>
@@ -184,32 +198,22 @@ export default function VariantsCard() {
                                     </div>
                                 </div>
 
-                                <div className="col-span-5">
-                                    <InputLabel htmlFor="weight" value="Peso" />
-                                    <Input
-                                        type='number'
-                                        id="weight"
-                                        placeholder="En KG"
-                                        value={variant.weight || ""}
-                                        onChange={(e) => handleVariantChange(variant_index, "weight", e.target.value)}
-                                    />
-                                </div>
+                                <div className="col-span-12">
+                                    <InputLabel htmlFor="weight" value="Dimensiones y peso" />
 
-                                <div className="col-span-7">
-                                    <InputLabel htmlFor="weight" value="Dimensiones" />
-
-                                    <div className="flex flex-row outline-1 outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
+                                    <div className="flex flex-row gap-1 outline-1 outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
                                         {dimensionsInputs.map((dimension, index) => (
                                             <InputWithAddons
                                                 key={index}
-                                                value={data.variants[variant_index]?.dimensions[dimension.value as keyof ProductDimensions] || ""}
+                                                value={data.variants[variant_index]?.dimensions[dimension.value as keyof ProductDimensions].value || ""}
                                                 placeholder="0"
                                                 className="pl-[60px]"
-                                                onChange={(e) => handleChangeVariantDimensions(variant_index, dimension.value, String(e))}
+                                                onChange={(e) => handleChangeVariantDimensions(variant_index, dimension.value, String(e), "dimension")}
                                                 inputId={`${dimension.value}-${variant_index + 1}`}
                                                 prefix={dimension.label}
-                                                suffixes={["cm", "m"]}
-                                                onChangeSuffix={(key, value) => handleVariantChange(variant_index, "unitOfMeasurement" , value)}
+                                                suffixes={dimension.units}
+                                                sufixValue={data.variants[variant_index]?.dimensions[dimension.value as keyof ProductDimensions].unit || ""}
+                                                onChangeSuffix={(key, value) => handleChangeVariantDimensions(variant_index, dimension.value , value, "unit")}
                                             />
                                             )
                                         )}
@@ -227,7 +231,7 @@ export default function VariantsCard() {
                                         value={feature.value}
                                         index={index}
                                         variantIndex={variant_index}
-                                        handleFeatureChange={handleFeatureChange}
+                                        handleFeatureChange={handleFeatureVariantChange}
                                     >
                                         <div className="col-span-1">
                                             {(variant.attributes.length > 1) && (

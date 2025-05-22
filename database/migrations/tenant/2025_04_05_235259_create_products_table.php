@@ -17,33 +17,23 @@ return new class extends Migration
             $table->longText('description');
             $table->decimal('price', 10, 2);
             $table->decimal('compare_price', 10, 2)->nullable();
+            $table->decimal('cost', 10, 2);
             $table->integer('stock')->default(0);
-            $table->integer('sku')->unique()->nullable();
+            $table->string('sku')->unique()->nullable();
             $table->string('barcode')->nullable();
             $table->boolean('is_feature')->default(false); //Destacado en homepage
             $table->boolean('is_available')->default(true);
+            $table->integer('relevance')->default(true)->nullable();
             $table->foreignId('brand_id')->nullable()->constrained()->onDelete('cascade');
             $table->decimal('shipment', 10, 2)->default(0)->nullable();
             $table->string("meta_title")->nullable();
-            $table->string("keywords")->nullable();
+            $table->string("key_words")->nullable();
+            $table->enum("condition", ["new", "used", "refurbished"])->default("new");
+            $table->string("disponibility_text")->nullable();
             $table->text("meta_description")->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
-
-        // Schema::create('products', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('name');
-        //     $table->decimal('price', 10, 2);
-        //     $table->decimal('compare_price', 10, 2);
-        //     $table->string('slug')->unique();
-        //     $table->text('description')->nullable();
-        //     $table->boolean('is_available')->default(true);
-        //     $table->boolean('is_feature')->default(false);
-        //     $table->decimal('shipment', 10, 2)->default(0);
-        //     $table->foreignId('brand_id')->constrained()->cascadeOnDelete();
-        //     $table->timestamps();
-        // });
     }
 
     /**

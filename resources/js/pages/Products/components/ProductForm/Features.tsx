@@ -6,7 +6,7 @@ type FeatureProps = {
     name?: string;
     value?: string;
     index?: number;
-    variantIndex?: number;
+    variantIndex: number;
     handleFeatureChange?: (index: number, field: "name" | "value", value: string, variantIndex: number) => void;
     addFeatureVariant?: (variantIndex: number) => void;
 }
@@ -31,8 +31,8 @@ export default function Features({
                         placeholder="Ej: Material, Color, Talla"
                         value={name}
                         onChange={(e) => 
-                            handleFeatureChange && 
-                            variantIndex !== undefined && 
+                            handleFeatureChange &&
+                            variantIndex !== undefined &&
                             index !== undefined &&
                             handleFeatureChange(index, "name", e.target.value, variantIndex)}
                     />
@@ -46,7 +46,7 @@ export default function Features({
                         value={value}
                         onChange={(e) => 
                             handleFeatureChange && 
-                            variantIndex !== undefined && 
+                            variantIndex !== undefined &&
                             index !== undefined &&
                             handleFeatureChange(index, "value", e.target.value, variantIndex)}
                     />

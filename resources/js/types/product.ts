@@ -12,10 +12,22 @@ export interface ProductFeatures {
 }
 
 export interface ProductDimensions {
-    length: number;
-    width: number;
-    height: number;
-    unitOfMeasurement: string;
+    length: {
+        value: number;
+        unit: string;
+    };
+    height: {
+        value: number;
+        unit: string;
+    };
+    weight: {
+        value: number;
+        unit: string;
+    };
+    width: {
+        value: number;
+        unit: string;
+    };
 }
 
 export interface VariantAttributes {
@@ -39,7 +51,6 @@ export interface ProductVariants {
     cost_shipping: number | undefined;
     dimensions: ProductDimensions;
     attributes: VariantAttributes[];
-    weight: number | undefined;
     is_available: boolean;
 }
 

@@ -15,7 +15,7 @@ export interface ProductForm {
     sku: string;
     barcode: string;
     is_feature: boolean;
-    is_available_product: boolean;
+    is_available: boolean;
     variants: ProductVariants[];
     show_condition: boolean;
     key_words: string;
@@ -30,14 +30,3 @@ export interface ProductForm {
     currency: string;
     disponibility_text: string;
 }
-
-// export type ProductFormContextType = {
-//     storeProduct: ReturnType<typeof useProductForm>['storeProduct'],
-//     data: ReturnType<typeof useProductForm>['data'],
-//     setData: ReturnType<typeof useProductForm>['setData'],
-//     handleNumberChangeInput: ReturnType<typeof useProductForm>['handleNumberChangeInput'],
-//     handleNumberChangeSelect: ReturnType<typeof useProductForm>['handleNumberChangeSelect'],    
-//     errors: ReturnType<typeof useProductForm>['errors'],
-//     processing: ReturnType<typeof useProductForm>['processing'],
-//     recentlySuccessful: ReturnType<typeof useProductForm>['recentlySuccessful'],
-// }

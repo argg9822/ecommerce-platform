@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, FormEventHandler } from 'react';
 import { Head } from "@inertiajs/react";
 import { Brand, Category } from "@/types";
 import Authenticated from "@/layouts/AuthenticatedLayout";
@@ -39,17 +39,6 @@ type CreateProductProps = {
 export default function Create({ categories, brands }: CreateProductProps) {
     const form = useProductForm();
 
-    const {
-        storeProduct,
-        processing,
-    } = useProductForm();
-
-    const [openCategories, setOpenCategories] = useState(false);
-
-    const categoryList = categories.map((category) => {
-        return { value: category.id, label: category.name }
-    });
-
     const [openDialogCategory, setOpenDialogCategory] = useState(false);
     const [openDialogBrand, setOpenDialogBrand] = useState(false);
 
@@ -58,7 +47,7 @@ export default function Create({ categories, brands }: CreateProductProps) {
             <Head title="Agregar producto" />
 
             <ProductFormContext.Provider value={form}>
-                <form onSubmit={storeProduct} encType="multipart/form-data">
+                <form onSubmit={form.submit} encType="multipart/form-data">
                     <section className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8 mt-8">
 
                         {/* Información principal */}
@@ -69,19 +58,6 @@ export default function Create({ categories, brands }: CreateProductProps) {
                             categories={categories}
                         />
 
-                        {/* Características adicionales */}
-                        <Accordion type="single" collapsible className="w-full accordion-cards">
-                            <AccordionItem value="item-1">
-                                <AccordionTrigger className="flex flex-col text-gray-100">
-                                    <h3 className="accordion-cards-title">Variantes (opcional)</h3>
-                                    <p className="text-gray-400">Especificaciones del producto</p>
-                                </AccordionTrigger>
-                                <AccordionContent>
-                                    <VariantsCard />
-                                </AccordionContent>
-                            </AccordionItem>
-                        </Accordion>
-
                         {/* Precios y stock */}
                          <Accordion type="single" collapsible className="w-full accordion-cards">
                             <AccordionItem value="item-1">
@@ -91,6 +67,19 @@ export default function Create({ categories, brands }: CreateProductProps) {
                                 </AccordionTrigger>
                                 <AccordionContent>
                                     <InventoryCard />
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+
+                        {/* Características adicionales */}
+                        <Accordion type="single" collapsible className="w-full accordion-cards">
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger className="flex flex-col text-gray-100">
+                                    <h3 className="accordion-cards-title">Variantes (opcional)</h3>
+                                    <p className="text-gray-400">Especificaciones del producto</p>
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    <VariantsCard />
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>
@@ -139,13 +128,14 @@ export default function Create({ categories, brands }: CreateProductProps) {
                         <PrimaryButton
                             type="submit"
                             className="ml-4"
-                            disabled={processing}
+                            disabled={form.processing}
                         >Guardar
                         </PrimaryButton>
                     </div>
                 </form>
             </ProductFormContext.Provider>
 
+            {/* Modal para agregar categoría */}
             <Dialog open={openDialogCategory} onOpenChange={setOpenDialogCategory}>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
@@ -156,6 +146,7 @@ export default function Create({ categories, brands }: CreateProductProps) {
                 </DialogContent>
             </Dialog>
 
+            {/* Modal para agregar marca */}
             <Dialog open={openDialogBrand} onOpenChange={setOpenDialogBrand}>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>

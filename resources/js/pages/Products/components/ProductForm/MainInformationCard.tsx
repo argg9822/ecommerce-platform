@@ -96,6 +96,19 @@ export default function MainInformationCard({
         setData('features', updatedFeatures);
     }
 
+    const handleFeatureChange = (index: number, field: "name" | "value", value: string) => {
+        console.log(index, field, value);
+        
+        const updatedFeatures = [...data.features];
+        const currentFeature = updatedFeatures[index];
+        const updatedFeature = {
+            ...currentFeature,
+            [field]: value,
+        };
+        updatedFeatures[index] = updatedFeature;
+        setData('features', updatedFeatures);
+    }
+
     return (
         <Card>
             <CardHeader>
@@ -106,7 +119,7 @@ export default function MainInformationCard({
                 <div className="grid grid-cols-12 gap-4">
                     <div className="col-span-6">
                         <InputLabel htmlFor="name" value="Nombre del producto" />
-                        <Input id="name" type="text" value={data.name} onChange={(e) => setData('name', e.target.value)} />
+                        <Input id="name" type="text" value={data.name} onChange={(e) => setData('name', e.target.value)} autoComplete='off' className={errors.name ? 'border-red-500' : ''}/>
                         <InputError message={errors.name} />
                     </div>
 
@@ -140,7 +153,7 @@ export default function MainInformationCard({
 
                                 <SelectContent>
                                     <SelectItem
-                                        value="Propia">
+                                        value="propia">
                                         <span>Propia</span>
                                     </SelectItem>
                                     {brands.length > 0 && (brands.map((brand) => (
@@ -294,11 +307,8 @@ export default function MainInformationCard({
                                 name={feature.name}
                                 value={feature.value}
                                 index={index}
-                                handleFeatureChange={(index, field, value, variant_index) => {
-                                    const updatedFeatures = [...data.features];
-                                    updatedFeatures[index][field] = value;
-                                    setData('features', updatedFeatures);
-                                }}
+                                variantIndex={NaN}
+                                handleFeatureChange={handleFeatureChange}
                             >
                                 <div className="col-span-1">
                                     <Button

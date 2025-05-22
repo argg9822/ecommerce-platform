@@ -1,5 +1,5 @@
 import { useProductFormContext } from "@/context/product-form.context";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ProductVariants, ProductDimensions, VariantAttributes, ColorOptionsType } from '@/types/product';
 
 const BASE_COLOR_OPTIONS: ColorOptionsType[] = [
@@ -25,18 +25,30 @@ export default function useProductSpecificationsCard(){
         const newVariants = [
             {
                 price: undefined,
+                currency_price: 'COP',
                 compare_prince: undefined,
                 stock: 0,
                 cost_shipping: undefined,
                 dimensions: {
-                    length: 0,
-                    width: 0,
-                    height: 0,
-                    unitOfMeasurement: 'cm'
+                    length: {
+                        value: 0,
+                        unit: 'cm',
+                    },
+                    width: {
+                        value: 0,
+                        unit: 'cm',
+                    },
+                    height: {
+                        value: 0,
+                        unit: 'cm',
+                    },
+                    weight: {
+                        value: 0,
+                        unit: 'kg',
+                    }
                 },
                 colors: createColorOptions(),
                 attributes: [{name: '', value: ''}],
-                weight: undefined,
                 is_available: true,
             }
         ];
@@ -44,7 +56,7 @@ export default function useProductSpecificationsCard(){
         setData('variants', newVariants)
     }, []);
 
-    const handleFeatureChange = (index: number, field: "name" | "value", value: string, variantIndex: number) => {
+    const handleFeatureVariantChange = (index: number, field: "name" | "value", value: string, variantIndex: number) => {
         const updatedVariants: ProductVariants[] = [...data.variants];
         const currentAttributes: VariantAttributes[] = updatedVariants[variantIndex].attributes;
         const currentAttribute = currentAttributes[index];
@@ -83,14 +95,15 @@ export default function useProductSpecificationsCard(){
         setData('variants', updatedVariants);
     }
 
-    const handleChangeVariantDimensions = (index: number, field: string, value: string ) => {
+    const handleChangeVariantDimensions = (index: number, field: string, value: string | number, dimensionKey: string | undefined) => {
         const updatedVariants = [...data.variants];
         const dimensions: ProductDimensions = { ...updatedVariants[index].dimensions };
-        if (field === 'unitOfMeasurement') {
-                dimensions.unitOfMeasurement = value as ProductDimensions['unitOfMeasurement'];
-        } else {
-            (dimensions as any)[field] = parseFloat(value as string);
+        if (dimensionKey === 'unit') {
+            dimensions[field as keyof ProductDimensions].unit = value as string;
+        }else{
+            dimensions[field as keyof ProductDimensions].value = value as number;
         }
+
         updatedVariants[index].dimensions = dimensions;
         setData('variants', updatedVariants);
     }
@@ -141,21 +154,32 @@ export default function useProductSpecificationsCard(){
             stock: 0,
             cost_shipping: undefined,
             dimensions: {
-                length: 0,
-                width: 0,
-                height: 0,
-                unitOfMeasurement: 'cm'
+                length: {
+                    value: 0,
+                    unit: 'cm',
+                },
+                width: {
+                    value: 0,
+                    unit: 'cm',
+                },
+                height: {
+                    value: 0,
+                    unit: 'cm',
+                },
+                weight: {
+                    value: 0,
+                    unit: 'kg',
+                }
             },
             colors: createColorOptions(),
             attributes: [{name: '', value: ''}],
-            weight: undefined,
             is_available: true,
         });
         setData('variants', newVariants);
     }
 
     return {
-        handleFeatureChange,
+        handleFeatureVariantChange,
         handleChangeVariantDimensions,
         handleColorsChange,
         addCustomColor,
