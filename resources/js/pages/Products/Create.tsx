@@ -3,11 +3,13 @@ import { Head } from "@inertiajs/react";
 import { Brand, Category } from "@/types";
 import Authenticated from "@/layouts/AuthenticatedLayout";
 import { 
-    MainInformationCard, 
-    VariantsCard, 
-    InventoryCard,
-    ImagesCard
-} from '@/pages/Products/components/ProductForm';
+    MainInformation, 
+    Variants, 
+    Inventory,
+    Images,
+    StoreFront,
+    SeoDetails
+} from '@/pages/Products/components/form/Sections';
 import BrandForm from '@/pages/Brands/Partials/BrandForm';
 import CategoryForm from '@/pages/Categories/Partials/CategoryForm';
 import useProductForm from '@/hooks/form/useProductForm';
@@ -28,8 +30,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import PrimaryButton from '@/components/PrimaryButton';
-import StoreFrontCard from './components/ProductForm/StoreFrontCard';
-import SeoDetails from './components/ProductForm/SeoDetails';
 
 type CreateProductProps = {
     categories: Category[],
@@ -51,7 +51,7 @@ export default function Create({ categories, brands }: CreateProductProps) {
                     <section className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8 mt-8">
 
                         {/* Información principal */}
-                        <MainInformationCard
+                        <MainInformation
                             brands={brands}
                             setOpenDialogBrand={setOpenDialogBrand}
                             setOpenDialogCategory={setOpenDialogCategory}
@@ -66,7 +66,7 @@ export default function Create({ categories, brands }: CreateProductProps) {
                                     <p className="text-gray-400">Seguimiento del inventario</p>
                                 </AccordionTrigger>
                                 <AccordionContent>
-                                    <InventoryCard />
+                                    <Inventory />
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>
@@ -79,7 +79,7 @@ export default function Create({ categories, brands }: CreateProductProps) {
                                     <p className="text-gray-400">Especificaciones del producto</p>
                                 </AccordionTrigger>
                                 <AccordionContent>
-                                    <VariantsCard />
+                                    <Variants />
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>
@@ -92,7 +92,7 @@ export default function Create({ categories, brands }: CreateProductProps) {
                                     <p className="text-gray-400">Agrega imágenes de tus productos para llamar la atención de los clientes</p>
                                 </AccordionTrigger>
                                 <AccordionContent>
-                                    <ImagesCard />
+                                    <Images />
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>
@@ -105,7 +105,7 @@ export default function Create({ categories, brands }: CreateProductProps) {
                                     <p className="text-gray-400">Configura lo que los clientes verán en el storefront.</p>
                                 </AccordionTrigger>
                                 <AccordionContent>
-                                    <StoreFrontCard />
+                                    <StoreFront />
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>

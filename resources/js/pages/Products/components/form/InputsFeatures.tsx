@@ -11,7 +11,7 @@ type FeatureProps = {
     addFeatureVariant?: (variantIndex: number) => void;
 }
 
-export default function Features({
+export default function InputsFeatures({
     name, 
     value, 
     index, 

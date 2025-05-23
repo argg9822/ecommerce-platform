@@ -1,5 +1,3 @@
-import { Button } from '@/components/ui/button';
-import ButtonAdd from '@/components/ui/button-add';
 import {
     Tooltip,
     TooltipContent,
@@ -20,27 +18,29 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Button } from '@/components/ui/button';
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Trash2, PlusCircle, CircleHelp, PlusIcon, X } from 'lucide-react';
-import { Input } from "@/components/ui/input";
 import { ColorPicker } from '@/components/ui/color-picker';
 import { ProductVariants } from '@/types/product';
 import { ProductDimensions } from '@/types/product';
+import ButtonAdd from '@/components/ui/button-add';
 import InputLabel from '@/components/InputLabel';
 import InputError from '@/components/InputError';
 import useProductSpecificationsCard from '@/hooks/form/useProductSpecificationsCard';
-import DangerButton from '@/components/DangerButton';
+import DangerButton from '@/components/ui/danger-button';
 import InputWithAddons from '@/components/ui/input-with-addons';
-import Features from '@/pages/Products/components/ProductForm/Features';
+import InputsFeatures from "@/pages/Products/components/form/InputsFeatures";
 
-export default function VariantsCard() {
+export default function Variants() {
     const {
         handleFeatureVariantChange,
         handleChangeVariantDimensions,
         handleVariantChange,
         handleColorsChange,
-        addCustomColor,
+        addCustomColorVariant,
         addFeatureVariant,
         addVariant,
         removeFeature,
@@ -61,12 +61,13 @@ export default function VariantsCard() {
         <Card className="col-span-1 md:col-span-2">
             <div className="flex items-center justify-end w-full">
                 <ButtonAdd
-                    onClick={() => addVariant()}
+                    onClick={addVariant}
                     className="mb-1" 
                     title="Añade un nuevo grupo de especificaciones"
                     text="Agregar nueva variante"
                 />
             </div>
+
             <Tabs defaultValue="variant-1">
                 <TabsList className={`grid bg-gray-700 rounded-lg grid-cols-12`}>
                     {data.variants.map((_: ProductVariants, variant_index:number) => (
@@ -81,12 +82,11 @@ export default function VariantsCard() {
                     )
                     )}
                 </TabsList>
+
                 {data.variants.map((variant: ProductVariants, variant_index:number) => (
                     <TabsContent value={`variant-${variant_index}`} key={variant_index} className="bg-gray-900/50">
                         <CardContent key={variant_index} className="space-y-4 rounded-lg">
-                            <div className="flex justify-between items-center">
-                                <h3 className="text-gray-200 text-lg">Variante {variant_index+1}</h3>
-                                
+                            <div className="flex justify-between items-center">                                
                                 <div className="flex flex-row space-x-2 items-center">
                                     <Checkbox
                                         id={`is_available_${variant_index+1}`}
@@ -110,19 +110,6 @@ export default function VariantsCard() {
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
-
-                                    <InputWithAddons
-                                        value={variant.price || ""}
-                                        placeholder="0.00"
-                                        type="number"
-                                        className="pl-[60px]"
-                                        onChangeWithEvent={(e) => handleVariantChange(variant_index, 'price', e.target.value)}
-                                        inputId={`price-${variant_index + 1}`}
-                                        prefix="Precio"
-                                        suffixes={["COP", "USD", "EUR"]}
-                                        sufixValue="COP"
-                                        onChangeSuffix={(e) => handleVariantChange(variant_index, 'currency_price', e)}
-                                    />
                                 </div>
                                 
                                 <div>
@@ -142,14 +129,64 @@ export default function VariantsCard() {
                             <Separator />
 
                             <div className="grid grid-cols-12 gap-5 items-end">
+                                <div className="col-span-4">
+                                    <span className="text-gray-500">(Opcional) Sólo si el precio por variante es diferente</span>
+                                    <InputWithAddons
+                                        value={variant.price || ""}
+                                        placeholder="0.00"
+                                        type="number"
+                                        className="pl-[60px]"
+                                        onChangeWithEvent={(e) => handleVariantChange(variant_index, 'price', e.target.value)}
+                                        inputId={`price-${variant_index + 1}`}
+                                        prefix="Precio"
+                                        suffixes={["COP", "USD", "EUR"]}
+                                        sufixValue="COP"
+                                        onChangeSuffix={(e) => handleVariantChange(variant_index, 'currency_price', e)}
+                                    />
+                                </div>
+
+                                <div className="col-span-4">
+                                    <span className="text-gray-500">(Opcional)</span>
+                                    <InputWithAddons
+                                        value={variant.compare_price || ""}
+                                        placeholder="0.00"
+                                        type="number"
+                                        className="pl-[145px]"
+                                        onChangeWithEvent={(e) => handleVariantChange(variant_index, 'compare_price', e.target.value)}
+                                        inputId={`price-${variant_index + 1}`}
+                                        prefix="Precio comparativo"
+                                        suffixes={["COP", "USD", "EUR"]}
+                                        sufixValue="COP"
+                                        onChangeSuffix={(e) => handleVariantChange(variant_index, 'currency_price', e)}
+                                    />
+                                </div>
+
+                                <div className="col-span-4">
+                                    <div className="flex justify-between">
+                                        <InputLabel htmlFor="stock" value="Stock" />
+                                        <span className="text-gray-500">(Opcional)</span>
+                                    </div>
+                                    <Input 
+                                        id="stock" 
+                                        type="number" 
+                                        value={data.stock} 
+                                        onChange={(e) => handleVariantChange(variant_index, 'stock', e.target.value)}
+                                    />
+                                    <InputError message={errors.stock} />
+                                </div>
+
                                 <div className="col-span-12">
                                     <div className="flex flex-row items-center justify-between">
-                                        <InputLabel htmlFor="feature-color" value="Colores disponibles" />
+                                        <div className="flex flex-row">
+                                            <InputLabel htmlFor="feature-color" value="Colores disponibles" />
+                                            <span className="text-gray-500 ml-2">(Opcional)</span>
+                                        </div>
+                                        
                                         <Button 
                                             type="button" 
                                             className="max-h-[20px] bg-transparent py-0 text-blue-500 hover:text-blue-700" 
-                                            title="Añade una marca" 
-                                            onClick={() => addCustomColor(variant_index)}
+                                            title="Añade un color personalizado" 
+                                            onClick={() => addCustomColorVariant(variant_index)}
                                         >
                                             <PlusIcon />Agregar color personalizado
                                         </Button>
@@ -225,7 +262,7 @@ export default function VariantsCard() {
 
                             <div className='flex flex-col gap-4'>
                                 {variant.attributes.map((feature, index) => (
-                                    <Features
+                                    <InputsFeatures
                                         key={index}
                                         name={feature.name}
                                         value={feature.value}
@@ -233,8 +270,8 @@ export default function VariantsCard() {
                                         variantIndex={variant_index}
                                         handleFeatureChange={handleFeatureVariantChange}
                                     >
-                                        <div className="col-span-1">
-                                            {(variant.attributes.length > 1) && (
+                                        {(variant.attributes.length > 1) && (
+                                            <div className="col-span-1">
                                                 <Button
                                                     type="button"
                                                     variant="ghost"
@@ -244,23 +281,18 @@ export default function VariantsCard() {
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
-                                            )}
-                                        </div>
-                                    </Features>
+                                            </div>
+                                        )}
+                                    </InputsFeatures>
                                 ))}
 
-                                <Button
-                                    type="button"
-                                    onClick={(e) => addFeatureVariant(variant_index)}
-                                    className="gap-2 bg-gray-900 hover:bg-gray-800 text-gray-50 transition-all duration-300 shadow-lg hover:shadow-gray-900/30 rounded-lg border border-gray-700 hover:border-gray-600 group"
-                                >
-                                    <PlusCircle className="h-4 w-4 text-gray-300 group-hover:text-white" />
-                                    <span className="text-gray-100 group-hover:text-white font-medium text-sm">
-                                        Agregar nueva característica
-                                    </span>
-                                </Button>
+                                <ButtonAdd
+                                    onClick={() => addFeatureVariant(variant_index)}
+                                    className="mb-1" 
+                                    title="Añade una nueva característica"
+                                    text="Agregar nueva característica"
+                                />
                                 <InputError message={errors.variants} />
-
                             </div>
                         </CardContent>
                     </TabsContent>

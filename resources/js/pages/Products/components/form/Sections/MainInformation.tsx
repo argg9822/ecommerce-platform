@@ -2,13 +2,13 @@ import { Brand } from '@/types';
 import { Category } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Textarea } from '@/components/ui/textarea';
-import { PlusIcon, CircleHelp, Layers, Check, ChevronsUpDown, PlusCircle, Trash2 } from 'lucide-react';
+import { PlusIcon, CircleHelp, Layers, Check, ChevronsUpDown, PlusCircle, Trash2, X } from 'lucide-react';
 import { useProductFormContext } from '@/context/product-form.context';
 import { Button } from '@/components/ui/button';
 import InputLabel from '@/components/InputLabel';
 import InputError from '@/components/InputError';
 import { Checkbox } from "@/components/ui/checkbox"
-import Features from '@/pages/Products/components/ProductForm/Features';
+import InputsFeatures from "@/pages/Products/components/form/InputsFeatures";
 import {
     Command,
     CommandEmpty,
@@ -51,7 +51,7 @@ type MainInformationCardProps = {
     categories: Category[]
 }
 
-export default function MainInformationCard({
+export default function MainInformation({
     brands,
     setOpenDialogBrand,
     setOpenDialogCategory,
@@ -74,40 +74,6 @@ export default function MainInformationCard({
             description: category.description
         }
     })
-
-    const categoryFilter = (value:string, search: string) => {
-        const item = selectCategories.find(c => c.value === parseInt(value));
-        return item?.label.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
-    }
-
-    const addFeature = () => {
-        setData('features', [
-            ...data.features,
-            {
-                name: '',
-                value: ''
-            }
-        ]);
-    }
-
-    const removeFeature = (index: number) => {
-        const updatedFeatures = [...data.features];
-        updatedFeatures.splice(index, 1);
-        setData('features', updatedFeatures);
-    }
-
-    const handleFeatureChange = (index: number, field: "name" | "value", value: string) => {
-        console.log(index, field, value);
-        
-        const updatedFeatures = [...data.features];
-        const currentFeature = updatedFeatures[index];
-        const updatedFeature = {
-            ...currentFeature,
-            [field]: value,
-        };
-        updatedFeatures[index] = updatedFeature;
-        setData('features', updatedFeatures);
-    }
 
     return (
         <Card>
@@ -155,7 +121,7 @@ export default function MainInformationCard({
                         <div className='flex'>
                             <Select onValueChange={(e) => { handleNumberChangeSelect(e, 'brand_id') }} defaultValue={String(data.brand_id)} required>
                                 <SelectTrigger className='h-[30px]'>
-                                    <SelectValue placeholder="Selecciona una marca" />
+                                    <SelectValue placeholder="Selecciona una marca si no es propia" />
                                 </SelectTrigger>
 
                                 <SelectContent>
@@ -165,7 +131,7 @@ export default function MainInformationCard({
                                             value={String(brand.id)}>
                                             <span>{brand.name}</span>
                                         </SelectItem>
-                                    ))
+                                        ))
                                     )}
                                 </SelectContent>
                             </Select>
@@ -185,13 +151,39 @@ export default function MainInformationCard({
                         <InputError message={errors.description} />
                     </div>
 
-                    <div className="col-span-6">
+                    <div className="col-span-12">
+                        {data.categories?.length > 0 && (
+                            <div className="flex flex-row gap-2 mb-2 w-full">
+                                {data.categories.map((catId) => {
+                                    const category = selectCategories.find(c => c.value === catId);
+                                    return (
+                                        <div 
+                                            key={catId}
+                                            className="flex items-center gap-2 bg-gray-800 rounded-full px-3 py-[3px] text-sm"
+                                        >
+                                            <span className="text-gray-100 whitespace-nowrap overflow-hidden">{category?.label}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setData('categories', data.categories.filter(id => id !== catId));
+                                                }}
+                                                className="text-gray-400 hover:text-white"
+                                            >
+                                                <X className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+
                         <div className="flex flex-row justify-between">
                             <InputLabel htmlFor="category_id" value="Categoría" />
                             <Button type="button" className="max-h-[20px] bg-transparent text-blue-500 hover:text-blue-700" title="Añade una categoría" onClick={() => setOpenDialogCategory(true)}>
                                 <PlusIcon />Agregar categoría
                             </Button>
                         </div>
+
                         <Popover open={openCategoriesSelect} onOpenChange={setOpenCategoriesSelect}>
                             <PopoverTrigger asChild>
                                 <Button
@@ -204,12 +196,12 @@ export default function MainInformationCard({
                                         border border-gray-600 hover:border-gray-600
                                         text-gray-200 hover:text-white
                                         rounded-lg transition-all duration-200
-                                        ${!data.category_id ? "text-gray-400" : ""}
+                                        ${!data.categories?.length ? "text-gray-400" : ""}
                                     `}
                                 >
-                                    {data.category_id
-                                        ? selectCategories.find((category) => category.value === data.category_id)?.label
-                                        : "Selecciona una categoría"}
+                                    {data.categories?.length 
+                                    ? `Seleccionadas (${data.categories.length})`
+                                    : "Selecciona categorías"}
                                     <ChevronsUpDown className="ml-2 h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
                                 </Button>
                             </PopoverTrigger>
@@ -225,9 +217,10 @@ export default function MainInformationCard({
                                 align="start"
                                 sideOffset={5}
                             >
-                                <Command filter={categoryFilter} className="bg-transparent">
+                                <Command className="bg-transparent">
                                     <CommandInput
                                         placeholder="Buscar categoría..."
+                                        className="border-0 focus:ring-0"
                                     />
                                     <CommandList className="max-h-[250px] overflow-y-auto custom-scrollbar">
                                         <CommandEmpty className="px-3 py-2.5 text-sm text-gray-500">
@@ -235,50 +228,55 @@ export default function MainInformationCard({
                                         </CommandEmpty>
                                         <CommandGroup className="p-1">
                                             {selectCategories.map((category) => (
-                                                <CommandItem
-                                                    key={category.value}
-                                                    value={String(category.value)}
-                                                    onSelect={(currentValue) => {
-                                                        setData('category_id', parseInt(currentValue))
-                                                        setOpenCategoriesSelect(false)
-                                                    }}
-                                                    className={`
-                                                        flex items-center
-                                                        aria-selected:bg-gray-800 aria-selected:text-white
-                                                    `}
-                                                    >
-                                                    <div className='flex flex-row'>{ }
-                                                        <div className='flex place-content-center flex-wrap'>
-                                                            <div className="w-8 h-8 rounded-sm overflow-hidden mr-3">
-                                                                {category?.image ? (
-                                                                    <img
-                                                                        src={route('tenant_media_owner', { path: category?.image })}
-                                                                        alt={category.label}
-                                                                        className="w-full h-full object-cover opacity-75"
-                                                                    />
-                                                                ) : (<Layers />)}
-                                                            </div>
-                                                        </div>
-                                                        <div className='flex flex-col text-left'>
-                                                            <span>{category.label}</span>
-                                                            <span className='text-sm text-gray-500'>{category?.description}</span>
-                                                        </div>
+                                            <CommandItem
+                                                key={category.value}
+                                                value={String(category.value)}
+                                                onSelect={() => {
+                                                const isSelected = data.categories?.includes(category.value);
+                                                setData('categories', 
+                                                    isSelected
+                                                    ? data.categories.filter(id => id !== category.value)
+                                                    : [...(data.categories || []), category.value]
+                                                );
+                                                }}
+                                                className={`
+                                                    flex items-center
+                                                    aria-selected:bg-gray-800 aria-selected:text-white
+                                                `}
+                                            >
+                                                <div className='flex flex-row w-full'>
+                                                <div className='flex place-content-center flex-wrap'>
+                                                    <div className="w-8 h-8 rounded-sm overflow-hidden mr-3">
+                                                    {category?.image ? (
+                                                        <img
+                                                        src={route('tenant_media_owner', { path: category.image })}
+                                                        alt={category.label}
+                                                        className="w-full h-full object-cover opacity-75"
+                                                        />
+                                                    ) : <Layers className="w-full h-full p-1 text-gray-500" />}
                                                     </div>
-                                                    <Check
-                                                        className={`
-                                                            ml-auto h-4 w-4
-                                                            ${data.category_id === category.value ? "opacity-100 text-blue-400" : "opacity-0"}
-                                                            transition-opacity duration-200
-                                                        `}
-                                                    />
-                                                </CommandItem>
+                                                </div>
+                                                <div className='flex flex-col text-left flex-1'>
+                                                    <span>{category.label}</span>
+                                                    <span className='text-sm text-gray-500'>{category?.description}</span>
+                                                </div>
+                                                <Check
+                                                    className={`
+                                                    ml-auto h-4 w-4
+                                                    ${data.categories?.includes(category.value) ? "opacity-100 text-blue-400" : "opacity-0"}
+                                                    transition-opacity duration-200
+                                                    `}
+                                                />
+                                                </div>
+                                            </CommandItem>
                                             ))}
                                         </CommandGroup>
                                     </CommandList>
                                 </Command>
                             </PopoverContent>
                         </Popover>
-                        <InputError message={errors.category_id} />
+                        
+                        <InputError message={errors.categories} />
                     </div>
 
                     <div className="col-span-6 flex items-center space-x-3">
@@ -298,37 +296,6 @@ export default function MainInformationCard({
                                 Establecer producto como disponible en la tienda
                             </p>
                         </div>
-                    </div>
-
-                    <div className="col-span-12 flex flex-col gap-4">
-                        <Separator />
-
-                        {data.features.map((feature, index) => (
-                            <Features
-                                key={index}
-                                name={feature.name}
-                                value={feature.value}
-                                index={index}
-                                variantIndex={NaN}
-                                handleFeatureChange={handleFeatureChange}
-                            >
-                                <div className="col-span-1">
-                                    <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => removeFeature(index)}
-                                        className="text-red-500 hover:text-red-600"
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                </div>
-                            </Features>
-                        ))}
-
-                        <Button type="button" className="max-h-[20px] bg-transparent py-0 text-blue-500 hover:text-blue-700 w-full mt-6" title="Añade una categoría" onClick={(e) => addFeature()}>
-                            <PlusIcon />Agregar característica
-                        </Button>
                     </div>
                 </div>
             </CardContent>

@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { CircleHelp } from 'lucide-react';
 import { Textarea } from "@/components/ui/textarea";
 
-export default function StoreFrontCard() {
+export default function StoreFront() {
     const {
         data,
         setData,

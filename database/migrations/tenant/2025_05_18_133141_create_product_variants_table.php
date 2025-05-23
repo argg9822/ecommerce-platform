@@ -14,12 +14,10 @@ return new class extends Migration
         Schema::create('product_variants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->decimal('price', 10, 2);
+            $table->decimal('price', 10, 2)->nullable();
             $table->decimal('compare_price', 10, 2)->nullable();
             $table->integer('stock')->default(0);
-            $table->decimal('cost_shipping', 10, 2)->nullable();
-            $table->string('dimensions')->nullable();
-            $table->decimal('weight', 10, 2)->nullable();
+            $table->decimal('shipment', 10, 2)->nullable();
             $table->boolean('is_available')->default(true);
             $table->timestamps();
         });

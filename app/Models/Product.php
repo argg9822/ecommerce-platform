@@ -3,17 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Brand;
 
 class Product extends Model
 {
 
     protected $fillable = [
         'name',
-        'brand_id',
         'description',
-        'category_id',
-        'is_available',
         'price',
         'compare_price',
         'cost',
@@ -21,17 +17,36 @@ class Product extends Model
         'sku',
         'barcode',
         'is_feature',
+        'is_available',
+        'relevance',
+        'brand_id',
         'shipment',
+        'meta_title',
+        'meta_description',
+        'key_words',
+        'condition',        
         'show_condition',
         'warranty_policy',
-        'relevance',
-        'key_words',
-        'condition',
         'disponibility_text',
     ];
 
     public function brand()
     {
         return $this->belongsTo(Brand::class);
+    }
+
+    public function categories()
+    {   
+        return $this->belongsToMany(Category::class);
+    }
+
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
     }
 }

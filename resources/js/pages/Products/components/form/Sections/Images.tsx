@@ -8,7 +8,7 @@ import UploadImages from '@/components/UploadImages';
 import { useProductFormContext } from "@/context/product-form.context";
 import { log } from "node:console";
 
-export default function ImagesCard(){
+export default function Images(){
     const {
         data,
         setData

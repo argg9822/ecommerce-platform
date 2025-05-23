@@ -8,7 +8,7 @@ import { useProductFormContext } from "@/context/product-form.context";
 import { Input } from "@/components/ui/input";
 import InputWithAddons from "@/components/ui/input-with-addons";
 
-export default function InventoryCard() {
+export default function Inventory() {
     const {
         data,
         setData,

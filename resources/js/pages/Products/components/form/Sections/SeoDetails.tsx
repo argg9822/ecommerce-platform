@@ -14,7 +14,7 @@ import InputError from '@/components/InputError';
 import { Input } from "@/components/ui/input";
 import { useProductFormContext } from "@/context/product-form.context";
 
-export default function SeoDetails () {
+export default function SeoDetails() {
     const {
             data,
             setData,
@@ -49,6 +49,7 @@ export default function SeoDetails () {
                         type="text"
                         value={data.meta_title} 
                         onChange={(e) => setData('meta_title', e.target.value)} 
+                        autoComplete="off"
                     />
                     <InputError message={errors.meta_title} />
                 </div>
@@ -103,7 +104,8 @@ export default function SeoDetails () {
                         id="meta_description"
                         type="text"
                         value={data.meta_description} 
-                        onChange={(e) => setData('meta_description', e.target.value)} 
+                        onChange={(e) => setData('meta_description', e.target.value)}
+                        autoComplete="off"
                     />
                     <InputError message={errors.meta_description} />
                 </div>

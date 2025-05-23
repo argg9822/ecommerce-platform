@@ -27,7 +27,7 @@ export default function useProductSpecificationsCard(){
             {
                 price: undefined,
                 currency_price: 'COP',
-                compare_prince: undefined,
+                compare_price: undefined,
                 stock: 0,
                 cost_shipping: undefined,
                 dimensions: {
@@ -134,7 +134,7 @@ export default function useProductSpecificationsCard(){
         handleVariantChange(variantIndex, "colors", newColors);
     }
 
-    const addCustomColor = (variantIndex: number) => {
+    const addCustomColorVariant = (variantIndex: number) => {
         const newVariants = [...data.variants];
         const newColors = [...newVariants[variantIndex].colors, {value: "#FFFFFF", selected: true}];
         handleVariantChange(variantIndex, "colors", newColors);
@@ -151,7 +151,7 @@ export default function useProductSpecificationsCard(){
         const newVariants = [...data.variants];
         newVariants.push({
             price: undefined,
-            compare_prince: undefined,
+            compare_price: undefined,
             stock: 0,
             cost_shipping: undefined,
             dimensions: {
@@ -183,7 +183,7 @@ export default function useProductSpecificationsCard(){
         handleFeatureVariantChange,
         handleChangeVariantDimensions,
         handleColorsChange,
-        addCustomColor,
+        addCustomColorVariant,
         removeVariantColor,
         handleVariantChange,
         addFeatureVariant,

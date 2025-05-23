@@ -45,7 +45,7 @@ export interface ColorOptionsType {
 
 export interface ProductVariants {
     price: number | undefined;
-    compare_prince: number | undefined;
+    compare_price: number | undefined;
     stock: number | undefined;
     colors: ColorOptionsType[];
     cost_shipping: number | undefined;

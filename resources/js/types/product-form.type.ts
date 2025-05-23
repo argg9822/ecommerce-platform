@@ -6,7 +6,6 @@ export type ProductFormContextType = ReturnType<typeof useProductForm>;
 export interface ProductForm {
     name: string;
     description: string;
-    features: ProductFeatures[],
     price: number | undefined;
     compare_price: number | undefined;
     profit: number | undefined;
@@ -22,7 +21,7 @@ export interface ProductForm {
     condition: "refurbished" | "new" | "used";
     relevance: number;
     brand_id: number | undefined;
-    category_id: number;
+    categories: number[];
     product_images: ProductImage[];
     shipment: number | undefined;
     currency: string;
