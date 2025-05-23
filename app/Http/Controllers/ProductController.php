@@ -44,7 +44,8 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         try {
-            $product = Product::create($request->validated());
+            Log::info($request->all());
+            // $product = Product::create($request->validated());
             return redirect()->back()->with('flash.success', [
                     'title' => 'Éxito',
                     'message' => 'Producto guardado correctamente'

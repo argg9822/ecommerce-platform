@@ -119,7 +119,15 @@ export default function MainInformationCard({
                 <div className="grid grid-cols-12 gap-4">
                     <div className="col-span-6">
                         <InputLabel htmlFor="name" value="Nombre del producto" />
-                        <Input id="name" type="text" value={data.name} onChange={(e) => setData('name', e.target.value)} autoComplete='off' className={errors.name ? 'border-red-500' : ''}/>
+                        <Input 
+                            id="name" 
+                            type="text" 
+                            value={data.name} 
+                            onChange={(e) => setData('name', e.target.value)} 
+                            autoComplete='off' 
+                            className={errors.name ? 'border-red-500' : ''}
+                            required
+                        />
                         <InputError message={errors.name} />
                     </div>
 
@@ -143,19 +151,14 @@ export default function MainInformationCard({
                                 <PlusIcon />Agregar marca
                             </Button>
                         </div>
-                        
 
                         <div className='flex'>
-                            <Select onValueChange={(e) => { handleNumberChangeSelect(e, 'brand_id') }} defaultValue={String(data.brand_id)}>
+                            <Select onValueChange={(e) => { handleNumberChangeSelect(e, 'brand_id') }} defaultValue={String(data.brand_id)} required>
                                 <SelectTrigger className='h-[30px]'>
                                     <SelectValue placeholder="Selecciona una marca" />
                                 </SelectTrigger>
 
                                 <SelectContent>
-                                    <SelectItem
-                                        value="propia">
-                                        <span>Propia</span>
-                                    </SelectItem>
                                     {brands.length > 0 && (brands.map((brand) => (
                                         <SelectItem
                                             key={brand.id}
@@ -281,9 +284,8 @@ export default function MainInformationCard({
                     <div className="col-span-6 flex items-center space-x-3">
                         <Checkbox
                             id="is_available"
-                            checked={data.is_available_product}
+                            checked={data.is_available}
                             onCheckedChange={(checked) => setData('is_available_product', !!checked)}
-                            className="h-6 w-6"
                         />
                         <div className="flex flex-col">
                             <label

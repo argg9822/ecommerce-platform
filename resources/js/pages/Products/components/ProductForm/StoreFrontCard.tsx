@@ -34,66 +34,52 @@ export default function StoreFrontCard() {
         <Card>
             <CardContent className="space-y-4">
                 <div className="grid grid-cols-12 gap-4">
-                    <div className="flex items-center col-span-6 space-x-2">
-                        <Checkbox
-                            id="is_feature"
-                            checked={Boolean(data.is_feature) || false}
-                            onCheckedChange={(checked) => setData('is_feature', !!checked)}
-                        />
-                        <div className="grid leading-none">
-                            <label
-                                htmlFor="is_feature"
-                                className="text-sm font-medium text-gray-400 hover:text-gray-200 cursor-pointer"
-                            >
-                                Destacar en homepage
-                            </label>
-                            <p className="text-sm text-gray-600">
-                                Hacer que sea más visible este producto
-                            </p>
+                    <div className="flex col-span-12 justify-between">
+                        <div className="flex flex-row items-center space-x-3">
+                            <Checkbox
+                                id="is_feature"
+                                checked={Boolean(data.is_feature) || false}
+                                onCheckedChange={(checked) => setData('is_feature', !!checked)}
+                            />
+                            <div className="grid leading-none">
+                                <label
+                                    htmlFor="is_feature"
+                                    className="text-sm font-medium text-gray-400 hover:text-gray-200 cursor-pointer"
+                                >
+                                    Destacar en homepage
+                                </label>
+                                <p className="text-sm text-gray-600">
+                                    Hacer que sea más visible este producto
+                                </p>
+                            </div>
                         </div>
                         {data.is_feature && (
-                            <div className="flex items-center relative pl-6">
+                            <div className="flex relative pl-6 flex-col">
+                                <div className="flex flex-row">
+                                    <InputLabel htmlFor="relevance" value="Relevancia" className="absolute left-0 top-0" />
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <CircleHelp size={16} className="text-gray-100 ml-2 cursor-pointer" />
+                                            </TooltipTrigger>
+
+                                            <TooltipContent>
+                                                <p className="text-gray-100">Coloca una relevancia entre 1 y 5 donde: 1 es el producto más relevante y 5 el producto menos relevante.</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                </div>
                                 <Input
                                     id="relevance" 
                                     type="number"
                                     placeholder="Relevancia"
                                     max={5}
-                                    value={data.relevance} 
+                                    value={data.is_feature ? data.relevance : 0} 
                                     onChange={(e) => setData('relevance', parseInt(e.target.value))} 
                                 />
                                 <InputError message={errors.relevance} />
                             </div>
                         )}  
-                    </div>
-
-                    <div className="flex flex-col col-span-12 md:col-span-6">
-                        <div className="flex justify-between">
-                            <div className="flex flex-row">
-                                <InputLabel htmlFor="key_words" value="Palabras clave para búsqueda" />
-                                <TooltipProvider>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <CircleHelp size={16} className="text-gray-100 ml-2 cursor-pointer" />
-                                        </TooltipTrigger>
-
-                                        <TooltipContent>
-                                            <p className="text-gray-100">Coloca aquí las palabras clave de este producto para que tus clientes puedan encontrarlo fácilmente</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                            </div>
-                            <span className="text-gray-500 ml-2">(Opcional)</span>
-                        </div>
-
-                        <Input
-                            id="key_words"
-                            type="text" 
-                            value={data.key_words}
-                            placeholder="Palabras clave separadas por comas"
-                            onChange={(e) => setData('key_words', e.target.value)} 
-                        />
-
-                        <InputError message={errors.key_words} />
                     </div>
                     
                     <div className="col-span-12">
@@ -124,15 +110,15 @@ export default function StoreFrontCard() {
                             </TooltipProvider>
                         </div>
                     
-                        <Select onValueChange={(e) => { setData('condition', e, ) }} defaultValue={String(data.condition)}>
+                        <Select onValueChange={(e) => { setData('condition', e as "new" | "used" | "refurbished") }} defaultValue={String(data.condition)}>
                             <SelectTrigger className='h-[30px]'>
                                 <SelectValue placeholder="Seleccionar" />
                             </SelectTrigger>
 
                             <SelectContent>
-                                <SelectItem value="nuevo">Nuevo</SelectItem>
-                                <SelectItem value="usado">Usado</SelectItem>
-                                <SelectItem value="reacondicionado">Reacondicionado</SelectItem>
+                                <SelectItem value="new">Nuevo</SelectItem>
+                                <SelectItem value="used">Usado</SelectItem>
+                                <SelectItem value="refurbished">Reacondicionado</SelectItem>
                             </SelectContent>
                         </Select>
                     

@@ -52,8 +52,8 @@ export default function VariantsCard() {
     
     const dimensionsInputs = [
         {label: "Largo", value: "length", units: ["cm", "m", "in", "ft"]},
-        {label: "Ancho", value: "width", units: ["cm", "m", "in", "ft"]},
         {label: "Alto", value: "height", units: ["cm", "m", "in", "ft"]},
+        {label: "Ancho", value: "width", units: ["cm", "m", "in", "ft"]},
         {label: "Peso", value: "weight", units: ["g", "kg", "lb", "oz"]},
     ];
 

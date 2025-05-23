@@ -17,7 +17,7 @@ export default function useProductForm() {
         recentlySuccessful,
     } = useForm<ProductFormData>({
         name: '',
-        brand_id: 'Propia',
+        brand_id: undefined,
         description: '',
         category_id: 0,
         is_available: true,
@@ -34,14 +34,15 @@ export default function useProductForm() {
         warranty_policy: '',
         is_feature: false,
         relevance: 0,
-        key_words: '',
-        condition: 'nuevo',
+        condition: 'new',
         variants: [],
         product_images: [],
-        new_images: [],
         currency: 'COP',
         disponibility_text: '',
-    });  
+        meta_title: '',
+        meta_description: '',
+        key_words: '',
+    });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -54,23 +55,28 @@ export default function useProductForm() {
                     reset();
                     tenantNameRef.current?.focus();
                 }
-                if (errors.brand_id) reset('brand_id');
                 if (errors.description) reset('description');
-                if (errors.category_id) reset('category_id');
-                if (errors.is_available_product) reset('is_available_product');
                 if (errors.price) reset('price');
                 if (errors.compare_price) reset('compare_price');
                 if (errors.cost) reset('cost');
                 if (errors.shipment) reset('shipment');
                 if (errors.stock) reset('stock');
+                if (errors.category_id) reset('category_id');
+                if (errors.brand_id) reset('brand_id');
                 if (errors.sku) reset('sku');
                 if (errors.barcode) reset('barcode');
+                if (errors.features) reset('features');
                 if (errors.is_feature) reset('is_feature');
-                if (errors.key_words) reset('key_words');
-                if (errors.warranty_policy) reset('warranty_policy');
+                if (errors.is_available) reset('is_available');
                 if (errors.condition) reset('condition');
                 if (errors.show_condition) reset('show_condition');
+                if (errors.key_words) reset('key_words');
+                if (errors.product_images) reset('product_images');
+                if (errors.warranty_policy) reset('warranty_policy');
+                if (errors.relevance) reset('relevance');
                 if (errors.disponibility_text) reset('disponibility_text');
+                if (errors.meta_title) reset('meta_title');
+                if (errors.meta_description) reset('meta_description');
             },
         });
     };

@@ -114,7 +114,7 @@ export default function Create({ categories, brands }: CreateProductProps) {
                         <Accordion type="single" collapsible className="w-full accordion-cards">
                             <AccordionItem value="item-1">
                                 <AccordionTrigger className="flex flex-col text-gray-100">
-                                    <h3 className="accordion-cards-title">Configuración del SEO</h3>
+                                    <h3 className="accordion-cards-title">Configuración del SEO (opcional)</h3>
                                     <p className="text-gray-400">Aumenta el tráfico de tu negocio en línea</p>
                                 </AccordionTrigger>
                                 <AccordionContent>

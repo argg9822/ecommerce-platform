@@ -103,7 +103,7 @@ export default function TenantForm({ className = '', props} : props) {
     e.preventDefault();
 
     post(route('tenantStore'), {
-      preserveScroll: true,
+      preserveScroll: false,
       onSuccess: () => {
         reset();
         setOpenDialog(true);

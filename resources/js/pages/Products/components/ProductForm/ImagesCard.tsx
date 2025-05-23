@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/card";
 import UploadImages from '@/components/UploadImages';
 import { useProductFormContext } from "@/context/product-form.context";
+import { log } from "node:console";
 
 export default function ImagesCard(){
     const {
@@ -14,7 +15,7 @@ export default function ImagesCard(){
     } = useProductFormContext();
 
     const productImagesValue = (newImages: File[]) => {
-        setData('new_images', [...data.new_images, ...newImages]);
+        setData('new_images', [...data.product_images, ...newImages]);
     }
 
     return (

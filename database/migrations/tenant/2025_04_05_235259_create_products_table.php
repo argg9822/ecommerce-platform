@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->longText('description');
+            $table->longText('description')->nullable();
             $table->decimal('price', 10, 2);
             $table->decimal('compare_price', 10, 2)->nullable();
             $table->decimal('cost', 10, 2);
@@ -27,10 +27,10 @@ return new class extends Migration
             $table->foreignId('brand_id')->nullable()->constrained()->onDelete('cascade');
             $table->decimal('shipment', 10, 2)->default(0)->nullable();
             $table->string("meta_title")->nullable();
+            $table->text("meta_description")->nullable();
             $table->string("key_words")->nullable();
             $table->enum("condition", ["new", "used", "refurbished"])->default("new");
             $table->string("disponibility_text")->nullable();
-            $table->text("meta_description")->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

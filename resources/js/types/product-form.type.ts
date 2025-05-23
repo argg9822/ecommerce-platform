@@ -18,15 +18,16 @@ export interface ProductForm {
     is_available: boolean;
     variants: ProductVariants[];
     show_condition: boolean;
-    key_words: string;
     warranty_policy: string;
-    condition: string;
+    condition: "refurbished" | "new" | "used";
     relevance: number;
-    brand_id: number | string;
+    brand_id: number | undefined;
     category_id: number;
     product_images: ProductImage[];
-    new_images: File[];
     shipment: number | undefined;
     currency: string;
     disponibility_text: string;
+    meta_title: string;
+    meta_description: string;
+    key_words: string;
 }

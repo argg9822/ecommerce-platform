@@ -3,12 +3,13 @@ import { useEffect } from "react";
 import { ProductVariants, ProductDimensions, VariantAttributes, ColorOptionsType } from '@/types/product';
 
 const BASE_COLOR_OPTIONS: ColorOptionsType[] = [
-    { value: "red", label: "Rojo", color: "text-red-600", selectedColor: "bg-red-700", selected: false },
-    { value: "blue", label: "Azul", color: "text-blue-500", selectedColor: "bg-blue-700", selected: false },
-    { value: "green", label: "Verde", color: "text-green-600", selectedColor: "bg-green-700", selected: false },
-    { value: "yellow", label: "Amarillo", color: "text-yellow-400", selectedColor: "bg-yellow-700", selected: false },
-    { value: "purple", label: "Morado", color: "text-purple-400", selectedColor: "bg-purple-700", selected: false },
-    { value: "pink", label: "Rosado", color: "text-pink-400", selectedColor: "bg-pink-700", selected: false }
+    { value: "red", label: "Rojo", color: "text-red-600", selected: false },
+    { value: "silver", label: "Plateado", color: "text-gray-500", selected: false },
+    { value: "blue", label: "Azul", color: "text-blue-500", selected: false },
+    { value: "green", label: "Verde", color: "text-green-600", selected: false },
+    { value: "yellow", label: "Amarillo", color: "text-yellow-400", selected: false },
+    { value: "purple", label: "Morado", color: "text-purple-400", selected: false },
+    { value: "pink", label: "Rosado", color: "text-pink-400", selected: false },
 ];
 
 export default function useProductSpecificationsCard(){
@@ -124,7 +125,7 @@ export default function useProductSpecificationsCard(){
         const newVariants = [...data.variants];
         const newColors = [...newVariants[variantIndex].colors];
 
-        if (index > 5) {
+        if (index > 6) {
             newColors[index] = {value: color as string};
         }else{
             newColors[index].selected = color as boolean;
@@ -135,7 +136,7 @@ export default function useProductSpecificationsCard(){
 
     const addCustomColor = (variantIndex: number) => {
         const newVariants = [...data.variants];
-        const newColors = [...newVariants[variantIndex].colors, {value: "#FFFFFF"}];
+        const newColors = [...newVariants[variantIndex].colors, {value: "#FFFFFF", selected: true}];
         handleVariantChange(variantIndex, "colors", newColors);
     }
 
