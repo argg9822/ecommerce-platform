@@ -75,8 +75,8 @@ export default function Create({ categories, brands }: CreateProductProps) {
                         <Accordion type="single" collapsible className="w-full accordion-cards">
                             <AccordionItem value="item-1">
                                 <AccordionTrigger className="flex flex-col text-gray-100">
-                                    <h3 className="accordion-cards-title">Variantes (opcional)</h3>
-                                    <p className="text-gray-400">Especificaciones del producto</p>
+                                    <h3 className="accordion-cards-title">Variantes (Obligatorio)</h3>
+                                    <p className="text-gray-400">Especifica al menos una variante para el producto</p>
                                 </AccordionTrigger>
                                 <AccordionContent>
                                     <Variants />
@@ -89,7 +89,7 @@ export default function Create({ categories, brands }: CreateProductProps) {
                             <AccordionItem value="item-1">
                                 <AccordionTrigger className="flex flex-col text-gray-100">
                                     <h3 className="accordion-cards-title">Imágenes (obligatorio)</h3>
-                                    <p className="text-gray-400">Agrega imágenes de tus productos para llamar la atención de los clientes</p>
+                                    <p className="text-gray-400">Agrega imágenes de tus productos para llamar la atención de tus clientes</p>
                                 </AccordionTrigger>
                                 <AccordionContent>
                                     <Images />

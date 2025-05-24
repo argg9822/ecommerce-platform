@@ -49,7 +49,7 @@ export default function StoreFront() {
                                     Destacar en homepage
                                 </label>
                                 <p className="text-sm text-gray-600">
-                                    Hacer que sea más visible este producto
+                                    Hacer que sea más visible este producto en la página de compras.
                                 </p>
                             </div>
                         </div>

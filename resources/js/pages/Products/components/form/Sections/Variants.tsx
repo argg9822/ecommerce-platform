@@ -129,52 +129,6 @@ export default function Variants() {
                             <Separator />
 
                             <div className="grid grid-cols-12 gap-5 items-end">
-                                <div className="col-span-4">
-                                    <span className="text-gray-500">(Opcional) Sólo si el precio por variante es diferente</span>
-                                    <InputWithAddons
-                                        value={variant.price || ""}
-                                        placeholder="0.00"
-                                        type="number"
-                                        className="pl-[60px]"
-                                        onChangeWithEvent={(e) => handleVariantChange(variant_index, 'price', e.target.value)}
-                                        inputId={`price-${variant_index + 1}`}
-                                        prefix="Precio"
-                                        suffixes={["COP", "USD", "EUR"]}
-                                        sufixValue="COP"
-                                        onChangeSuffix={(e) => handleVariantChange(variant_index, 'currency_price', e)}
-                                    />
-                                </div>
-
-                                <div className="col-span-4">
-                                    <span className="text-gray-500">(Opcional)</span>
-                                    <InputWithAddons
-                                        value={variant.compare_price || ""}
-                                        placeholder="0.00"
-                                        type="number"
-                                        className="pl-[145px]"
-                                        onChangeWithEvent={(e) => handleVariantChange(variant_index, 'compare_price', e.target.value)}
-                                        inputId={`price-${variant_index + 1}`}
-                                        prefix="Precio comparativo"
-                                        suffixes={["COP", "USD", "EUR"]}
-                                        sufixValue="COP"
-                                        onChangeSuffix={(e) => handleVariantChange(variant_index, 'currency_price', e)}
-                                    />
-                                </div>
-
-                                <div className="col-span-4">
-                                    <div className="flex justify-between">
-                                        <InputLabel htmlFor="stock" value="Stock" />
-                                        <span className="text-gray-500">(Opcional)</span>
-                                    </div>
-                                    <Input 
-                                        id="stock" 
-                                        type="number" 
-                                        value={data.stock} 
-                                        onChange={(e) => handleVariantChange(variant_index, 'stock', e.target.value)}
-                                    />
-                                    <InputError message={errors.stock} />
-                                </div>
-
                                 <div className="col-span-12">
                                     <div className="flex flex-row items-center justify-between">
                                         <div className="flex flex-row">
@@ -255,6 +209,52 @@ export default function Variants() {
                                             )
                                         )}
                                     </div>
+                                </div>
+
+                                <div className="col-span-4">
+                                    <span className="text-gray-500">(Opcional) Sólo si el precio por variante es diferente</span>
+                                    <InputWithAddons
+                                        value={variant.price || ""}
+                                        placeholder="0.00"
+                                        type="number"
+                                        className="pl-[60px]"
+                                        onChangeWithEvent={(e) => handleVariantChange(variant_index, 'price', e.target.value)}
+                                        inputId={`price-${variant_index + 1}`}
+                                        prefix="Precio"
+                                        suffixes={["COP", "USD", "EUR"]}
+                                        sufixValue="COP"
+                                        onChangeSuffix={(e) => handleVariantChange(variant_index, 'currency_price', e)}
+                                    />
+                                </div>
+
+                                <div className="col-span-4">
+                                    <span className="text-gray-500">(Opcional)</span>
+                                    <InputWithAddons
+                                        value={variant.compare_price || ""}
+                                        placeholder="0.00"
+                                        type="number"
+                                        className="pl-[145px]"
+                                        onChangeWithEvent={(e) => handleVariantChange(variant_index, 'compare_price', e.target.value)}
+                                        inputId={`price-${variant_index + 1}`}
+                                        prefix="Precio comparativo"
+                                        suffixes={["COP", "USD", "EUR"]}
+                                        sufixValue="COP"
+                                        onChangeSuffix={(e) => handleVariantChange(variant_index, 'currency_price', e)}
+                                    />
+                                </div>
+
+                                <div className="col-span-4">
+                                    <div className="flex justify-between">
+                                        <InputLabel htmlFor="stock" value="Stock" />
+                                        <span className="text-gray-500">(Opcional)</span>
+                                    </div>
+                                    <Input 
+                                        id="stock" 
+                                        type="number" 
+                                        value={variant.stock} 
+                                        onChange={(e) => handleVariantChange(variant_index, 'stock', e.target.value)}
+                                    />
+                                    <InputError message={errors.stock} />
                                 </div>
                             </div>
                             

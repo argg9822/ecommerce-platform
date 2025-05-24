@@ -10,6 +10,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Services\TenantFileService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -40,6 +41,7 @@ class ProductController extends Controller
         $categories = Category::with(['parent' => function ($query) {
             $query->select('id', 'name');
         }])->select('id', 'name', 'description', 'image', 'parent_id')->get();
+
         $brands = Brand::select('id', 'name')->get();
 
         return Inertia::render('Products/Create', [
@@ -51,9 +53,11 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request, TenantFileService $tenantService)
+    public function store(StoreProductRequest $request)
     {
         try {
+            Log::info('Variants input:', ['variants' => $request->input('variants')]);
+            DB::beginTransaction();
             $product = Product::create($request->safe()->only([
                 'name',
                 'description',
@@ -88,11 +92,13 @@ class ProductController extends Controller
             //Guardar variantes
             $this->saveVariants($request, $product);
 
+            DB::commit();
             return redirect()->back()->with('flash.success', [
                 'title' => 'Éxito',
                 'message' => 'Producto guardado correctamente'
             ]);
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Error creating product: ' . $e->getMessage());
             return redirect()->back()->with('flash.error', [
                 'title' => 'Error',

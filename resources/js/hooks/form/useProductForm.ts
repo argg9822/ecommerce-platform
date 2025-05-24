@@ -27,7 +27,7 @@ export default function useProductForm() {
         is_feature: false,
         is_available: true,
         relevance: 0,
-        brand_id: undefined,
+        brand_id: 1,
         shipment: undefined,
         meta_title: '',
         meta_description: '',

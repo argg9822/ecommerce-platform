@@ -125,7 +125,7 @@ export default function useProductSpecificationsCard(){
         const newVariants = [...data.variants];
         const newColors = [...newVariants[variantIndex].colors];
 
-        if (index > 6) {
+        if (index > newColors.length) {
             newColors[index] = {value: color as string};
         }else{
             newColors[index].selected = color as boolean;
