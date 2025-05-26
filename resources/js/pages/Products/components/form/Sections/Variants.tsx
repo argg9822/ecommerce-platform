@@ -77,7 +77,7 @@ export default function Variants() {
                             className={`text-center text-gray-200 hover:text-gray-100 hover:bg-gray-600
                             focus:bg-black/50 transition-all duration-200 w-full col-span-${12/data.variants.length}`}
                         >
-                            Variante {variant_index + 1}
+                            {variant_index === 0 ? "Características principales" : `Variante ${variant_index}`}
                         </TabsTrigger>
                     )
                     )}

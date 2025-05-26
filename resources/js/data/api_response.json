@@ -4,51 +4,50 @@
             {
                 "id": 2,
                 "name": "Nepe",
+                "description": "aadadasdasdasdasd",
                 "price": 10000,
                 "compare_price": 10000,
                 "slug": "nepe-1000",
-                "description": "aadadasdasdasdasd",
-                "brand": "Algo",
+                "brand": {
+                    "id": 1,
+                    "name": "ToysNow"
+                },
                 "stock": 6,
                 "shipment": 10000,
                 "is_available": true,
                 "is_feature": true,
-                "features": [
+                "variants": [
                     {
-                        "variants": [
-                            {
-                                "color": ["red"],
-                                "size": "Sm",
-                                "weight": "15kg",
-                                "cost_shipping": 100232,
-                                "dimensions": "4x112",
-                                "price": 120000,
-                                "compare_price": 150000,
-                                "stock": 12,
-                                "images": []
-                            },
-                            {
-                                "color": "blue",
-                                "price": 31321,
-                                "compare_price": 150000,
-                                "stock": 21,
-                                "images": []
-                            },
-                            {
-                                "size": "XXL",
-                                "price": 31321,
-                                "compare_price": 150000,
-                                "stock": 21,
-                                "images": []
-                            },
-                            {
-                                "size": "XXL",
-                                "price": 31321,
-                                "compare_price": 150000,
-                                "stock": 21,
-                                "images": []
-                            }
-                        ]
+                        "color": ["red"],
+                        "size": "Sm",
+                        "weight": "15kg",
+                        "cost_shipping": 100232,
+                        "dimensions": "4x112",
+                        "price": 120000,
+                        "compare_price": 150000,
+                        "stock": 12,
+                        "images": []
+                    },
+                    {
+                        "color": "blue",
+                        "price": 31321,
+                        "compare_price": 150000,
+                        "stock": 21,
+                        "images": []
+                    },
+                    {
+                        "size": "XXL",
+                        "price": 31321,
+                        "compare_price": 150000,
+                        "stock": 21,
+                        "images": []
+                    },
+                    {
+                        "size": "XXL",
+                        "price": 31321,
+                        "compare_price": 150000,
+                        "stock": 21,
+                        "images": []
                     }
                 ],
                 "img": [
@@ -88,7 +87,7 @@
                             "text": "Muy bueno",
                             "date": "14/04/2025"
                         }
-                    ] //Ordenado mas reciente al mas antiguo
+                    ]
                 },
                 "questions": [
                     {
