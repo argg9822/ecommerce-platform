@@ -56,7 +56,6 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         try {
-            Log::info('Variants input:', ['variants' => $request->input('variants')]);
             DB::beginTransaction();
             $product = Product::create($request->safe()->only([
                 'name',
@@ -85,12 +84,20 @@ class ProductController extends Controller
             if ($request->filled('categories')) {
                 $product->categories()->sync($request->input('categories'));
             }
-            
+
             //Guardar imágenes
-            $this->storeImages($request, $product);
+            $newImages = $request->file('new_images');
+            
+            if(is_array($newImages) && count(array_filter($newImages))){
+                $this->storeImages($newImages, $product);
+            }
 
             //Guardar variantes
-            $this->saveVariants($request, $product);
+            $variants = $request->input('variants');
+
+            if (is_array($variants) && count(array_filter($variants))) {
+                $this->saveVariants($variants, $product);
+            }
 
             DB::commit();
             return redirect()->back()->with('flash.success', [
@@ -107,11 +114,15 @@ class ProductController extends Controller
         }
     }
 
-    private function storeImages($request, $savedProduct)
+    private function storeImages($newImages, $savedProduct)
     {
-        $imagesPaths = [];
+        if (!is_array($newImages)) {
+            return false;
+        }
 
-        foreach ($request->file('product_images') as $image) {
+        $imagesPaths = [];
+        
+        foreach ($newImages as $image) {
             $path = $this->tenantFileService->storeImages($image, 'products');
             if ($path) {
                 $imagesPaths[] = ['url' => $path];
@@ -123,9 +134,9 @@ class ProductController extends Controller
         }
     }
 
-    private function saveVariants($request, $savedProduct)
+    private function saveVariants($variants, $savedProduct)
     {
-        foreach ($request->input('variants', []) as $variantData) {
+        foreach ($variants as $variantData) {
             $variant = $savedProduct->variants()->create([
                 'price' => $variantData['price'],
                 'compare_price' => $variantData['compare_price'],

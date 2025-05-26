@@ -1,12 +1,9 @@
 import {
   Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
+  CardContent
 } from "@/components/ui/card";
 import UploadImages from '@/components/UploadImages';
 import { useProductFormContext } from "@/context/product-form.context";
-import { log } from "node:console";
 
 export default function Images(){
     const {

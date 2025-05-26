@@ -1,24 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Tenant;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Tenant\Product;
+use App\Models\Api\V1\ApiProduct;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Inertia\Inertia;
 
-class ProductController extends Controller
+class ApiProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        Log::info('Tenant products index');
-        return Inertia::render('Tenant/Products/Index', [
-            'products' => Product::all(),
-        ]);
+        $products = ApiProduct::select('id', 'name')->get();
+        return response()->json([$products]);
     }
 
     /**
@@ -40,7 +35,7 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(ApiProduct $apiProduct)
     {
         //
     }
@@ -48,7 +43,7 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit(ApiProduct $apiProduct)
     {
         //
     }
@@ -56,7 +51,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, ApiProduct $apiProduct)
     {
         //
     }
@@ -64,7 +59,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy(ApiProduct $apiProduct)
     {
         //
     }

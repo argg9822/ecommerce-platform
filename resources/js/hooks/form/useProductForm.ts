@@ -5,7 +5,18 @@ import { ProductForm } from '@/types/product-form.type';
 type ProductFormData = ProductForm & Record<string, any>;
 
 export default function useProductForm() {
-    const tenantNameRef = useRef<HTMLInputElement>(null);
+    const nameRef = useRef<HTMLInputElement>(null);
+    const brandRef = useRef<HTMLInputElement>(null);
+    const descriptionRef = useRef<HTMLInputElement>(null);
+    const categoryRef = useRef<HTMLInputElement>(null);
+    const priceRef = useRef<HTMLInputElement>(null);
+    const comparePriceRef = useRef<HTMLInputElement>(null);
+    const costRef = useRef<HTMLInputElement>(null);
+    const profitRef = useRef<HTMLInputElement>(null);
+    const shipmentRef = useRef<HTMLInputElement>(null);
+    const stockRef = useRef<HTMLInputElement>(null);
+    const skuRef = useRef<HTMLInputElement>(null);
+    const barcodeRef = useRef<HTMLInputElement>(null);
 
     const {
         data,
@@ -49,11 +60,14 @@ export default function useProductForm() {
 
         post(route('products_store'), {
             preserveScroll: true,
-            onSuccess: () => reset(),
+            onSuccess: () => {
+                alert('Guardado')
+                // reset()
+            },
             onError: (errors) => {
                 if (errors.name) {
-                    reset();
-                    tenantNameRef.current?.focus();
+                    reset('name');
+                    nameRef.current?.focus();
                 }
                 if (errors.description) reset('description');
                 if (errors.price) reset('price');

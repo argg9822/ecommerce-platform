@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Models\Tenant;
+namespace App\Models\Api\V1;
 
-use App\Models\Tenant\User;
+use App\Models\Api\V1\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
