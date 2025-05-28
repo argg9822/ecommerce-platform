@@ -1,4 +1,4 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout';
 import EmptyProducts from '@/pages/Products/components/EmptyProducts';
 import { Product } from '@/types/product';
@@ -59,8 +59,8 @@ export default function Index({products}: ProductsProps){
     }
   }, [flash]); 
 
-  const editProduct = () => {
-
+  const handleEditProduct = (productId: number) => {
+    router.visit(route('products_edit', productId));
   }
 
   const handleDeleteProduct = () => {
@@ -86,7 +86,7 @@ export default function Index({products}: ProductsProps){
           <EmptyProducts /> : 
           <ProductsList 
             products={products}
-            onEdit={editProduct}
+            onEdit={(productId) => handleEditProduct(productId)}
             onDelete={(productId) => {
               setOpenDialogDeleteProduct(true);
               setDeleteProductId(productId);

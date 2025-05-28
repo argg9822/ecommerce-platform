@@ -19,6 +19,7 @@ export default function AppBreadcrumb (){
     'dashboard': {path: 'Inicio', route: 'dashboard'},
     'create': {path: 'Crear', route: 'products_create'},
     'profile': {path: 'Perfil', route: 'profile.edit'},
+    'edit' : {path: 'Editar', route: 'products_edit'}
   }
 
   const [breadrumbs, setBreadrumbs] = useState<string[]>([]);
@@ -33,23 +34,25 @@ export default function AppBreadcrumb (){
     <Breadcrumb className="pl-6 hidden md:flex">
       <BreadcrumbList>
         {breadrumbs.map((path, index) => {
-          const last = index === breadrumbs.length - 1;
-          const toRoute = pathNamesMap[path]?.route || 'products_index';
-          const displayName = pathNamesMap[path]?.path || '';
-          
-          return (
-            <Fragment key={index}>
-              <BreadcrumbSeparator />
-              {last ? (
-                <BreadcrumbPage className="font-extrabold text-gray-300">{displayName}</BreadcrumbPage>
-              ) : (
-                <BreadcrumbItem>
-                  <BreadcrumbLink href={route(toRoute)}>{displayName}</BreadcrumbLink>
-                </BreadcrumbItem>
-              )}
-              
-            </Fragment>
-          )
+          if (pathNamesMap[path]?.path) {
+            const last = index === breadrumbs.length - 1;
+            const toRoute = pathNamesMap[path]?.route || 'products_index';
+            const displayName = pathNamesMap[path]?.path || '';
+            
+            return (
+              <Fragment key={index}>
+                <BreadcrumbSeparator />
+                {last ? (
+                  <BreadcrumbPage className="font-extrabold text-gray-300">{displayName}</BreadcrumbPage>
+                ) : (
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href={route(toRoute)}>{displayName}</BreadcrumbLink>
+                  </BreadcrumbItem>
+                )}
+                
+              </Fragment>
+            )
+          }
         })}
       </BreadcrumbList>
     </Breadcrumb>

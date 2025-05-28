@@ -30,13 +30,18 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import PrimaryButton from '@/components/PrimaryButton';
+import { ProductForm } from '@/types/product-form.type';
 
 type CreateProductProps = {
+    mode: 'create' | 'edit',
     categories: Category[],
     brands: Brand[],
+    product?: ProductForm
 }
 
-export default function Create({ categories, brands }: CreateProductProps) {
+export default function ProductEditor({ mode, categories, brands, product }: CreateProductProps) {
+    console.log(product);
+    
     const form = useProductForm();
 
     const [openDialogCategory, setOpenDialogCategory] = useState(false);

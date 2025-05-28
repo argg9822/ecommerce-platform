@@ -13,7 +13,7 @@ import DangerButton from '@/components/ui/danger-button';
 
 type ProductsProps = {
   products: Product[];
-  onEdit: (product: Product) => void;
+  onEdit: (productId: number) => void;
   onDelete: (productId: number) => void;
   onView: (product: Product) => void;
 }
@@ -109,7 +109,7 @@ export default function ProductsList({ products, onEdit, onDelete, onView }: Pro
 
                 <div className="flex gap-2">
                   <Button
-                    onClick={() => onEdit(product)}
+                    onClick={() => onEdit(product.id)}
                     className="text-gray-400 hover:text-amber-400 transition-colors"
                     title="Editar"
                   >

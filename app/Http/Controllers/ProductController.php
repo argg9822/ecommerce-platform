@@ -34,19 +34,19 @@ class ProductController extends Controller
                 $query->select('id', 'product_id', 'price', 'compare_price', 'stock', 'shipment','is_available')
                     ->orderBy('price', 'asc')
                     ->with(['variantAttributes:id,product_variant_id,name,value']);
-            },
+                },
             'images:id,product_id,url'
-            ])->select(
-                'id',
-                'name',
-                'description',
-                'price',
-                'compare_price',
-                'stock',
-                'is_feature',
-                'is_available',
-                'relevance'
-            )->get();
+        ])->select(
+            'id',
+            'name',
+            'description',
+            'price',
+            'compare_price',
+            'stock',
+            'is_feature',
+            'is_available',
+            'relevance'
+        )->get();
 
         return Inertia::render('Products/Index', [
             'products' => $products
@@ -64,9 +64,10 @@ class ProductController extends Controller
 
         $brands = Brand::select('id', 'name')->get();
 
-        return Inertia::render('Products/Create', [
+        return Inertia::render('Products/ProductEditor', [
             'categories' => $categories,
             'brands' => $brands,
+            'mode' => 'create'
         ]);
     }
 
@@ -208,9 +209,30 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($productId)
     {
-        //
+        $product = Product::with([
+            'brand:id,name',
+            'variants' => function($query){
+                $query->select('id', 'product_id', 'price', 'compare_price', 'stock', 'shipment','is_available')
+                    ->orderBy('price', 'asc')
+                    ->with(['variantAttributes:id,product_variant_id,name,value']);
+                },
+            'images:id,product_id,url'
+        ])->findOrFail($productId);
+
+        $categories = Category::with(['parent' => function ($query) {
+            $query->select('id', 'name');
+        }])->select('id', 'name', 'description', 'image', 'parent_id')->get();
+
+        $brands = Brand::select('id', 'name')->get();
+
+        return Inertia::render('Products/ProductEditor', [
+            'product' => $product,
+            'categories' => $categories,
+            'brands' => $brands,
+            'mode' => 'edit'
+        ]);
     }
 
     /**
