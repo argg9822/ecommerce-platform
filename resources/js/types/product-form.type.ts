@@ -22,7 +22,7 @@ export interface ProductForm {
     relevance: number;
     brand_id: number | undefined;
     categories: number[];
-    product_images: ProductImage[];
+    images: ProductImage[];
     shipment: number | undefined;
     currency: string;
     disponibility_text: string;

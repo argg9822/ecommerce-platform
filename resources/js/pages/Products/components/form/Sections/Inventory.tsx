@@ -131,17 +131,16 @@ export default function Inventory() {
                         
                         <div>
                             <InputLabel htmlFor="sku" value="SKU" />
-                            <Input id="sku" type="text" value={data.sku} onChange={(e) => setData('sku', e.target.value)} />
+                            <Input id="sku" type="text" value={data.sku} onChange={(e) => setData('sku', e.target.value)} autoComplete="off"/>
                             <InputError message={errors.sku} />
                         </div>
 
                         <div>
                             <InputLabel htmlFor="barcode" value="Código de barras" />
-                            <Input id="barcode" type="text" value={data.barcode} onChange={(e) => setData('barcode', e.target.value)} />
+                            <Input id="barcode" type="text" value={data.barcode} onChange={(e) => setData('barcode', e.target.value)} autoComplete="off"/>
                             <InputError message={errors.barcode} />
                         </div>
                     </div>
-                   
                 </div>
             </CardContent>
         </Card>

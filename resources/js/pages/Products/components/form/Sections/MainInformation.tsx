@@ -245,28 +245,28 @@ export default function MainInformation({
                                                 `}
                                             >
                                                 <div className='flex flex-row w-full'>
-                                                <div className='flex place-content-center flex-wrap'>
-                                                    <div className="w-8 h-8 rounded-sm overflow-hidden mr-3">
-                                                    {category?.image ? (
-                                                        <img
-                                                        src={route('tenant_media_owner', { path: category.image })}
-                                                        alt={category.label}
-                                                        className="w-full h-full object-cover opacity-75"
-                                                        />
-                                                    ) : <Layers className="w-full h-full p-1 text-gray-500" />}
+                                                    <div className='flex place-content-center flex-wrap'>
+                                                        <div className="w-[30px] h-[30px] rounded-sm overflow-hidden mr-3">
+                                                            {category?.image ? (
+                                                                <img
+                                                                    src={route('tenant_media_owner', { path: category.image })}
+                                                                    alt={category.label}
+                                                                    className="w-full h-full object-cover opacity-75"
+                                                                />
+                                                            ) : <Layers className="h-4 w-4 p-1 text-gray-500" />}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div className='flex flex-col text-left flex-1'>
-                                                    <span>{category.label}</span>
-                                                    <span className='text-sm text-gray-500'>{category?.description}</span>
-                                                </div>
-                                                <Check
-                                                    className={`
-                                                    ml-auto h-4 w-4
-                                                    ${data.categories?.includes(category.value) ? "opacity-100 text-blue-400" : "opacity-0"}
-                                                    transition-opacity duration-200
-                                                    `}
-                                                />
+                                                    <div className='flex flex-col text-left flex-1'>
+                                                        <span>{category.label}</span>
+                                                        <span className='text-sm text-gray-500'>{category?.description}</span>
+                                                    </div>
+                                                    <Check
+                                                        className={`
+                                                            ml-auto h-4 w-4
+                                                            ${data.categories?.includes(category.value) ? "opacity-100 text-blue-400" : "opacity-0"}
+                                                            transition-opacity duration-200
+                                                        `}
+                                                    />
                                                 </div>
                                             </CommandItem>
                                             ))}

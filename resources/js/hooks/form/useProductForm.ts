@@ -51,7 +51,7 @@ export default function useProductForm() {
         categories: [],
         profit: undefined,
         variants: [],
-        product_images: [],
+        images: [],
         currency: 'COP',
     });
 
@@ -85,7 +85,7 @@ export default function useProductForm() {
                 if (errors.condition) reset('condition');
                 if (errors.show_condition) reset('show_condition');
                 if (errors.key_words) reset('key_words');
-                if (errors.product_images) reset('product_images');
+                if (errors.images) reset('images');
                 if (errors.warranty_policy) reset('warranty_policy');
                 if (errors.relevance) reset('relevance');
                 if (errors.disponibility_text) reset('disponibility_text');

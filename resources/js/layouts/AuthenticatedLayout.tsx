@@ -1,7 +1,7 @@
 import { PropsWithChildren, ReactNode, useState } from 'react';
-import { SidebarProvider, SidebarTrigger  } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
-import { AppTopBar } from "@/components/AppTopBar";
+import { SidebarProvider  } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app/app-sidebar";
+import { AppTopBar } from "@/components/app/app-topbar";
 
 export default function Authenticated({
     children,

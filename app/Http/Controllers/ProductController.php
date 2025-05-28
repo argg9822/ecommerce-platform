@@ -28,8 +28,28 @@ class ProductController extends Controller
      */
     public function index()
     {
+        $products = Product::with([
+            'brand:id,name',
+            'variants' => function($query){
+                $query->select('id', 'product_id', 'price', 'compare_price', 'stock', 'shipment','is_available')
+                    ->orderBy('price', 'asc')
+                    ->with(['variantAttributes:id,product_variant_id,name,value']);
+            },
+            'images:id,product_id,url'
+            ])->select(
+                'id',
+                'name',
+                'description',
+                'price',
+                'compare_price',
+                'stock',
+                'is_feature',
+                'is_available',
+                'relevance'
+            )->get();
+
         return Inertia::render('Products/Index', [
-            'products' => Product::all()
+            'products' => $products
         ]);
     }
 

@@ -12,7 +12,7 @@ export default function Images(){
     } = useProductFormContext();
 
     const productImagesValue = (newImages: File[]) => {
-        setData('new_images', [...data.product_images, ...newImages]);
+        setData('new_images', [...data.images, ...newImages]);
     }
 
     return (

@@ -14,13 +14,15 @@ use Stancl\Tenancy\Middleware\InitializeTenancyByPath;
 //     Route::apiResource('products', ProductController::class);
 // });
 
-
 Route::middleware([
     'api',
     InitializeTenancyByPath::class,
 ])->prefix('tenants/{tenant}/v1')->group(function () {
-    // Route::apiResource('products', ProductController::class)->except(['show']);
-    Route::get('products/{product}', [ProductController::class, 'show'])->name('products.show');
+    //Productos
     Route::get('product/search', [ProductController::class, 'search'])->name('products.search');
-    Route::get('products', [ProductController::class, 'index'])->name('products.index');
+    Route::apiResource('products', ProductController::class)->except(['create', 'edit', 'update', 'destroy']);
+
+    //Categorias
+    Route::apiResource('categories', \App\Http\Controllers\Api\V1\CategoryController::class)
+        ->except(['create', 'edit', 'update', 'destroy']);
 });

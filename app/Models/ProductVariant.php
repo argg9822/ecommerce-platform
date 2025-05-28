@@ -15,7 +15,12 @@ class ProductVariant extends Model
         'is_available'
     ];
 
-    public function attributes()
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function variantAttributes()
     {
         return $this->hasMany(ProductVariantAttribute::class);
     }

@@ -1,8 +1,9 @@
-import { useState, PropsWithChildren, ReactNode} from 'react';
+import { useState } from 'react';
 import Dropdown from '@/components/Dropdown';
 import ResponsiveNavLink from '@/components/ResponsiveNavLink';
-import { Link, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import AppBreadcrumb from '@/components/app/app-breadcrumb';
  
 export function AppTopBar() {
   const user = usePage().props.auth.user;
@@ -10,10 +11,12 @@ export function AppTopBar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 app-topbar z-20">
-        <div className="px-4 sm:px-6 lg:px-8 flex justify-between">
+        <div className="px-4 sm:px-6 flex justify-between">
             <div className='flex items-center'>
-                <SidebarTrigger />
+                <SidebarTrigger className="text-gray-100"/>
+                <AppBreadcrumb />
             </div>
+
             <div className="flex h-16">
                 <div className="hidden sm:ms-6 sm:flex sm:items-center">
                     <div className="relative ms-3">

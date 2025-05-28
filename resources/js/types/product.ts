@@ -31,6 +31,7 @@ export interface ProductDimensions {
 }
 
 export interface VariantAttributes {
+    id: number,
     name: string;
     value: string;
 }
@@ -50,7 +51,7 @@ export interface ProductVariants {
     colors: ColorOptionsType[];
     cost_shipping: number | undefined;
     dimensions: ProductDimensions;
-    attributes: VariantAttributes[];
+    variant_attributes: VariantAttributes[];
     is_available: boolean;
 }
 
@@ -67,7 +68,7 @@ export interface Product {
     is_available: boolean;
     variants: ProductVariants[];
     brand: string;
-    product_images: ProductImage[],
+    images: ProductImage[],
     category_id: number;
     created_at: string;
     updated_at: string;
