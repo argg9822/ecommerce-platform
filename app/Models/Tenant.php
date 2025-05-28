@@ -4,12 +4,12 @@ namespace App\Models;
 
 use App\Models\Plan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
 use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
-use Illuminate\Support\Str;
 
 class Tenant extends BaseTenant implements TenantWithDatabase
 {

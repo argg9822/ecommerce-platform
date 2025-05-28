@@ -168,7 +168,7 @@ class ProductController extends Controller
             foreach (['length', 'width', 'height', 'weight'] as $dimension) {
                 $dimensionData = $variantData['dimensions'][$dimension] ?? null;
                 if ($dimensionData && isset($dimensionData['value']) && $dimensionData['value'] != 0) {
-                    $variant->attributes()->create([
+                    $variant->variantAttributes()->create([
                         'name' => $dimension,
                         'value' => $dimensionData['value']
                     ]);
@@ -177,7 +177,7 @@ class ProductController extends Controller
 
             if (!empty($variantData['attributes'])) {
                 foreach ($variantData['attributes'] as $attribute) {
-                    $variant->attributes()->create([
+                    $variant->variantAttributes()->create([
                         'name' => $attribute['name'],
                         'value' => $attribute['value'],
                     ]);
@@ -187,7 +187,7 @@ class ProductController extends Controller
             if (!empty($variantData['colors'])) {
                 foreach ($variantData['colors'] as $color) {
                     if ($color['selected'] == 1) {
-                        $variant->attributes()->create([
+                        $variant->variantAttributes()->create([
                             'name' => 'color',
                             'value' => $color['value'],
                         ]);
@@ -224,8 +224,25 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($productId)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $product = Product::findOrFail($productId);
+            $product->delete();
+
+            DB::commit();
+            return redirect()->back()->with('flash.success', [
+                'title' => 'Producto eliminado',
+                'message' => 'Recuerda que tienes 30 días a partir de la fecha para deshacer esta acción'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error(['error' => 'No se pudo eliminar el producto: '. $e->getMessage()]);
+            return redirect()->back()->with('flash.error', [
+                'title' => 'Se produjo un error',
+                'message' => 'No se pudo eliminar el producto, intenta nuevamente'
+            ]);
+        }
     }
 }

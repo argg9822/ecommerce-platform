@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('barcode')->nullable();
             $table->boolean('is_feature')->default(false); //Destacado en homepage
             $table->boolean('is_available')->default(true);
-            $table->integer('relevance')->unique()->nullable();
+            $table->integer('relevance')->default(0);
             $table->foreignId('brand_id')->nullable()->constrained()->onDelete('cascade');
             $table->decimal('shipment', 10, 2)->default(0);
             $table->string("meta_title")->nullable();

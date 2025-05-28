@@ -39,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'index' => 'products_index',
             'create' => 'products_create',
             'store' => 'products_store',
+            'destroy' => 'products_destroy',
         ]);
 
         Route::resource('categories', CategoryController::class)->names([

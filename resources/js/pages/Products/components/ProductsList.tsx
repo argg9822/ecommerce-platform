@@ -8,6 +8,8 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
+import { Button } from '@/components/ui/button';
+import DangerButton from '@/components/ui/danger-button';
 
 type ProductsProps = {
   products: Product[];
@@ -51,7 +53,7 @@ export default function ProductsList({ products, onEdit, onDelete, onView }: Pro
               </div>
 
               {/* Product Info */}
-              <div className="p-4 pb-10 relative">
+              <div className="p-4 pb-[3rem] relative">
                 <div className="flex justify-between items-start mb-3 gap-2">
                   <h3 className="font-medium text-lg line-clamp-2">{product.name}</h3>
                   <span className={`text-xs px-2 py-1 rounded-full ${
@@ -96,26 +98,26 @@ export default function ProductsList({ products, onEdit, onDelete, onView }: Pro
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-between w-full border-t border-gray-700 pt-3 absolute bottom-0 px-4 pb-4">
-                <button 
+              <div className="flex justify-between w-full border-t border-gray-700 absolute bottom-0 px-4 py-2">
+                <Button 
                   onClick={() => onView(product)}
                   className="text-gray-400 hover:text-indigo-500 transition-colors"
                   title="Ver detalles"
                 >
                   <Eye size={18} />
-                </button>
+                </Button>
 
                 <div className="flex gap-2">
-                  <button
+                  <Button
                     onClick={() => onEdit(product)}
                     className="text-gray-400 hover:text-amber-400 transition-colors"
                     title="Editar"
                   >
                     <Edit size={18} />
-                  </button>
+                  </Button>
                   <button
                     onClick={() => onDelete(product.id)}
-                    className="text-gray-400 hover:text-red-400 transition-colors"
+                    className="text-gray-400 hover:text-red-500 transition-colors bg-transparent px-3"
                     title="Eliminar"
                   >
                     <Trash2 size={18} />

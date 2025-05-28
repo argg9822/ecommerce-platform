@@ -1,5 +1,5 @@
 import { useForm } from '@inertiajs/react';
-import { ChangeEvent, FormEventHandler, useEffect, useRef } from 'react';
+import { ChangeEvent, FormEventHandler, useRef } from 'react';
 import { ProductForm } from '@/types/product-form.type';
 
 type ProductFormData = ProductForm & Record<string, any>;

@@ -7,6 +7,7 @@ use Illuminate\Validation\Rules\File;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class StoreProductRequest extends FormRequest
 {
@@ -36,7 +37,10 @@ class StoreProductRequest extends FormRequest
             'barcode' => 'nullable|string|max:255|unique:products,barcode',
             'is_feature' => 'required|boolean',
             'is_available' => 'required|boolean',
-            'relevance' => 'nullable|integer|min:0|max:5|unique:products,relevance',
+            'relevance' => ['nullable','integer','between:0,5',  
+                Rule::unique('products', 'relevance')->where(function ($query) {
+                    return $query->whereBetween('relevance', [1, 5]);
+                }),],
             'brand_id' => 'exists:brands,id',
             'shipment' => 'nullable|numeric|min:0',
             'meta_title' => 'nullable|string|max:255',

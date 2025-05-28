@@ -150,7 +150,7 @@ export default function StoreFront() {
                             value={data.disponibility_text} 
                             onChange={(e) => setData('disponibility_text', e.target.value)} 
                         />
-                        <InputError message={errors.relevance} />
+                        <InputError message={errors.disponibility_text} />
                     </div>
                 </div>
             </CardContent>
