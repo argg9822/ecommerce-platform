@@ -18,7 +18,8 @@ class ProductController extends Controller
     {
         $products = Product::with([
             'brand:id,name',
-            'images:id,product_id,url'
+            'images:id,product_id,url',
+            'categories:id,name,slug,description,image,parent_id'
         ])
         ->latest()->paginate(10);
         
@@ -54,8 +55,10 @@ class ProductController extends Controller
                     ->orderBy('price', 'asc')
                     ->with(['variantAttributes:id,product_variant_id,name,value']);
             }, 
-            'images']
-            )->get();
+            'images',
+            'categories:id,name,slug,description,image,parent_id'
+            ])
+            ->get();
 
         return new ProductResource($product);
     }
