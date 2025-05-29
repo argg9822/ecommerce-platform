@@ -17,10 +17,10 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::with([
-            'brand' => function($query) {
-                $query->select('id', 'name');
-            }]
-        )->latest()->paginate(10);
+            'brand:id,name',
+            'images:id,product_id,url'
+        ])
+        ->latest()->paginate(10);
         
         return new ProductCollection($products);
     }
@@ -53,7 +53,8 @@ class ProductController extends Controller
                     ->where('is_available', true)
                     ->orderBy('price', 'asc')
                     ->with(['variantAttributes:id,product_variant_id,name,value']);
-            }]
+            }, 
+            'images']
             )->get();
 
         return new ProductResource($product);
@@ -71,7 +72,8 @@ class ProductController extends Controller
                     ->where('is_available', true)
                     ->orderBy('price', 'asc')
                     ->with(['variantAttributes:id,product_variant_id,name,value']);
-            }
+            },
+            'images'
         ])->select('id', 'name', 'description', 'price', 'compare_price', 'stock', 'is_available', 'is_feature', 'brand_id', 'relevance');
 
         if (!empty($request->product_name)) {

@@ -3,7 +3,6 @@
 namespace App\Http\Resources\V1;
 
 use App\Http\Resources\V1\BrandResource;
-use App\Http\Resources\V1\ProductVariantResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -29,6 +28,7 @@ class ProductResource extends JsonResource
             'relevance' => $this->relevance,
             'brand' => new BrandResource($this->whenLoaded('brand')),
             'variants' => ProductVariantResource::collection($this->whenLoaded('variants')),
+            'images' => ProductImageResourse::collection($this->whenLoaded('images')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
