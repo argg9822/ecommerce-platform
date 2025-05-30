@@ -5,6 +5,7 @@ use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Controllers\Api\V1\ProductController;
 use Stancl\Tenancy\Middleware\InitializeTenancyByPath;
+use App\Http\Controllers\Api\V1\CategoryController;
 
 // Route::middleware([
 //     'api',
@@ -20,9 +21,10 @@ Route::middleware([
 ])->prefix('tenants/{tenant}/v1')->group(function () {
     //Productos
     Route::get('product/search', [ProductController::class, 'search'])->name('products.search');
-    Route::apiResource('products', ProductController::class)->except(['create', 'edit', 'update', 'destroy']);
+    Route::apiResource('products', ProductController::class)
+        ->except(['create', 'edit', 'update', 'destroy']);
 
     //Categorias
-    Route::apiResource('categories', \App\Http\Controllers\Api\V1\CategoryController::class)
+    Route::apiResource('categories', CategoryController::class)
         ->except(['create', 'edit', 'update', 'destroy']);
 });

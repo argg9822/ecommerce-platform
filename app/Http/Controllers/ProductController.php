@@ -162,7 +162,7 @@ class ProductController extends Controller
                 'price' => $variantData['price'],
                 'compare_price' => $variantData['compare_price'],
                 'stock' => $variantData['stock'],
-                'shipment' => $variantData['cost_shipping'],
+                'shipment' => $variantData['shipment'],
                 'is_available' => $variantData['is_available'],
             ]);
 
