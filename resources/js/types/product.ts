@@ -49,7 +49,7 @@ export interface ProductVariants {
     compare_price: number | undefined;
     stock: number | undefined;
     colors: ColorOptionsType[];
-    cost_shipping: number | undefined;
+    shipment: number | undefined;
     dimensions: ProductDimensions;
     variant_attributes: VariantAttributes[];
     is_available: boolean;

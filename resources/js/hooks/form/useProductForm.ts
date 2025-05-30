@@ -4,7 +4,9 @@ import { ProductForm } from '@/types/product-form.type';
 
 type ProductFormData = ProductForm & Record<string, any>;
 
-export default function useProductForm() {
+export default function useProductForm( product? : ProductForm) {
+    console.log(product?.variants);
+    
     const nameRef = useRef<HTMLInputElement>(null);
     const brandRef = useRef<HTMLInputElement>(null);
     const descriptionRef = useRef<HTMLInputElement>(null);
@@ -27,26 +29,26 @@ export default function useProductForm() {
         processing,
         recentlySuccessful,
     } = useForm<ProductFormData>({
-        name: '',
-        description: '',
-        price: undefined,
-        compare_price: undefined,
-        cost: undefined,
-        stock: 0,
-        sku: '',
-        barcode: '',
-        is_feature: false,
-        is_available: true,
-        relevance: 0,
-        brand_id: 1,
-        shipment: undefined,
-        meta_title: '',
-        meta_description: '',
-        key_words: '',
-        condition: 'new',
-        show_condition: false,
-        warranty_policy: '',
-        disponibility_text: '',
+        name: product?.name || '',
+        description: product?.description || '',
+        price: product?.price || undefined,
+        compare_price: product?.compare_price || undefined,
+        cost: product?.cost || undefined,
+        stock: product?.stock || 0,
+        sku: product?.sku || '',
+        barcode: product?.barcode || '',
+        is_feature: product?.is_feature || false,
+        is_available: product?.is_available || true,
+        relevance: product?.relevance || 0,
+        brand_id: product?.brand_id || 1,
+        shipment: product?.shipment || undefined,
+        meta_title: product?.meta_title || '',
+        meta_description: product?.meta_description || '',
+        key_words: product?.key_words || '',
+        condition: product?.condition || 'new',
+        show_condition: product?.show_condition || false,
+        warranty_policy: product?.warranty_policy || '',
+        disponibility_text: product?.disponibility_text || '',
 
         categories: [],
         profit: undefined,

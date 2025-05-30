@@ -48,13 +48,12 @@ export default function UploadImages({
 
         if (filesArray.length > 0) {
             const updatedFiles = multiple ? [...images, ...filesArray] : [filesArray[0]];
-
-            filesArray.forEach(file => {
-                if (file.size > maxSizeInMB * 1024 * 1024) {
-                    alert(`El archivo debe pesar menos de ${maxSizeInMB}MB.`);
-                    return;
-                }
-            })
+            const imagesMaxSize = filesArray.filter(file => file.size > maxSizeInMB * 1024 * 1024);            
+            
+            if(imagesMaxSize.length > 0) {
+                alert(`Las imagenes deben pesar menos de ${maxSizeInMB}MB.`);
+                return;
+            }
             
             setImages(updatedFiles);
             onFilesSelected?.(updatedFiles);

@@ -39,10 +39,8 @@ type CreateProductProps = {
     product?: ProductForm
 }
 
-export default function ProductEditor({ mode, categories, brands, product }: CreateProductProps) {
-    console.log(product);
-    
-    const form = useProductForm();
+export default function ProductEditor({ mode, categories, brands, product }: CreateProductProps) {    
+    const form = useProductForm(product || undefined);
 
     const [openDialogCategory, setOpenDialogCategory] = useState(false);
     const [openDialogBrand, setOpenDialogBrand] = useState(false);
@@ -64,7 +62,7 @@ export default function ProductEditor({ mode, categories, brands, product }: Cre
                         />
 
                         {/* Precios y stock */}
-                         <Accordion type="single" collapsible className="w-full accordion-cards">
+                        <Accordion type="single" collapsible className="w-full accordion-cards">
                             <AccordionItem value="item-1">
                                 <AccordionTrigger className="flex flex-col text-gray-100">
                                     <h3 className="accordion-cards-title">Precio e inventario</h3>

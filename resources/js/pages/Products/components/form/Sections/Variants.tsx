@@ -79,11 +79,11 @@ export default function Variants() {
                         >
                             {variant_index === 0 ? "Características principales" : `Variante ${variant_index}`}
                         </TabsTrigger>
-                    )
-                    )}
+                    ))
+                    }
                 </TabsList>
 
-                {data.variants.map((variant: ProductVariants, variant_index:number) => (
+                {data.variants.map((variant: ProductVariants, variant_index: number) => (
                     <TabsContent value={`variant-${variant_index}`} key={variant_index} className="bg-gray-900/50">
                         <CardContent key={variant_index} className="space-y-4 rounded-lg">
                             <div className="flex justify-between items-center">                                
@@ -261,7 +261,7 @@ export default function Variants() {
                             <Separator />
 
                             <div className='flex flex-col gap-4'>
-                                {variant.attributes.map((feature, index) => (
+                                {variant.variant_attributes && variant.variant_attributes.map((feature, index) => (
                                     <InputsFeatures
                                         key={index}
                                         name={feature.name}
@@ -270,7 +270,7 @@ export default function Variants() {
                                         variantIndex={variant_index}
                                         handleFeatureChange={handleFeatureVariantChange}
                                     >
-                                        {(variant.attributes.length > 1) && (
+                                        {(variant.variant_attributes.length > 1) && (
                                             <div className="col-span-1">
                                                 <Button
                                                     type="button"

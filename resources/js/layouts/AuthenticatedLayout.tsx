@@ -9,7 +9,7 @@ export default function Authenticated({
     className = '',
 }: PropsWithChildren<{ header?: ReactNode, className?: string }>) {
     return (
-        <div className={className + "min-h-screen main-container pb-10 pt-10"}>
+        <div className={className + "min-h-screen main-container pb-10 pt-20"}>
             <SidebarProvider>
                 <AppSidebar />
                 <main className='w-full'>
