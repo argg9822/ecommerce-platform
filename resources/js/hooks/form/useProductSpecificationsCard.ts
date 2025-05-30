@@ -29,7 +29,7 @@ export default function useProductSpecificationsCard(){
                 currency_price: 'COP',
                 compare_price: undefined,
                 stock: 0,
-                cost_shipping: undefined,
+                shipment: undefined,
                 dimensions: {
                     length: {
                         value: 0,
@@ -49,7 +49,7 @@ export default function useProductSpecificationsCard(){
                     }
                 },
                 colors: createColorOptions(),
-                attributes: [{name: '', value: ''}],
+                variant_attributes: [{name: '', value: ''}],
                 is_available: true,
             }
         ];
@@ -59,7 +59,7 @@ export default function useProductSpecificationsCard(){
 
     const handleFeatureVariantChange = (index: number, field: "name" | "value", value: string, variantIndex: number) => {
         const updatedVariants: ProductVariants[] = [...data.variants];
-        const currentAttributes: VariantAttributes[] = updatedVariants[variantIndex].attributes;
+        const currentAttributes: VariantAttributes[] = updatedVariants[variantIndex].variant_attributes;
         const currentAttribute = currentAttributes[index];
         const updatedAttribute = {
             ...currentAttribute,
@@ -69,20 +69,20 @@ export default function useProductSpecificationsCard(){
         updatedAttributes[index] = updatedAttribute;
         updatedVariants[variantIndex] = {
             ...updatedVariants[variantIndex],
-            attributes: updatedAttributes,
+            variant_attributes: updatedAttributes,
         };
         setData('variants', updatedVariants);
     }
 
     const removeFeature = (index: number, variantIndex: number) => {
         const updatedVariants: ProductVariants[] = [...data.variants];
-        const currentAttributes = updatedVariants[variantIndex].attributes;
+        const currentAttributes = updatedVariants[variantIndex].variant_attributes;
 
         if (currentAttributes.length === 1) return;
 
         updatedVariants[variantIndex] = {
             ...updatedVariants[variantIndex],
-            attributes: currentAttributes.filter((_, idx) => idx !== index),
+            variant_attributes: currentAttributes.filter((_, idx) => idx !== index),
         };
 
         setData('variants', updatedVariants);
@@ -90,9 +90,9 @@ export default function useProductSpecificationsCard(){
 
     const addFeatureVariant = (variantIndex: number) => {
         const updatedVariants = [...data.variants];
-        const newAttributes = [...updatedVariants[variantIndex].attributes];
+        const newAttributes = [...updatedVariants[variantIndex].variant_attributes];
         newAttributes.push({name: '', value: ''});
-        updatedVariants[variantIndex].attributes = newAttributes;
+        updatedVariants[variantIndex].variant_attributes = newAttributes;
         setData('variants', updatedVariants);
     }
 
@@ -153,7 +153,7 @@ export default function useProductSpecificationsCard(){
             price: undefined,
             compare_price: undefined,
             stock: 0,
-            cost_shipping: undefined,
+            shipment: undefined,
             dimensions: {
                 length: {
                     value: 0,
@@ -173,7 +173,7 @@ export default function useProductSpecificationsCard(){
                 }
             },
             colors: createColorOptions(),
-            attributes: [{name: '', value: ''}],
+            variant_attributes: [{name: '', value: ''}],
             is_available: true,
         });
         setData('variants', newVariants);

@@ -31,7 +31,7 @@ export interface ProductDimensions {
 }
 
 export interface VariantAttributes {
-    id: number,
+    id?: number,
     name: string;
     value: string;
 }
