@@ -6,6 +6,8 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Tenant;
+use App\Models\TenantApiToken;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class IdentifyTenant
@@ -17,10 +19,26 @@ class IdentifyTenant
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $domain = $request->getHost();
+        $token = $request->bearerToken();
 
-        $tenant = Tenant::byDomain($domain)->firstOrFail();
-        app()->instance('currentTenant', $tenant);
+        if(!$token){
+            return response()->json(["error" => "Debe proveer un API token"], 401);
+        }
+
+        $apiToken = TenantApiToken::with('tenant')->whereNull('expired_at')->get()
+            ->first(function($storedToken) use ($token){
+                return Hash::check($token, $storedToken->token_hash);
+            });
+        Log::info($apiToken);
+
+        if(!$apiToken){
+            return response()->json(["error" => "Token inválido"], 403);
+        }
+
+        //$domain = $request->getHost();
+
+        // app()->instance('currentTenant', $tenant);
+
         return $next($request);
     }
 }

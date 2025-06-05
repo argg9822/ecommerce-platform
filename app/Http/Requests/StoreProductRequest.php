@@ -64,7 +64,7 @@ class StoreProductRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'El nombre del producto es obligatorio.',
+            'name.required' => 'Ingresa el nombre del producto.',
             'name.unique' => 'El nombre del producto ya está en uso.',
             'description.max' => 'La descripción no puede exceder los 1000 caracteres.',
             'price.required' => 'El precio es obligatorio.',
@@ -72,8 +72,8 @@ class StoreProductRequest extends FormRequest
             'price.min' => 'El precio no puede ser negativo.',
             'stock.required' => 'El stock es obligatorio.',
             'stock.integer' => 'El stock debe ser un número entero.',
-            'category_id.required' => 'La categoría es obligatoria.',
-            'category_id.exists' => 'La categoría seleccionada no es válida.',
+            'categories.required' => 'Selecciona al menos una categoría',
+            'categories.exists' => 'La categoría seleccionada no es válida.',
             'brand_id.required' => 'La marca es obligatoria.',
             'brand_id.exists' => 'La marca seleccionada no es válida.',
             'sku.unique' => 'El SKU ya está en uso.',
@@ -103,8 +103,7 @@ class StoreProductRequest extends FormRequest
             'show_condition.boolean' => 'El campo mostrar condición debe ser verdadero o falso.',
             'key_words.max' => 'Las palabras clave no pueden exceder los 255 caracteres.',
             'relevance.integer' => 'La relevancia debe ser un número entero.',
-            'relevance.min' => 'La relevancia no puede ser negativa.',
-            'relevance.max' => 'La relevancia no puede ser mayor a 5.',
+            'relevance.between' => 'La relevancia debe ser un número entre 1 y 5.',
             'relevance.unique' => 'Ya hay un producto con esa relevancia.',
             'disponibility_text.max' => 'El texto de disponibilidad no puede exceder los 255 caracteres.',
             'meta_title.max' => 'El título meta no puede exceder los 255 caracteres.',

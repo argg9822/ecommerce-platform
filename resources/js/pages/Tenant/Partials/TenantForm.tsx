@@ -1,8 +1,8 @@
 import InputError from '@/components/InputError';
 import InputLabel from '@/components/InputLabel';
 import PrimaryButton from '@/components/PrimaryButton';
-import { FormEventHandler, useRef } from 'react';
-import { useForm } from '@inertiajs/react';
+import { FormEventHandler, useEffect, useRef } from 'react';
+import { useForm, usePage } from '@inertiajs/react';
 import timezones from '@/data/timezones.json';
 import currencies from '@/data/currencies.json';
 import indicators from '@/data/indicators.json';
@@ -35,6 +35,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { FlashMessage } from '@/types';
+import { Lock } from 'lucide-react';
+import CopyButton from '@/components/ui/copy-button';
 
 type props = {
   className?: string,
@@ -51,7 +54,7 @@ export default function TenantForm({ className = '', props} : props) {
       processing,
       recentlySuccessful,
   } = useForm({
-      tenant_name: 'ToysNow',
+      name: 'ToysNow',
       domain: 'toysnow',
       plan: '3',
       tenant_logo: null as File | null,
@@ -59,7 +62,7 @@ export default function TenantForm({ className = '', props} : props) {
       tenant_timezone: 'America/Bogota',
       currency: 'COP',
       tenant_email: 'info@toysnow.com',
-      domain_extension: 'com',
+      domain_extension: 'localhost',
       user_name: 'Viviana Marin',
       user_email: 'viviana@gmail.com',
       user_password: '12345678',
@@ -68,13 +71,45 @@ export default function TenantForm({ className = '', props} : props) {
   });
 
   const [openDialog, setOpenDialog] = useState(false);
-  const [messageDialog, setmessageDialog] =
-    useState(
-      {
-        message: 'Tienda guardada correctamente!',
-        title: 'Se ha creado la tienda'
-      }
-    );
+  const [messageDialogForm, setMessageDialogForm] = useState({
+    title: '',
+    message: '',
+    data: ''
+  });
+
+  // const { flash } = usePage().props as {
+  //     flash?: {
+  //         success?: FlashMessage;
+  //         error?: FlashMessage;
+  //     };
+  // };
+
+  const { flash } = usePage().props;
+  
+  useEffect(()=> {
+    if(!flash) return;
+    
+    console.log('Flash data:', flash);
+    if (flash?.success) {
+      setMessageDialogForm({
+        title: flash.success?.title || '',
+        message: flash.success?.message || '',
+        data: flash.success?.data || ''
+      });
+      setOpenDialog(true);
+    }
+
+    if (flash?.error) {
+      setMessageDialogForm({
+        title: flash.error?.title || '',
+        message: flash.error?.message || '',
+        data: ''
+      });
+      setOpenDialog(true);
+    }
+
+  }, [flash])
+
   const tenantNameRef = useRef<HTMLInputElement>(null);
   const plans = props;
 
@@ -106,11 +141,10 @@ export default function TenantForm({ className = '', props} : props) {
       preserveScroll: false,
       onSuccess: () => {
         reset();
-        setOpenDialog(true);
       },
       onError: (errors) => {
-        if (errors.tenant_name) {
-          reset('tenant_name');
+        if (errors.name) {
+          reset('name');
           tenantNameRef.current?.focus();
         }
 
@@ -129,9 +163,6 @@ export default function TenantForm({ className = '', props} : props) {
         if (errors.user_email) {
           reset('user_email');
         }
-
-        setmessageDialog({message:'Error al crear la tienda', title:'Error'});
-        setOpenDialog(true);
       }
     });
   }
@@ -152,20 +183,20 @@ export default function TenantForm({ className = '', props} : props) {
               <div className='w-1/2'>
                 <div>
                   <InputLabel
-                      htmlFor="tenant_name"
+                      htmlFor="name"
                       value="Nombre de la tienda"
                   />
 
                   <Input
-                    id="tenant_name"
+                    id="name"
                     type="text"
-                    onChange={(e) => setData('tenant_name', e.target.value)}
-                    value={data.tenant_name}
+                    onChange={(e) => setData('name', e.target.value)}
+                    value={data.name}
                     autoComplete="off"
                   />
 
                   <InputError
-                    message={errors.tenant_name}
+                    message={errors.name}
                   />
                 </div>
 
@@ -195,13 +226,12 @@ export default function TenantForm({ className = '', props} : props) {
                         <SelectItem value="co">.co</SelectItem>
                         <SelectItem value="io">.io</SelectItem>
                         <SelectItem value="ai">.ai</SelectItem>
+                        <SelectItem value="localhost">.localhost</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
-                  <InputError
-                    message={errors.domain}
-                  />
+                  <InputError message={errors.domain}/>
                 </div>
               </div>
 
@@ -304,7 +334,7 @@ export default function TenantForm({ className = '', props} : props) {
                   />
 
                   <InputError
-                    message={errors.domain}
+                    message={errors.user_email}
                   />
                 </div>
               </div>
@@ -497,22 +527,56 @@ export default function TenantForm({ className = '', props} : props) {
       </form>
 
       <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
-        <AlertDialogContent className="bg-gray-400">
+        <AlertDialogContent className="bg-gray-900 border-gray-700/80 shadow-xl p-0">
           <AlertDialogHeader>
-            <AlertDialogTitle>{messageDialog.title}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {messageDialog.message}
-            </AlertDialogDescription>
+            <AlertDialogTitle>{messageDialogForm.title}</AlertDialogTitle>
           </AlertDialogHeader>
+
+          <AlertDialogDescription className=" p-0 overflow-hidden">
+            {messageDialogForm.data ? (
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <Lock className="w-5 h-5 text-emerald-400" />
+                    <h3 className="font-semibold text-white">API Token</h3>
+                  </div>
+                  <CopyButton token={messageDialogForm.data} />
+                </div>
+                
+                <div className="p-3 bg-gray-800/50 rounded-md mb-3">
+                  <code className="font-mono text-sm text-white/90 break-all">
+                    {messageDialogForm.data}
+                  </code>
+                </div>
+                
+                <div className="flex items-start gap-2">
+                  <div className="text-emerald-400 mt-0.5">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" strokeWidth="1.5"/>
+                      <path d="M12 16v-4m0-4h.01" strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-400">
+                    Este token proporciona acceso completo a la API. Guárdalo de forma segura y no lo compartas.
+                    Si no lo guardas deberás generar uno nuevo.
+                  </p>
+                </div>
+              </div>
+            ) : 
+              messageDialogForm.message
+            }
+          </AlertDialogDescription>
+
           <AlertDialogFooter>
             <AlertDialogCancel>{errors ? 'Aceptar' : 'Crear nueva tienda'}</AlertDialogCancel>
             {!errors && 
-            <AlertDialogAction>
-              <Link
-                href={route("tenantIndex")}>
-                Ver lista de tiendas
-              </Link>
-            </AlertDialogAction>}
+              <AlertDialogAction>
+                <Link
+                  href={route("tenantIndex")}>
+                  Ver lista de tiendas
+                </Link>
+              </AlertDialogAction>
+            }
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

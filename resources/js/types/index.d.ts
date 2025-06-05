@@ -29,6 +29,12 @@ export interface Brand {
     name: string;
 }
 
+export interface ApiToken {
+    id?: number,
+    name: string,
+    token_hash: string,
+    created_at: string
+}
 export interface Tenant {
     id: number;
     name: string;
@@ -38,10 +44,10 @@ export interface Tenant {
     plan?: Plan | null;
     is_active: boolean;
     data: object;
-    api_token: string;
+    api_tokens: ApiToken[];
     created_at: string;
     updated_at: string;
-    owner?: User | null;
+    users?: User[] | null;
     config: {
         currency: string,
         language: string,
@@ -53,6 +59,7 @@ export interface Tenant {
 interface FlashMessage  {
     title?: string;
     message?: string;
+    data?: string
 }
 
 export type PageProps<

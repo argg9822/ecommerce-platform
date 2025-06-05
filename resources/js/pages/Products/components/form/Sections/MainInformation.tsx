@@ -61,7 +61,8 @@ export default function MainInformation({
         data,
         setData,
         errors,
-        handleNumberChangeSelect
+        handleNumberChangeSelect,
+        refs
     } = useProductFormContext();
     
     const [openCategoriesSelect, setOpenCategoriesSelect] = useState(false);
@@ -93,6 +94,7 @@ export default function MainInformation({
                             autoComplete='off' 
                             className={errors.name ? 'border-red-500' : ''}
                             required
+                            ref={refs.name}
                         />
                         <InputError message={errors.name} />
                     </div>
@@ -119,7 +121,10 @@ export default function MainInformation({
                         </div>
 
                         <div className='flex'>
-                            <Select onValueChange={(e) => { handleNumberChangeSelect(e, 'brand_id') }} defaultValue={String(data.brand_id)} required>
+                            <Select 
+                                onValueChange={(e) => { handleNumberChangeSelect(e, 'brand_id') }} 
+                                defaultValue={String(data.brand_id)} required 
+                            >
                                 <SelectTrigger className='h-[30px]'>
                                     <SelectValue placeholder="Selecciona una marca si no es propia" />
                                 </SelectTrigger>
@@ -136,7 +141,7 @@ export default function MainInformation({
                                 </SelectContent>
                             </Select>
                         </div>
-                        <InputError message={errors.category_id} />
+                        <InputError message={errors.brand_id} />
                     </div>
 
                     <div className="col-span-12">
@@ -178,7 +183,7 @@ export default function MainInformation({
                         )}
 
                         <div className="flex flex-row justify-between">
-                            <InputLabel htmlFor="category_id" value="Categoría" />
+                            <InputLabel value="Categorías" />
                             <Button type="button" className="max-h-[20px] bg-transparent text-blue-500 hover:text-blue-700" title="Añade una categoría" onClick={() => setOpenDialogCategory(true)}>
                                 <PlusIcon />Agregar categoría
                             </Button>
@@ -201,7 +206,7 @@ export default function MainInformation({
                                 >
                                     {data.categories?.length 
                                     ? `Seleccionadas (${data.categories.length})`
-                                    : "Selecciona categorías"}
+                                    : "Puedes seleccionar varias categorías"}
                                     <ChevronsUpDown className="ml-2 h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
                                 </Button>
                             </PopoverTrigger>

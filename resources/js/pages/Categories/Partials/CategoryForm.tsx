@@ -51,33 +51,34 @@ export default function CategoryForm({ openDialog, categories }: CategoryFormPro
                     <InputError message={errors.name} />
                 </div>
 
-                <div>
-                    <InputLabel htmlFor="category_id" value="Categoría padre" />
-                    <div className='flex'>
-                        <Select onValueChange={(e) => { setData('parent_id', e) }} defaultValue={data.parent_id}>
-                            <SelectTrigger className='h-[30px]'>
-                                <SelectValue placeholder="Seleccionar" />
-                            </SelectTrigger>
+                {parentsCategories.length > 0 && (
+                    <div>
+                        <InputLabel htmlFor="category_id" value="Categoría padre" />
+                        <div className='flex'>
+                            <Select onValueChange={(e) => { setData('parent_id', e) }} defaultValue={data.parent_id}>
+                                <SelectTrigger className='h-[30px]'>
+                                    <SelectValue placeholder="Seleccionar" />
+                                </SelectTrigger>
 
-                            <SelectContent>
-                                <SelectItem value='null'>Ninguna</SelectItem>
-                                {parentsCategories.map((category) => (
-                                    <SelectItem
-                                        key={category.id}
-                                        value={String(category.id)}>
-                                        <div className='flex flex-row'>
-                                            <div className='flex flex-col text-left'>
-                                                <span>{category.name}</span>
+                                <SelectContent>
+                                    {parentsCategories.map((category) => (
+                                        <SelectItem
+                                            key={category.id}
+                                            value={String(category.id)}>
+                                            <div className='flex flex-row'>
+                                                <div className='flex flex-col text-left'>
+                                                    <span>{category.name}</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <InputError message={errors.parent_id} />
                     </div>
-                    <InputError message={errors.parent_id} />
-                </div>
-
+                )}
+                
                 <div className="flex flex-col">
                     <InputLabel htmlFor="name" value='Descripción'/>
                     <Textarea id="description" value={data.description} onChange={(e) => setData('description', e.target.value)} className="min-h-[100px] col-span-3" placeholder="Coloca una pequeña pero concisa descripción de la categoría" />

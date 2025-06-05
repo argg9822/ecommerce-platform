@@ -29,8 +29,6 @@ class CreateTenantsTable extends Migration
             $table->unsignedBigInteger('plan_id');
             $table->foreign('plan_id')->references('id')->on('plans')->restrictOnDelete();
             $table->boolean('is_active')->default(true);
-            $table->string('api_token')->nullable()->unique();
-            $table->unsignedBigInteger('owner_id')->nullable();
             $table->json('config')->nullable();
             $table->json('data')->nullable();
             $table->timestamps();

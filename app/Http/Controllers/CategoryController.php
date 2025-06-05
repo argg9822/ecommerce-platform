@@ -65,10 +65,9 @@ class CategoryController extends Controller
             ]);
 
             return redirect()->back()->with('flash.error', [
-                    'title' => 'No se pudo crear la categoría',
-                    'message' => 'Por verifica los datos ingresados e intenta nuevamente'
-                ]
-            );
+                'title' => 'No se pudo crear la categoría',
+                'message' => 'Por verifica los datos ingresados e intenta nuevamente'
+            ]);
         }        
     }
 

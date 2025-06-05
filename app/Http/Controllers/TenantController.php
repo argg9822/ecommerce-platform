@@ -17,16 +17,19 @@ use Illuminate\Support\Facades\Storage;
 
 //Requests
 use App\Http\Requests\StoreTenantRequest;
+use App\Models\TenantApiToken;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 
-class TenantSetupController extends Controller
+class TenantController extends Controller
 {
     public function index(): Response
     {
+        $tenants = Tenant::with(['plan', 'users', 'apiTokens'])->get();
+        
         return Inertia::render('Tenant/Index', [
-            'tenants' => Tenant::with(['plan', 'owner'])->get(),
+            'tenants' => $tenants,
         ]);
     }
 
@@ -39,12 +42,6 @@ class TenantSetupController extends Controller
 
     public function store(StoreTenantRequest $request)
     {
-        $tenantName = Str::lower(Str::slug($request->tenant_name));
-        $tenantExists = Tenant::where('name', "$tenantName")->first();
-        if ($tenantExists) {
-            return to_route('tenantCreate')->with(['error' => 'La tienda ya existe']);
-        }
-
         DB::beginTransaction();
         try {
             $additionalData = [
@@ -55,10 +52,9 @@ class TenantSetupController extends Controller
             ];
 
             $tenant = Tenant::create([
-                'name' => $tenantName,
+                'name' => Str::lower(Str::slug($request->name)),
                 'plan_id' => $request->plan,
                 'is_active' => true,
-                'api_token' => hash('sha256', Str::uuid()->toString() . now()),
                 'config' => $additionalData,
             ]);
 
@@ -66,9 +62,19 @@ class TenantSetupController extends Controller
             if ($request->hasFile('tenant_logo')) {
                 $pathLogo = $this->saveLogo($request->file('tenant_logo'), $tenant->id);
             }
+            $ownerCreated = $this->createOwner($request, $tenant, $pathLogo);
 
-            $this->createOwner($request, $tenant, $pathLogo);
+            if(!$ownerCreated["success"]){
+                DB::rollBack();
+                return redirect()->back()->with('flash.error', [
+                    'title' => "Error al crear la tienda",
+                    'message' => $ownerResult['error'] ?? "Error desconocido al crear el propietario.",
+                ]);
+            }
 
+            $plainTextToken = $this->createToken($tenant);
+            Log::info($plainTextToken);
+            
             $tenantDomain = Str::slug($request->domain).".".Str::lower($request->domain_extension);
             $tenant->domains()->create(['domain' => $tenantDomain]);
 
@@ -84,15 +90,51 @@ class TenantSetupController extends Controller
             DB::commit();
             tenancy()->end();
 
-            return to_route('tenantIndex')->with(['success' => "Tienda {$tenantName} creada con éxito."]);
-        
+            session()->put([
+                'flash.success' => [
+                    'title' => "Tienda creada",
+                    'message' => "Se ha creado la tienda correctamente",
+                    'data' => $plainTextToken
+                ]
+            ]);
+            session()->save();
+
+            // Log::info(session()->all());
+
+            return redirect()->back();
+
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error creando tenant', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            return to_route('tenantCreate')->with(['error' => 'Error al crear la tienda']);
+            session()->put([
+                'flash.error' => [
+                    'title' => 'Error al crear la tienda',
+                    'message' => "Hubo un error al crear la tienda",
+                ]
+            ]);
+            session()->save();
+            return redirect()->back();
+        }
+    }
+
+    private function createToken($tenant)
+    {
+        $plainTextToken = Str::random(40);
+
+        try {
+            TenantApiToken::create([
+                'tenant_id' => $tenant->id,
+                'name' => 'softgenix',
+                'token_hash' => Hash::make($plainTextToken),
+            ]);
+
+            return $plainTextToken;
+        } catch (\Exception $e) {
+            Log::error(["Error" => "Error al crear el token ".$e->getMessage()]);
+            throw $e;
         }
     }
 
@@ -114,39 +156,31 @@ class TenantSetupController extends Controller
 
     private function createOwner($request, $tenant, $logoPath)
     {
-        try{
+        try {
             $user = User::create([
                 'name' => $request->user_name,
                 'email' => $request->user_email,
                 'password' => Hash::make($request->user_password),
                 'role' => 'owner',
-                'tenant_id' => $tenant->id,
-                'phone' => trim($request->phone_indicator." ".$request->user_phone),
+                'phone' => trim($request->phone_indicator . " " . $request->user_phone),
             ]);
-    
-            if(!$user->wasRecentlyCreated){
-                throw new Exception("No se pudo crear el usuario propietario.");
+
+            $tenant->users()->sync($user);
+
+            if (!$user->wasRecentlyCreated) {
+                throw new \Exception("El usuario no se creó correctamente.");
             }
 
-            if(empty($user->id)) {
-                throw new Exception("El usuario se creó pero no tiene ID válido");
-            }
-    
-            $tenant->owner_id = $user->id;
-            $tenant->logo = $logoPath;
-            $updated = $tenant->save();
+            $tenant->update(['logo' => $logoPath]);
+
+            return ['success' => true];
             
-            // $updated = $tenant->update([
-            //     'owner_id' => $user->id,
-            //     'logo' => $logoPath            
-            // ]);
-
-            if(!$updated){
-                throw new Exception("No se pudo actualizar el id del propietario en la tabla tenants");
-            }
-        }catch(Exception $e){
-            Log::error("Error al guardar el propietario de la tienda ". $e->getMessage());
-            throw $e;
+        } catch (\Exception $e) {
+            Log::error("Error al crear propietario: " . $e->getMessage());
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
         }
     }
 }

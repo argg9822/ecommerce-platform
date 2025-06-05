@@ -8,20 +8,38 @@ use App\Http\Resources\V1\ProductResource;
 use App\Models\Api\V1\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with([
+        $productQuery = Product::with([
             'brand:id,name',
             'images:id,product_id,url',
             'categories:id,name,slug,description,image,parent_id'
-        ])
-        ->latest()->paginate(10);
+        ]);
+
+        if (!empty($request->name)) {
+            $productQuery->where('name', 'ILIKE', '%' . $request->product_name . '%');
+        }
+
+        if (!empty($request->description)){
+            $productQuery->where('description', 'ILIKE', '%' . $request->description . '%');
+        }
+
+        if (!empty($request->relevance)) {
+            $productQuery->where('relevance', $request->relevance);
+        }
+
+        $products = $productQuery->latest()->paginate(10);
+
+        if($products->isEmpty()){
+            return response()->json(["message" => "No se ha encontrado ningún producto"], Response::HTTP_NOT_FOUND);
+        }
         
         return new ProductCollection($products);
     }

@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('password');
             $table->enum('role', ['admin', 'superadmin', 'owner'])->default('admin');
-            $table->uuid('tenant_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

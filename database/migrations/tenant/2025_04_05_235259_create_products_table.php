@@ -20,12 +20,13 @@ return new class extends Migration
             $table->decimal('cost', 10, 2)->default(0);
             $table->integer('stock')->default(0);
             $table->string('sku')->unique()->nullable();
+            $table->string('slug')->unique()->nullable();
             $table->string('barcode')->nullable();
             $table->boolean('is_feature')->default(false); //Destacado en homepage
             $table->boolean('is_available')->default(true);
             $table->integer('relevance')->default(0);
             $table->foreignId('brand_id')->nullable()->constrained()->onDelete('cascade');
-            $table->decimal('shipment', 10, 2)->default(0);
+            $table->decimal('shipment', 10, 2)->default(0)->nullable();
             $table->string("meta_title")->nullable();
             $table->text("meta_description")->nullable();
             $table->string("key_words")->nullable();
@@ -35,6 +36,8 @@ return new class extends Migration
             $table->string("disponibility_text")->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index(['name', 'description']);
         });
     }
 

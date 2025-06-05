@@ -37,14 +37,9 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         return $this->belongsTo(Plan::class);
     }
 
-    public function owner()
+    public function users()
     {
-        return $this->hasOne(User::class, 'id', 'owner_id');
-    }
-
-    public function user()
-    {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class);
     }
 
     public function getLogoUrl()
@@ -53,11 +48,6 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             return asset('storage/' . $this->logo);
         }
         return null;
-    }
-
-    public function byDomain($domain)
-    {
-        return $this->where('domain', $domain)->first();
     }
 
     public function getCurrency()
@@ -81,5 +71,10 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     public function getSchemaName(): string
     {
         return "tenant{$this->id}";
+    }
+
+    public function apiTokens()
+    {
+        return $this->hasMany(TenantApiToken::class);
     }
 }

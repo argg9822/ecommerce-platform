@@ -1,64 +1,17 @@
 import { useProductFormContext } from "@/context/product-form.context";
-import { useEffect } from "react";
-import { ProductVariants, ProductDimensions, VariantAttributes, ColorOptionsType } from '@/types/product';
+import { ProductVariantsType, ProductDimensions, VariantAttributes, ColorOptionsType } from '@/types/product';
 
-const BASE_COLOR_OPTIONS: ColorOptionsType[] = [
-    { value: "red", label: "Rojo", color: "text-red-600", selected: false },
-    { value: "silver", label: "Plateado", color: "text-gray-500", selected: false },
-    { value: "blue", label: "Azul", color: "text-blue-500", selected: false },
-    { value: "green", label: "Verde", color: "text-green-600", selected: false },
-    { value: "yellow", label: "Amarillo", color: "text-yellow-400", selected: false },
-    { value: "purple", label: "Morado", color: "text-purple-400", selected: false },
-    { value: "pink", label: "Rosado", color: "text-pink-400", selected: false },
-];
-
-export default function useProductSpecificationsCard(){
+export default function useProductVariants(){
     const {
         data,
         setData,
         errors,
+        createColorOptions,
         recentlySuccessful
     } = useProductFormContext();
 
-    const createColorOptions = () => JSON.parse(JSON.stringify(BASE_COLOR_OPTIONS));
-
-    useEffect(() => {
-        const newVariants = [
-            {
-                price: undefined,
-                currency_price: 'COP',
-                compare_price: undefined,
-                stock: 0,
-                shipment: undefined,
-                dimensions: {
-                    length: {
-                        value: 0,
-                        unit: 'cm',
-                    },
-                    width: {
-                        value: 0,
-                        unit: 'cm',
-                    },
-                    height: {
-                        value: 0,
-                        unit: 'cm',
-                    },
-                    weight: {
-                        value: 0,
-                        unit: 'kg',
-                    }
-                },
-                colors: createColorOptions(),
-                variant_attributes: [{name: '', value: ''}],
-                is_available: true,
-            }
-        ];
-
-        setData('variants', newVariants)
-    }, []);
-
     const handleFeatureVariantChange = (index: number, field: "name" | "value", value: string, variantIndex: number) => {
-        const updatedVariants: ProductVariants[] = [...data.variants];
+        const updatedVariants: ProductVariantsType[] = [...data.variants];
         const currentAttributes: VariantAttributes[] = updatedVariants[variantIndex].variant_attributes;
         const currentAttribute = currentAttributes[index];
         const updatedAttribute = {
@@ -75,7 +28,7 @@ export default function useProductSpecificationsCard(){
     }
 
     const removeFeature = (index: number, variantIndex: number) => {
-        const updatedVariants: ProductVariants[] = [...data.variants];
+        const updatedVariants: ProductVariantsType[] = [...data.variants];
         const currentAttributes = updatedVariants[variantIndex].variant_attributes;
 
         if (currentAttributes.length === 1) return;
@@ -117,7 +70,7 @@ export default function useProductSpecificationsCard(){
 
     const removeVariant = (index: number) => {
         if (data.variants.length === 1) return;
-        const newVariants = data.variants.filter((_ : ProductVariants, idx: number) => index !== idx);
+        const newVariants = data.variants.filter((_ : ProductVariantsType, idx: number) => index !== idx);
         setData('variants', newVariants);
     }
 
@@ -151,6 +104,7 @@ export default function useProductSpecificationsCard(){
         const newVariants = [...data.variants];
         newVariants.push({
             price: undefined,
+            currency_price: 'COP',
             compare_price: undefined,
             stock: 0,
             shipment: undefined,

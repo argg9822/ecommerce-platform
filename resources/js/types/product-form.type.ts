@@ -1,5 +1,5 @@
 import useProductForm from '@/hooks/form/useProductForm';
-import { ProductImage, ProductVariants, ProductFeatures } from '@/types/product';
+import { ProductImage, ProductVariantsType, ProductFeatures } from '@/types/product';
 
 export type ProductFormContextType = ReturnType<typeof useProductForm>;
 
@@ -15,7 +15,7 @@ export interface ProductForm {
     barcode: string;
     is_feature: boolean;
     is_available: boolean;
-    variants: ProductVariants[];
+    variants: ProductVariantsType[];
     show_condition: boolean;
     warranty_policy: string;
     condition: "refurbished" | "new" | "used";

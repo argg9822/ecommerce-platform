@@ -1,11 +1,7 @@
 import { useForm, usePage } from "@inertiajs/react";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-
-interface FlashMessage  {
-    title?: string;
-    message?: string;
-}
+import { FlashMessage } from '@/types';
 
 export function useCategoryForm(){
     const { toast } = useToast();

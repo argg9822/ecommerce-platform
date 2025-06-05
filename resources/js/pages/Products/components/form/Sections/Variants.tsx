@@ -24,12 +24,12 @@ import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Trash2, PlusCircle, CircleHelp, PlusIcon, X } from 'lucide-react';
 import { ColorPicker } from '@/components/ui/color-picker';
-import { ProductVariants } from '@/types/product';
+import { ProductVariantsType } from '@/types/product';
 import { ProductDimensions } from '@/types/product';
 import ButtonAdd from '@/components/ui/button-add';
 import InputLabel from '@/components/InputLabel';
 import InputError from '@/components/InputError';
-import useProductSpecificationsCard from '@/hooks/form/useProductSpecificationsCard';
+import useProductVariants from '@/hooks/form/useProductVariants';
 import DangerButton from '@/components/ui/danger-button';
 import InputWithAddons from '@/components/ui/input-with-addons';
 import InputsFeatures from "@/pages/Products/components/form/InputsFeatures";
@@ -48,7 +48,7 @@ export default function Variants() {
         removeVariantColor,
         errors,
         data
-    } = useProductSpecificationsCard();
+    } = useProductVariants();
     
     const dimensionsInputs = [
         {label: "Largo", value: "length", units: ["cm", "m", "in", "ft"]},
@@ -70,7 +70,7 @@ export default function Variants() {
 
             <Tabs defaultValue="variant-1">
                 <TabsList className={`grid bg-gray-700 rounded-lg grid-cols-12`}>
-                    {data.variants.map((_: ProductVariants, variant_index:number) => (
+                    {data.variants.map((_: ProductVariantsType, variant_index:number) => (
                         <TabsTrigger
                             key={variant_index}
                             value={`variant-${variant_index}`} 
@@ -83,7 +83,7 @@ export default function Variants() {
                     }
                 </TabsList>
 
-                {data.variants.map((variant: ProductVariants, variant_index: number) => (
+                {data.variants.map((variant: ProductVariantsType, variant_index: number) => (
                     <TabsContent value={`variant-${variant_index}`} key={variant_index} className="bg-gray-900/50">
                         <CardContent key={variant_index} className="space-y-4 rounded-lg">
                             <div className="flex justify-between items-center">                                
@@ -212,9 +212,9 @@ export default function Variants() {
                                 </div>
 
                                 <div className="col-span-4">
-                                    <span className="text-gray-500">(Opcional) Sólo si el precio por variante es diferente</span>
                                     <InputWithAddons
                                         value={variant.price || ""}
+                                        label="Precio de esta variante"
                                         placeholder="0.00"
                                         type="number"
                                         className="pl-[60px]"
@@ -228,7 +228,6 @@ export default function Variants() {
                                 </div>
 
                                 <div className="col-span-4">
-                                    <span className="text-gray-500">(Opcional)</span>
                                     <InputWithAddons
                                         value={variant.compare_price || ""}
                                         placeholder="0.00"

@@ -16,6 +16,10 @@ export interface ProductDimensions {
         value: number;
         unit: string;
     };
+    width: {
+        value: number;
+        unit: string;
+    };
     height: {
         value: number;
         unit: string;
@@ -24,10 +28,7 @@ export interface ProductDimensions {
         value: number;
         unit: string;
     };
-    width: {
-        value: number;
-        unit: string;
-    };
+   
 }
 
 export interface VariantAttributes {
@@ -40,16 +41,16 @@ export interface ColorOptionsType {
     value: string;
     label?: string;
     color?: string;
-    selectedColor?: string;
     selected?: boolean;
 }
 
-export interface ProductVariants {
+export interface ProductVariantsType {
     price: number | undefined;
+    currency_price: string | undefined;
     compare_price: number | undefined;
+    shipment: number | undefined;
     stock: number | undefined;
     colors: ColorOptionsType[];
-    shipment: number | undefined;
     dimensions: ProductDimensions;
     variant_attributes: VariantAttributes[];
     is_available: boolean;
@@ -66,7 +67,7 @@ export interface Product {
     barcode: string;
     is_feature: boolean;
     is_available: boolean;
-    variants: ProductVariants[];
+    variants: ProductVariantsType[];
     brand: string;
     images: ProductImage[],
     category_id: number;

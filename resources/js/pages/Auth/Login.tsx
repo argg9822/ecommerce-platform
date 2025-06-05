@@ -40,7 +40,7 @@ export default function Login({
 
             <div className="w-full max-w-md bg-gray-800 p-8 rounded-2xl">
                 <h2 className="text-2xl font-semibold text-white text-center mb-6">
-                Iniciar sesión
+                    Iniciar sesión
                 </h2>
 
                 <form onSubmit={submit}>
@@ -48,14 +48,14 @@ export default function Login({
                     <InputLabel htmlFor="email" value="Correo electrónico" className="text-gray-300" />
 
                     <TextInput
-                    id="email"
-                    type="email"
-                    name="email"
-                    value={data.email}
-                    className="mt-1 block w-full bg-gray-700 border border-gray-600 text-white focus:ring-red-500 focus:border-red-500 rounded-md"
-                    autoComplete="username"
-                    isFocused={true}
-                    onChange={(e) => setData('email', e.target.value)}
+                        id="email"
+                        type="email"
+                        name="email"
+                        value={data.email}
+                        className="mt-1 block w-full bg-gray-700 border border-gray-600 text-white focus:ring-red-500 focus:border-red-500 rounded-md"
+                        autoComplete="username"
+                        isFocused={true}
+                        onChange={(e) => setData('email', e.target.value)}
                     />
 
                     <InputError message={errors.email} className="mt-2 text-red-400" />
@@ -65,13 +65,13 @@ export default function Login({
                     <InputLabel htmlFor="password" value="Contraseña" className="text-gray-300" />
 
                     <TextInput
-                    id="password"
-                    type="password"
-                    name="password"
-                    value={data.password}
-                    className="mt-1 block w-full bg-gray-700 border border-gray-600 text-white focus:ring-red-500 focus:border-red-500 rounded-md"
-                    autoComplete="current-password"
-                    onChange={(e) => setData('password', e.target.value)}
+                        id="password"
+                        type="password"
+                        name="password"
+                        value={data.password}
+                        className="mt-1 block w-full bg-gray-700 border border-gray-600 text-white focus:ring-red-500 focus:border-red-500 rounded-md"
+                        autoComplete="current-password"
+                        onChange={(e) => setData('password', e.target.value)}
                     />
 
                     <InputError message={errors.password} className="mt-2 text-red-400" />
@@ -79,11 +79,11 @@ export default function Login({
 
                 <div className="mt-4 flex items-center">
                     <Checkbox
-                    name="remember"
-                    checked={data.remember}
-                    onChange={(e) =>
-                        setData('remember', (e.target.checked || false) as false)
-                    }
+                        name="remember"
+                        checked={data.remember}
+                        onChange={(e) =>
+                            setData('remember', (e.target.checked || false) as false)
+                        }
                     />
                     <span className="ms-2 text-sm text-gray-400">Recordarme</span>
                 </div>
@@ -99,10 +99,10 @@ export default function Login({
                     )}
 
                     <PrimaryButton
-                    className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-md transition focus:ring-2 focus:ring-red-500"
-                    disabled={processing}
+                        className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-md transition focus:ring-2 focus:ring-red-500"
+                        disabled={processing}
                     >
-                    Iniciar sesión
+                        Iniciar sesión
                     </PrimaryButton>
                 </div>
                 </form>

@@ -37,6 +37,7 @@ export default function Inventory() {
                             suffixes={["COP", "USD", "EUR"]}
                             onChangeSuffix={(e) => { setData('currency', e) }} 
                             sufixValue={data.currency}
+                            required
                         />
 
                         <InputError message={errors.price} />
@@ -66,6 +67,7 @@ export default function Inventory() {
                         <InputWithAddons
                             label="Costo"
                             messageTooltip="Precio de compra al proveedor"
+                            required
                             value={data.cost || ""}
                             placeholder="0.00"
                             className="pl-6 pr-18"

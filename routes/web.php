@@ -5,7 +5,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\TenantSetupController;
+use App\Http\Controllers\TenantController;
+use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\TenantSessionMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Log;
@@ -22,8 +23,8 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('tenants', TenantSetupController::class)->names([
+Route::middleware(['auth', 'verified', HandleInertiaRequests::class])->group(function () {
+    Route::resource('tenants', TenantController::class)->names([
         'index' => 'tenantIndex',
         'create' => 'tenantCreate',
         'store' => 'tenantStore',

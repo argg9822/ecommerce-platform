@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Services\TenantFileService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -78,7 +79,10 @@ class ProductController extends Controller
     {
         try {
             DB::beginTransaction();
-            $product = Product::create($request->safe()->only([
+            $product = Product::create($request->safe()
+            ->merge(
+                ['slug' => Str::slug($request->name)]
+            )->only([
                 'name',
                 'description',
                 'price',
@@ -176,8 +180,8 @@ class ProductController extends Controller
                 }
             }
 
-            if (!empty($variantData['attributes'])) {
-                foreach ($variantData['attributes'] as $attribute) {
+            if (!empty($variantData['variant_attributes'])) {
+                foreach ($variantData['variant_attributes'] as $attribute) {
                     $variant->variantAttributes()->create([
                         'name' => $attribute['name'],
                         'value' => $attribute['value'],

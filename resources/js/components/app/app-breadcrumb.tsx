@@ -15,6 +15,7 @@ interface BreadcrumbItem {
 
 export default function AppBreadcrumb (){
   const pathNamesMap: Record<string, BreadcrumbItem> = {
+    'tenants': {path: 'Tiendas', route:'tenantIndex'},
     'products': {path: 'Productos', route:'products_index'},
     'dashboard': {path: 'Inicio', route: 'dashboard'},
     'create': {path: 'Crear', route: 'products_create'},

@@ -51,8 +51,8 @@ class BrandController extends Controller
             DB::commit();
 
             return redirect()->back()->with([
-                'flash.success' => ['
-                    title' => 'Marca guardada correctamente',
+                'flash.success' => [
+                    'title' => 'Marca guardada correctamente',
                     'message' => 'Recuerda que el producto puede generar más interes dependiendo de la marca.'
                 ],
             ]);

@@ -18,7 +18,6 @@ class UserSeeder extends Seeder
             'name' => 'Aramis Garcia',
             'email' => 'aramis@gmail.com',
             'role' => 'superadmin',
-            'tenant_id' => null,
             'password' => Hash::make('password'),
         ]);
 
@@ -26,7 +25,6 @@ class UserSeeder extends Seeder
             'name' => 'Gabriel Monhabell',
             'email' => 'monhabell@gmail.com',
             'role' => 'superadmin',
-            'tenant_id' => null,
             'password' => Hash::make('password'),
         ]);
 
