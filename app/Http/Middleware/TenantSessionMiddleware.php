@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Stancl\Tenancy\Tenancy;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\TenantUser;
 
 class TenantSessionMiddleware
 {
@@ -25,7 +26,10 @@ class TenantSessionMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($tenantId = Auth::user()->tenant_id) {            
+        
+        $tenantAuthId = TenantUser::with('tenant')->where('user_id', Auth::id())->first()?->tenant?->id;
+        // Log::info($tenantAuthId);
+        if ($tenantId = $tenantAuthId) {            
             if (!$this->tenancy->initialized || $this->tenancy->tenant->id !== $tenantId) {
                 $tenant = \App\Models\Tenant::find($tenantId);
                 if ($tenant) {
