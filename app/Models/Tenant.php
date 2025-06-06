@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Plan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
@@ -37,9 +38,9 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         return $this->belongsTo(Plan::class);
     }
 
-    public function users()
+    public function users() : BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'tenant_user', 'tenant_id', 'user_id')->withTimestamps();
     }
 
     public function getLogoUrl()

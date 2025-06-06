@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tenant_users', function (Blueprint $table) {
+        Schema::create('tenant_user', function (Blueprint $table) {
             $table->uuid('tenant_id');
             $table->foreign('tenant_id')->references('id')->on('tenants')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
+            
             $table->primary(['tenant_id', 'user_id']);
+            $table->unique(['tenant_id', 'user_id']);
         });
     }
 

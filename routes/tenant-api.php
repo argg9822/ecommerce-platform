@@ -5,6 +5,7 @@ use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Middleware\IdentifyTenant;
 // use Stancl\Tenancy\Middleware\InitializeTenancyByPath;
 
@@ -18,7 +19,9 @@ Route::middleware([
     Route::apiResource('products', ProductController::class)
         ->except(['create', 'edit', 'update', 'destroy']);
 
-    // Route::get('product/search', [ProductController::class, 'search'])->name('products.search');
+    Route::post('reviews', ReviewController::class)
+        ->except(['create', 'edit', 'update', 'destroy']);
+
     Route::apiResource('products', ProductController::class)
         ->except(['create', 'edit', 'update', 'destroy']);
 
@@ -27,6 +30,6 @@ Route::middleware([
         ->except(['create', 'edit', 'update', 'destroy']);
 
     Route::middleware('auth:sanctum')->group(function (){
-
+        
     });
 });

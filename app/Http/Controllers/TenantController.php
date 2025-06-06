@@ -165,7 +165,7 @@ class TenantController extends Controller
                 'phone' => trim($request->phone_indicator . " " . $request->user_phone),
             ]);
 
-            $tenant->users()->sync($user);
+            $tenant->users()->attach($user->id);
 
             if (!$user->wasRecentlyCreated) {
                 throw new \Exception("El usuario no se creó correctamente.");

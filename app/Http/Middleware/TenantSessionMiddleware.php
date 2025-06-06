@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Tenant;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,6 +10,7 @@ use Inertia\Inertia;
 use Stancl\Tenancy\Tenancy;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\TenantUser;
+use Illuminate\Support\Facades\Log;
 
 class TenantSessionMiddleware
 {
@@ -26,15 +28,17 @@ class TenantSessionMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        
-        $tenantAuthId = TenantUser::with('tenant')->where('user_id', Auth::id())->first()?->tenant?->id;
-        // Log::info($tenantAuthId);
-        if ($tenantId = $tenantAuthId) {            
-            if (!$this->tenancy->initialized || $this->tenancy->tenant->id !== $tenantId) {
+        $tenantUser = \App\Models\TenantUser::where('user_id', Auth::id())->first();
+
+        if ($tenantUser) {
+            $tenantId = $tenantUser->tenant_id;
+
+            if (!tenancy()->initialized || tenancy()->tenant->id !== $tenantId) {
                 $tenant = \App\Models\Tenant::find($tenantId);
+
                 if ($tenant) {
-                    $this->tenancy->initialize($tenant);
-                    
+                    tenancy()->initialize($tenant);
+
                     config(['database.connections.tenant.schema' => "tenant{$tenant->id}"]);
                     app('db')->purge('tenant');
 
@@ -45,9 +49,14 @@ class TenantSessionMiddleware
                             'name' => $tenant->name
                         ]
                     ]);
+                } else {
+                    Log::warning("Tenant no encontrado con ID: $tenantId");
                 }
             }
+        } else {
+            Log::warning("No se encontró relación tenant_user para el usuario ID: " . Auth::id());
         }
+
         return $next($request);
     }
 }
