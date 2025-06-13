@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AuthController;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -15,14 +16,16 @@ Route::middleware([
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->prefix('v1')->group(function () {
+    //Login and register
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('logout', [AuthController::class, 'logout']);
+
     //Productos
-    Route::apiResource('products', ProductController::class)
-        ->except(['create', 'edit', 'update', 'destroy']);
+    
 
-    Route::post('reviews', ReviewController::class)
-        ->except(['create', 'edit', 'update', 'destroy']);
-
-    Route::apiResource('products', ProductController::class)
+    //Comentarios
+    Route::apiResource('reviews', ReviewController::class)
         ->except(['create', 'edit', 'update', 'destroy']);
 
     //Categorias
@@ -30,6 +33,7 @@ Route::middleware([
         ->except(['create', 'edit', 'update', 'destroy']);
 
     Route::middleware('auth:sanctum')->group(function (){
-        
+        Route::apiResource('products', ProductController::class)
+        ->except(['create', 'edit', 'update', 'destroy']);
     });
 });

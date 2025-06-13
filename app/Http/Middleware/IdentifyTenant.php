@@ -19,7 +19,8 @@ class IdentifyTenant
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $token = $request->bearerToken();
+        // $token = $request->bearerToken();
+        $token = $request->header('x-api-key');
 
         if(!$token){
             return response()->json(["error" => "Debe proveer un API token"], 401);
@@ -29,7 +30,6 @@ class IdentifyTenant
             ->first(function($storedToken) use ($token){
                 return Hash::check($token, $storedToken->token_hash);
             });
-        Log::info($apiToken);
 
         if(!$apiToken){
             return response()->json(["error" => "Token inválido"], 403);
