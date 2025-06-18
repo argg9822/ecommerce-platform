@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->enum('gender', ['male', 'female', 'other'])->nullable();
+            $table->date('birth_date')->nullable();
+            $table->string('document_type', 20)->nullable();
+            $table->string('document_number', 50)->nullable();
+            $table->string('profile_photo')->nullable();
+            $table->string('language_preference')->default('es');
+            $table->string('timezone')->nullable();
             $table->timestamps();
         });
     }

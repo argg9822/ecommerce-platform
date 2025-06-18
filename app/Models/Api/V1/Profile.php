@@ -12,12 +12,7 @@ class Profile extends Model
         'birth_date',
         'gender',
         'phone_number',
-        'shipping_address',
         'document_number',
-        'country',
-        'postal_code',
-        'city',
-        'state',
         'language_preference',
         'timezone',
     ];
