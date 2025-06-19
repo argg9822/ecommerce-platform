@@ -22,18 +22,19 @@ Route::middleware([
     Route::post('logout', [AuthController::class, 'logout']);
 
     //Productos
-    
+    Route::apiResource('products', ProductController::class)
+        ->only(['show', 'index']);
 
     //Comentarios
     Route::apiResource('reviews', ReviewController::class)
-        ->except(['create', 'edit', 'update', 'destroy']);
+            ->except(['create', 'edit', 'update', 'destroy']);
 
     //Categorias
     Route::apiResource('categories', CategoryController::class)
         ->except(['create', 'edit', 'update', 'destroy']);
 
     Route::middleware('auth:sanctum')->group(function (){
-        Route::apiResource('products', ProductController::class)
-        ->except(['create', 'edit', 'update', 'destroy']);
+        Route::apiResource('reviews', ReviewController::class)
+            ->except(['show', 'index']);
     });
 });
