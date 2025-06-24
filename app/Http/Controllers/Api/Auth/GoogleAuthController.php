@@ -8,6 +8,7 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
 
 class GoogleAuthController extends Controller
 {
@@ -17,35 +18,33 @@ class GoogleAuthController extends Controller
         return Socialite::driver('google')->redirect();
     }
  
-    public function callback()
+    public function callback(Request $request)
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
-
-            if (!$googleUser) {
-                return response()->json(['error' => 'No se pudo obtener la información del usuario de Google'], 400);
+            Log::info('Google Callback Request: ', $request->all());
+            if (!$request) {
+                return response()->json(['error' => 'Por favor ingrese los datos de registro'], Response::HTTP_BAD_REQUEST);
             }
 
             $user = User::firstOrCreate(
-                ['email' => $googleUser->getEmail()],
+                ['email' => $request->email],
                 [
-                    'name' => $googleUser->getName() ?? $googleUser->getNickname(),
+                    'name' => $request->name,
                     'password' => Hash::make(Str::random(16)),
-                    'avatar' => $googleUser->getAvatar(),
+                    'avatar' => $request->image,
                 ]
             );
 
-            $token = $user->createToken('google-token')->plainTextToken;            
+            $token = $user->createToken('google-token')->plainTextToken;
 
             return response()->json([
                 'message' => 'Login exitoso con Google',
-                'token' => $token,
-                'user' => $user,
-            ]);
+                'token' => $token
+            ], Response::HTTP_OK);
 
         } catch (\Exception $e) {
             Log::error('Google Login Error: ' . $e->getMessage());
-            return response()->json(['error' => 'Error en la autenticación con Google'], 500);
+            return response()->json(['error' => 'Error en la autenticación con Google'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

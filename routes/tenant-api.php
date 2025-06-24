@@ -27,7 +27,7 @@ Route::middleware([
 
     //Google and register Google
     Route::get('auth/google/redirect', [GoogleAuthController::class, 'redirect']);
-    Route::get('auth/google/callback', [GoogleAuthController::class, 'callback']);
+    Route::post('auth/google/callback', [GoogleAuthController::class, 'callback']);
 
     //Productos
     Route::apiResource('products', ProductController::class)
