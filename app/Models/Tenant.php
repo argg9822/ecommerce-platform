@@ -38,6 +38,11 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         return $this->belongsTo(Plan::class);
     }
 
+    public function domain()
+    {
+        return $this->hasOne(TenantDomain::class);
+    }
+
     public function users() : BelongsToMany
     {
         return $this->belongsToMany(User::class, 'tenant_user', 'tenant_id', 'user_id')->withTimestamps();

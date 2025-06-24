@@ -62,7 +62,7 @@ export default function TenantForm({ className = '', props} : props) {
       tenant_timezone: 'America/Bogota',
       currency: 'COP',
       tenant_email: 'info@toysnow.com',
-      domain_extension: 'localhost',
+      domain_extension: 'io',
       user_name: 'Viviana Marin',
       user_email: 'viviana@gmail.com',
       user_password: '12345678',
@@ -77,27 +77,14 @@ export default function TenantForm({ className = '', props} : props) {
     data: ''
   });
 
-  // const { flash } = usePage().props as {
-  //     flash?: {
-  //         success?: FlashMessage;
-  //         error?: FlashMessage;
-  //     };
-  // };
-
-  const { flash } = usePage().props;
+  const { flash } = usePage().props as {
+      flash?: {
+          error?: FlashMessage;
+      };
+  };
   
   useEffect(()=> {
     if(!flash) return;
-    
-    console.log('Flash data:', flash);
-    if (flash?.success) {
-      setMessageDialogForm({
-        title: flash.success?.title || '',
-        message: flash.success?.message || '',
-        data: flash.success?.data || ''
-      });
-      setOpenDialog(true);
-    }
 
     if (flash?.error) {
       setMessageDialogForm({
@@ -105,7 +92,6 @@ export default function TenantForm({ className = '', props} : props) {
         message: flash.error?.message || '',
         data: ''
       });
-      setOpenDialog(true);
     }
 
   }, [flash])
@@ -163,6 +149,8 @@ export default function TenantForm({ className = '', props} : props) {
         if (errors.user_email) {
           reset('user_email');
         }
+
+        setOpenDialog(true);
       }
     });
   }

@@ -76,10 +76,10 @@ export default function Index({ tenants }: SetupProps) {
                 <TableCell className="font-medium">{tenant.name}</TableCell>
                 <TableCell>{ tenant.plan?.name }</TableCell>
                 <TableCell>{ tenant.users?.map(user => (
-                  <>
+                  <div key={user.id}>
                     {user.name}
                     <br /> <span className='text-sm text-gray-400'>{ user.email }</span>
-                  </>
+                  </div>
                 )) } 
                 </TableCell>
                 <TableCell>{ tenant.config.currency }</TableCell>

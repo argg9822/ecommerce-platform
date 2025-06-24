@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('delivery_addresss', function (Blueprint $table) {
+        Schema::create('delivery_addresses', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
 
             $table->string('recipient_name');
             $table->string('phone', 20);
             $table->string('address_line_1');
-            $table->string('address_line_2')->nullable();
             $table->string('city');
             $table->string('state')->nullable();
-            $table->string('postal_code');
             $table->string('country');
 
             $table->boolean('is_default')->default(false);
@@ -35,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('delivery_addresss');
+        Schema::dropIfExists('delivery_addresses');
     }
 };

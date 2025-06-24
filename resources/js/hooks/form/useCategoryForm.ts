@@ -60,7 +60,7 @@ export function useCategoryForm(){
                 if (errors.description) reset('description');
             }
         });
-   }
+    }
 
     const setImageCategory = (newImage: File[]) => {
         if (newImage.length > 0 && newImage[0].type.startsWith('image/')) {

@@ -20,7 +20,7 @@ class IdentifyTenant
     public function handle(Request $request, Closure $next): Response
     {
         // $token = $request->bearerToken();
-        $token = $request->header('x-api-key');
+        $token = $request->header('x-api-key') ?? $request->input('api_token');
 
         if(!$token){
             return response()->json(["error" => "Debe proveer un API token"], 401);

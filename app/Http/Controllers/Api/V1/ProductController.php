@@ -20,8 +20,19 @@ class ProductController extends Controller
         $productQuery = Product::with([
             'brand:id,name',
             'images:id,product_id,url',
-            'categories:id,name,slug,description,image,parent_id'
-        ]);
+            'categories:id,name,slug,description,image,parent_id',
+        ])->select(
+            'id', 
+            'name', 
+            'description', 
+            'price', 
+            'compare_price', 
+            'stock', 
+            'is_available', 
+            'is_feature', 
+            'brand_id', 
+            'relevance')
+        ->withCount('reviews');
 
         if (!empty($request->name)) {
             $productQuery->where('name', 'ILIKE', '%' . $request->product_name . '%');
@@ -74,9 +85,28 @@ class ProductController extends Controller
                     ->with(['variantAttributes:id,product_variant_id,name,value']);
             }, 
             'images',
+            'reviews:id,product_id,user_id,rating,title,comment,created_at',
             'categories:id,name,slug,description,image,parent_id'
-            ])
-            ->get();
+        ])->select(
+            'id', 
+            'name', 
+            'description', 
+            'price', 
+            'compare_price', 
+            'stock', 
+            'is_available', 
+            'is_feature', 
+            'brand_id', 
+            'relevance',
+            'meta_title',
+            'meta_description',
+            'key_words',
+            'condition',        
+            'show_condition',
+            'warranty_policy',
+            'disponibility_text')
+        ->withCount('reviews')
+        ->get();
 
         return new ProductResource($product);
     }

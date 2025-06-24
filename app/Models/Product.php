@@ -17,6 +17,7 @@ class Product extends Model
         'compare_price',
         'cost',
         'stock',
+        'slug',
         'sku',
         'barcode',
         'is_feature',

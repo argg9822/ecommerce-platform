@@ -1,13 +1,17 @@
 <?php
 
-use App\Http\Controllers\Api\V1\AuthController;
-use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\IdentifyTenant;
+
+//API Controllers
+use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Auth\GoogleAuthController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\ReviewController;
-use App\Http\Middleware\IdentifyTenant;
 // use Stancl\Tenancy\Middleware\InitializeTenancyByPath;
 
 Route::middleware([
@@ -21,19 +25,25 @@ Route::middleware([
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
 
-    //Productos
-    
+    //Google and register Google
+    Route::get('auth/google/redirect', [GoogleAuthController::class, 'redirect']);
+    Route::get('auth/google/callback', [GoogleAuthController::class, 'callback']);
 
-    //Comentarios
-    Route::apiResource('reviews', ReviewController::class)
-        ->except(['create', 'edit', 'update', 'destroy']);
+    //Productos
+    Route::apiResource('products', ProductController::class)
+        ->only(['index', 'show']);
 
     //Categorias
     Route::apiResource('categories', CategoryController::class)
-        ->except(['create', 'edit', 'update', 'destroy']);
+        ->only(['index', 'show']);
 
     Route::middleware('auth:sanctum')->group(function (){
-        Route::apiResource('products', ProductController::class)
-        ->except(['create', 'edit', 'update', 'destroy']);
+        // Reviews y calificaciones
+        Route::apiResource('reviews', ReviewController::class)
+            ->except(['create', 'edit']);
+
+        // Órdenes
+        Route::apiResource('orders', OrderController::class)
+            ->except(['create', 'edit', 'update', 'destroy']);
     });
 });
