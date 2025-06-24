@@ -10,16 +10,15 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
+use Exception;
 
 //Models
 use App\Models\Tenant;
-use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+use App\Models\TenantApiToken;
 
 //Requests
 use App\Http\Requests\StoreTenantRequest;
-use App\Models\TenantApiToken;
-use App\Models\User;
-use Exception;
 use Illuminate\Support\Facades\Hash;
 
 class TenantController extends Controller
@@ -73,7 +72,6 @@ class TenantController extends Controller
             }
 
             $plainTextToken = $this->createToken($tenant);
-            Log::info($plainTextToken);
             
             $tenantDomain = Str::slug($request->domain).".".Str::lower($request->domain_extension);
             $tenant->domains()->create(['domain' => $tenantDomain]);
@@ -90,18 +88,10 @@ class TenantController extends Controller
             DB::commit();
             tenancy()->end();
 
-            session()->put([
-                'flash.success' => [
-                    'title' => "Tienda creada",
-                    'message' => "Se ha creado la tienda correctamente",
-                    'data' => $plainTextToken
-                ]
+            return Inertia::render('Tenant/View/Index', [
+                'tenant' => $tenant->load(['plan', 'domain', 'users', 'apiTokens']),
+                'token' => $plainTextToken,
             ]);
-            session()->save();
-
-            // Log::info(session()->all());
-
-            return redirect()->back();
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -109,14 +99,11 @@ class TenantController extends Controller
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            session()->put([
-                'flash.error' => [
-                    'title' => 'Error al crear la tienda',
-                    'message' => "Hubo un error al crear la tienda",
-                ]
+            
+            return redirect()->back()->with('flash.error', [
+                'title' => 'Error al crear la tienda',
+                'message' => "Hubo un error al crear la tienda",
             ]);
-            session()->save();
-            return redirect()->back();
         }
     }
 

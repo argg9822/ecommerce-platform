@@ -38,7 +38,10 @@ export interface ApiToken {
 export interface Tenant {
     id: number;
     name: string;
-    domain: string;
+    domain: {
+        domain: string;
+        created_at: string;
+    };
     logo: string;
     plan_id: number;
     plan?: Plan | null;
@@ -48,6 +51,14 @@ export interface Tenant {
     created_at: string;
     updated_at: string;
     users?: User[] | null;
+    payments?: {
+        id: number,
+        tenant_id: number,
+        amount: number,
+        status: string,
+        description: string,
+        created_at: string,
+    }[],
     config: {
         currency: string,
         language: string,

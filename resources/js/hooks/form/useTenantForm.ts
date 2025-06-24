@@ -19,7 +19,7 @@ export default function useTenantForm(){
         tenant_timezone: 'America/Bogota',
         currency: 'COP',
         tenant_email: 'info@toysnow.com',
-        domain_extension: 'localhost',
+        domain_extension: 'io',
         user_name: 'Viviana Marin',
         user_email: 'viviana@gmail.com',
         user_password: '12345678',
