@@ -19,6 +19,8 @@ return new class extends Migration
             $table->decimal('compare_price', 10, 2)->nullable();
             $table->decimal('cost', 10, 2)->default(0);
             $table->integer('stock')->default(0);
+            $table->integer('stock_alert')->default(0);
+            $table->integer('reserved_stock')->default(0);
             $table->string('sku')->unique()->nullable();
             $table->string('slug')->unique()->nullable();
             $table->string('barcode')->nullable();

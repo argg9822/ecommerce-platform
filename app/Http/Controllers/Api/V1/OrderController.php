@@ -36,6 +36,7 @@ class OrderController extends Controller
             DB::beginTransaction();
             $order = Order::create($request->safe()->except('order_items'));
 
+            //Guardar los items de la orden
             foreach ($request->input('order_items', []) as $item) {
                 $order->items()->create([
                     'product_id' => $item['product_id'],

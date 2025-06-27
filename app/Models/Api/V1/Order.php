@@ -11,6 +11,18 @@ class Order extends Model
         'number',
         'status',
         'total',
-        'notes'
+        'notes',
+        'shipping_address',
+        'payment_id',
     ];
+
+    public function items()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

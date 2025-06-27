@@ -1,0 +1,150 @@
+"dbms","table_catalog","table_schema","table_name","column_name","ordinal_position","data_type","character_maximum_length","constraint_type","table_schema-2","table_name-2","column_name-2"
+"postgresql","ecommerce_business","public","migrations","id",1,"integer",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","users","id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","users","email",3,"character varying",255,"UNIQUE",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","password_reset_tokens","email",1,"character varying",255,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","sessions","id",1,"character varying",255,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","cache","key",1,"character varying",255,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","cache_locks","key",1,"character varying",255,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","jobs","id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","job_batches","id",1,"character varying",255,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","failed_jobs","id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","failed_jobs","uuid",2,"character varying",255,"UNIQUE",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","plans","id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","tenants","plan_id",4,"bigint",NULL,"FOREIGN KEY","public","plans","id"
+"postgresql","ecommerce_business","public","tenants","id",1,"character varying",255,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","tenants","name",2,"character varying",255,"UNIQUE",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","tenants","api_token",6,"character varying",255,"UNIQUE",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","domains","id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","public","domains","tenant_id",3,"character varying",255,"FOREIGN KEY","public","tenants","id"
+"postgresql","ecommerce_business","public","domains","domain",2,"character varying",255,"UNIQUE",NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","migrations","id",1,"integer",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","users","id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","users","email",3,"character varying",255,"UNIQUE",NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","password_reset_tokens","email",1,"character varying",255,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","sessions","id",1,"character varying",255,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","categories","id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","products","id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","products","category_id",11,"bigint",NULL,"FOREIGN KEY","tenantfagor","categories","id"
+"postgresql","ecommerce_business","tenantfagor","products","sku",7,"integer",NULL,"UNIQUE",NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","orders","user_id",6,"bigint",NULL,"FOREIGN KEY","tenantfagor","users","id"
+"postgresql","ecommerce_business","tenantfagor","orders","id",1,"uuid",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","orders","number",2,"character varying",255,"UNIQUE",NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","product_images","id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","payments","id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","payments","order_id",6,"uuid",NULL,"FOREIGN KEY","tenantfagor","orders","id"
+"postgresql","ecommerce_business","tenantfagor","reviews","id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","reviews","product_id",4,"bigint",NULL,"FOREIGN KEY","tenantfagor","products","id"
+"postgresql","ecommerce_business","tenantfagor","reviews","user_id",5,"bigint",NULL,"FOREIGN KEY","tenantfagor","users","id"
+"postgresql","ecommerce_business","tenantfagor","order_items","id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","order_items","order_id",4,"uuid",NULL,"FOREIGN KEY","tenantfagor","orders","id"
+"postgresql","ecommerce_business","tenantfagor","order_items","product_id",5,"bigint",NULL,"FOREIGN KEY","tenantfagor","products","id"
+"postgresql","ecommerce_business","tenantfagor","products","stock",6,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","jobs","queue",2,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","cache_locks","expiration",3,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","users","name",2,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","password_reset_tokens","created_at",3,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","order_items","created_at",6,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","sessions","user_id",2,"bigint",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","payments","payment_method",3,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","sessions","payload",5,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","plans","name",2,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","categories","description",4,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","product_images","updated_at",5,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","payments","updated_at",8,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","users","email_verified_at",4,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","products","name",2,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","sessions","user_agent",4,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","cache","expiration",3,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","users","created_at",10,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","job_batches","finished_at",10,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","users","remember_token",9,"character varying",100,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","reviews","updated_at",7,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","tenants","created_at",7,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","payments","status",5,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","sessions","last_activity",6,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","migrations","batch",3,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","job_batches","options",7,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","migrations","migration",2,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","users","password",6,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","orders","notes",5,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","products","is_feature",9,"boolean",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","products","price",4,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","categories","name",2,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","sessions","ip_address",3,"character varying",45,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","failed_jobs","exception",6,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","order_items","updated_at",7,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","jobs","payload",3,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","users","updated_at",11,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","products","description",3,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","product_images","created_at",4,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","payments","transaction_id",4,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","payments","created_at",7,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","plans","features",4,"json",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","tenants","logo",3,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","users","phone",5,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","password_reset_tokens","token",2,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","plans","price",3,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","job_batches","created_at",9,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","reviews","created_at",6,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","reviews","comment",3,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","tenants","updated_at",8,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","job_batches","total_jobs",3,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","tenants","is_active",5,"boolean",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","orders","created_at",7,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","plans","updated_at",6,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","domains","updated_at",5,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","categories","created_at",6,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","users","phone",5,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","password_reset_tokens","token",2,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","categories","slug",3,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","users","updated_at",9,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","job_batches","failed_job_ids",6,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","users","billing_address",7,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","products","is_available",10,"boolean",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","jobs","reserved_at",5,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","job_batches","name",2,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","sessions","ip_address",3,"character varying",45,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","orders","total",3,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","products","updated_at",13,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","jobs","available_at",6,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","failed_jobs","payload",5,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","cache_locks","owner",2,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","users","password",8,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","migrations","batch",3,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","orders","updated_at",8,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","plans","created_at",5,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","domains","created_at",4,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","categories","updated_at",7,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","sessions","last_activity",6,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","product_images","product_id",3,"bigint",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","products","barcode",8,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","migrations","migration",2,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","jobs","attempts",4,"smallint",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","product_images","url",2,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","users","remember_token",7,"character varying",100,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","payments","amount",2,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","users","created_at",8,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","failed_jobs","connection",3,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","tenants","data",9,"json",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","orders","status",4,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","sessions","user_agent",4,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","reviews","rating",2,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","users","email_verified_at",4,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","cache","value",2,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","failed_jobs","failed_at",7,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","categories","image",5,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","failed_jobs","queue",4,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","job_batches","failed_jobs",5,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","job_batches","pending_jobs",4,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","sessions","user_id",2,"bigint",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","password_reset_tokens","created_at",3,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","sessions","payload",5,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","users","name",2,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","jobs","created_at",7,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","order_items","quantity",2,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","users","shipping_address",6,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","products","compare_price",5,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","public","job_batches","cancelled_at",8,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","products","created_at",12,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","ecommerce_business","tenantfagor","order_items","unit_price",3,"numeric",NULL,NULL,NULL,NULL,NULL

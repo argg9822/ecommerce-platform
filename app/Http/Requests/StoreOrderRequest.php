@@ -30,7 +30,7 @@ class StoreOrderRequest extends FormRequest
             'order_items' => 'required|array',
             'order_items.*.product_id' => 'required|exists:products,id',
             'order_items.*.quantity' => 'required|integer|min:1',
-            'order_items.*.price' => 'required|numeric|min:0',
+            'order_items.*.unit_price' => 'required|numeric|min:0',
             'shipping_address' => 'required|string|max:255',
         ];
     }
