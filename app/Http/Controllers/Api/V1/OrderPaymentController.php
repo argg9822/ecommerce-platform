@@ -3,14 +3,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreOrderRequest;
-use App\Models\Api\V1\Order;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
 
-class OrderController extends Controller
+class OrderPaymentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,27 +31,8 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         Log::info($request->all());
-        // try {
-        //     DB::beginTransaction();
-        //     $order = Order::create($request->safe()->except('order_items'));
 
-        //     //Guardar los items de la orden
-        //     foreach ($request->input('order_items', []) as $item) {
-        //         $order->items()->create([
-        //             'product_id' => $item['product_id'],
-        //             'quantity' => $item['quantity'],
-        //             'price' => $item['price'],
-        //         ]);
-        //     }
-
-        //     DB::commit();
-        //     return response()->json(['message' => 'Orden creada correctamente', 'order' => $order], Response::HTTP_CREATED);
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     return response()->json(['message' => 'Error creando la orden: ' . $e->getMessage()], 500);
-        // }
-
-        return response()->json(['message' => 'Orden creada correctamente'], Response::HTTP_CREATED);
+        return response()->json(['message' => 'Payment created successfully'], Response::HTTP_CREATED);
     }
 
     /**

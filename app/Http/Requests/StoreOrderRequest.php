@@ -25,6 +25,7 @@ class StoreOrderRequest extends FormRequest
             // 'user_id' => 'required|exists:users,id',
             // 'number' => 'required|string|max:255',
             // 'status' => 'required|string|in:pending,processing,shipped,delivered,cancelled',
+            'product_id' => 'required|exists:products,id',
             'total' => 'required|numeric|min:0',
             'notes' => 'nullable|string|max:1000',
             'order_items' => 'required|array',

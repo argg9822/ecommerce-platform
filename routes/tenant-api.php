@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\ReviewController;
+use App\Http\Controllers\Api\V1\OrderPaymentController;
 // use Stancl\Tenancy\Middleware\InitializeTenancyByPath;
 
 Route::middleware([
@@ -44,6 +45,10 @@ Route::middleware([
 
         // Órdenes
         Route::apiResource('orders', OrderController::class)
+            ->except(['create', 'edit', 'update', 'destroy']);
+
+        // Pagos de órdenes
+        Route::apiResource('order-payments', OrderPaymentController::class)
             ->except(['create', 'edit', 'update', 'destroy']);
     });
 });
