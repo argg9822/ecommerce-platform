@@ -19,8 +19,10 @@ return new class extends Migration
             $table->string('address_line_1');
             $table->string('city');
             $table->string('state')->nullable();
+            $table->string('apartment')->nullable();
+            $table->string('indications')->nullable();
+            $table->enum('type', ['home', 'work', 'other'])->default('home');
             $table->string('country');
-
             $table->boolean('is_default')->default(false);
 
             $table->timestamps();
