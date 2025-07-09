@@ -22,49 +22,61 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'user_id' => 'required|exists:users,id',
-            // 'number' => 'required|string|max:255',
-            // 'status' => 'required|string|in:pending,processing,shipped,delivered,cancelled',
-            'product_id' => 'required|exists:products,id',
-            'total' => 'required|numeric|min:0',
-            'notes' => 'nullable|string|max:1000',
-            'order_items' => 'required|array',
-            'order_items.*.product_id' => 'required|exists:products,id',
-            'order_items.*.quantity' => 'required|integer|min:1',
-            'order_items.*.unit_price' => 'required|numeric|min:0',
-            'shipping_address' => 'required|string|max:255',
+            'preference_id' => 'required|string|unique:orders,preference_id',
+            'status' => 'required|string|in:pending,paid,processing,ready_to_ship,shipped,out_for_delivery,delivered,cancelled,refunded,failed',
+            
+            // Validar productos
+            'products' => 'required|array|min:1',
+            'products.*.product_id' => 'required|exists:products,id',
+            'products.*.unit_price' => 'required|numeric|min:0',
+            'products.*.quantity' => 'required|integer|min:1',
+            'products.*.currency' => 'required|string|size:3',
+            'products.*.variant_id' => 'nullable|exists:product_variants,id',
+
+            // Validar información de entrega
+            'delivery_info.address' => 'required|string|max:255',
+            'delivery_info.city' => 'required|string|max:100',
+            'delivery_info.province' => 'required|string|max:100',
+            'delivery_info.apartment' => 'nullable|string|max:100',
+            'delivery_info.phone' => 'required|string|max:20',
+            'delivery_info.postalCode' => 'nullable|string|max:20',
+            'delivery_info.deliveryType' => 'nullable|string|max:50',
+            'delivery_info.deliveryNotes' => 'nullable|string|max:255',
         ];
     }
 
     public function messages(): array
     {
         return [
-            // 'user_id.required' => 'El Id del usuario es obligatorio.',
-            // 'user_id.exists' => 'El usuario especificado no existe.',
-            // 'number.required' => 'El número de la orden es obligatorio.',
-            // 'number.string' => 'El número de la orden debe ser una cadena de texto.',
-            // 'number.max' => 'El número de la orden no puede exceder los 255 caracteres.',
-            // 'status.required' => 'El estado de la orden es obligatorio.',
-            // 'status.string' => 'El estado de la orden debe ser una cadena de texto.',
-            // 'status.in' => 'El estado de la orden debe ser uno de los siguientes: pending, processing, shipped, delivered, cancelled.',
-            'total.required' => 'El total de la orden es obligatorio.',
-            'total.numeric' => 'El total de la orden debe ser un número.',
-            'total.min' => 'El total de la orden no puede ser negativo.',
-            'notes.string' => 'Las notas deben ser una cadena de texto.',
-            'notes.max' => 'Las notas no pueden exceder los 1000 caracteres.',
-            'order_items.required' => 'Los artículos de la orden son obligatorios.',
-            'order_items.array' => 'Los artículos de la orden deben ser un arreglo.',
-            'order_items.*.product_id.required' => 'El ID del producto es obligatorio en cada artículo de la orden.',
-            'order_items.*.product_id.exists' => 'El producto especificado no existe en cada artículo de la orden.',
-            'order_items.*.quantity.required' => 'La cantidad es obligatoria en cada artículo de la orden.',
-            'order_items.*.quantity.integer' => 'La cantidad debe ser un número entero en cada artículo de la orden.',
-            'order_items.*.quantity.min' => 'La cantidad debe ser al menos 1 en cada artículo de la orden.',
-            'order_items.*.price.required' => 'El precio es obligatorio en cada artículo de la orden.',
-            'order_items.*.price.numeric' => 'El precio debe ser un número en cada artículo de la orden.',
-            'order_items.*.price.min' => 'El precio no puede ser negativo en cada artículo de la orden.',
-            'shipping_address.required' => 'La dirección de envío es obligatoria.',
-            'shipping_address.string' => 'La dirección de envío debe ser una cadena de texto.',
-            'shipping_address.max' => 'La dirección de envío no puede exceder 255 caracteres.',
+            'preference_id.required' => 'El ID de preferencia es obligatorio.',
+            'preference_id.unique' => 'Ya hay una transacción con este ID de preferencia.',
+            'status.required' => 'El estado es obligatorio.',
+            'status.in' => 'El estado debe ser uno de los siguientes: pending, paid, processing, ready_to_ship, shipped, out_for_delivery, delivered, cancelled, refunded, failed.',
+            'products.required' => 'Debe proporcionar al menos un producto.',
+            'products.*.product_id.required' => 'El ID del producto es obligatorio.',
+            'products.*.product_id.exists' => 'El producto proporcionado no existe.',
+            'products.*.unit_price.required' => 'El precio unitario es obligatorio.',
+            'products.*.unit_price.numeric' => 'El precio unitario debe ser un número.',
+            'products.*.quantity.required' => 'La cantidad es obligatoria.',
+            'products.*.quantity.integer' => 'La cantidad debe ser un número entero.',
+            'products.*.quantity.min' => 'La cantidad debe ser al menos 1.',
+            'products.*.currency.required' => 'La moneda es obligatoria.',
+            'products.*.currency.size' => 'La moneda debe tener exactamente 3 caracteres.',
+            'products.*.variant_id.exists' => 'La variante seleccionada no existe.',
+
+            // Mensajes para la información de entrega
+            'delivery_info.address.required' => 'La dirección es obligatoria.',
+            'delivery_info.city.required' => 'La ciudad es obligatoria.',
+            'delivery_info.province.required' => 'La provincia es obligatoria.',
+            'delivery_info.phone.required' => 'El teléfono es obligatorio.',
+            'delivery_info.address.max' => 'La dirección no puede exceder los 255 caracteres.',
+            'delivery_info.city.max' => 'La ciudad no puede exceder los 100 caracteres.',
+            'delivery_info.province.max' => 'La provincia no puede exceder los 100 caracteres.',
+            'delivery_info.apartment.max' => 'El apartamento no puede exceder los 100 caracteres.',
+            'delivery_info.phone.max' => 'El teléfono no puede exceder los 20 caracteres.',
+            'delivery_info.postalCode.max' => 'El código postal no puede exceder los 20 caracteres.',
+            'delivery_info.deliveryType.max' => 'El tipo de entrega no puede exceder los 50 caracteres.',
+            'delivery_info.deliveryNotes.max' => 'Las notas de entrega no pueden exceder los 255 caracteres.',
         ];
     }
 }

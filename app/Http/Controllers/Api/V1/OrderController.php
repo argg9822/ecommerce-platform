@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Models\Api\V1\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
@@ -31,28 +32,53 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreOrderRequest $request)
     {
-        Log::info($request->all());
-        // try {
-        //     DB::beginTransaction();
-        //     $order = Order::create($request->safe()->except('order_items'));
+        Log::info('Creating order', $request->all());
+        try {
+            DB::beginTransaction();
+            $total = collect($request->products)->sum(function ($product) {
+                return $product['unit_price'] * $product['quantity'];
+            });
 
-        //     //Guardar los items de la orden
-        //     foreach ($request->input('order_items', []) as $item) {
-        //         $order->items()->create([
-        //             'product_id' => $item['product_id'],
-        //             'quantity' => $item['quantity'],
-        //             'price' => $item['price'],
-        //         ]);
-        //     }
+            $delivery_info = [
+                'address' => $request->delivery_info->address,
+                'province' => $request->delivery_info->province,
+                'apartment' => $request->delivery_info->apartment,
+                'phone' => $request->delivery_info->phone,
+                'postalCode' => $request->delivery_info->postalCode,
+                'deliveryType' => $request->delivery_info->deliveryType,
+                'deliveryNotes' => $request->delivery_info->deliveryNotes,
+            ];
 
-        //     DB::commit();
-        //     return response()->json(['message' => 'Orden creada correctamente', 'order' => $order], Response::HTTP_CREATED);
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     return response()->json(['message' => 'Error creando la orden: ' . $e->getMessage()], 500);
-        // }
+            $order = Order::create([
+                'preference_id' => $request->preference_id,
+                'total' => $total,
+                'status' => $request->status,
+                'notes' => $request->delivery_info->deliveryNotes,
+                'user_id' => Auth::id(),
+                'shipping_city' => $request->delivery_info->city,
+                'delivery_info' => json_encode($delivery_info),
+            ]);
+
+            //Guardar los items de la orden
+            foreach ($request->input('products', []) as $item) {
+                $order->items()->create([
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['unit_price'],
+                    'product_variant_id' => $item['variant_id'] ?? null,
+                ]);
+            }
+
+            $order->load(['items', 'user']);
+
+            DB::commit();
+            return response()->json(['message' => 'Orden creada correctamente', 'order' => $order], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Error creando la orden: ' . $e->getMessage()], 500);
+        }
 
         return response()->json(['message' => 'Orden creada correctamente'], Response::HTTP_CREATED);
     }

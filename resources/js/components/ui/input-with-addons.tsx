@@ -62,22 +62,24 @@ export default function InputWithAddons({
         <>
             <div className="flex flex-col">
                 <div className="flex justify-between">
-                    {label && (
-                        <InputLabel htmlFor="price" value={label} />
-                    )}
-                    {messageTooltip && (
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <CircleHelp size={16} className="text-gray-100 ml-2 cursor-pointer" />
-                                </TooltipTrigger>
+                    <div className="flex items-center">
+                        {label && (
+                            <InputLabel htmlFor="price" value={label} />
+                        )}
+                        {messageTooltip && (
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <CircleHelp size={16} className="text-gray-100 ml-2 cursor-pointer" />
+                                    </TooltipTrigger>
 
-                                <TooltipContent>
-                                    <p className="text-gray-100">{messageTooltip}</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    )}
+                                    <TooltipContent>
+                                        <p className="text-gray-100">{messageTooltip}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        )}
+                    </div>
                     {!required && (
                         <span className="text-gray-500 mb-1">(Opcional)</span>
                     )}

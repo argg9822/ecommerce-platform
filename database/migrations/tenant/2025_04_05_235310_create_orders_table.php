@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('number')->unique();
+            $table->string('preference_id')->unique();
             $table->decimal('total', 10, 2);
             $table->enum('status', [
                 'pending',       // Orden creada, esperando pago (cuando el pago no es instantáneo)
@@ -29,7 +29,8 @@ return new class extends Migration
             ])->default('pending');
             $table->text('notes')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('shipping_address')->nullable();
+            $table->string('shipping_city')->nullable();
+            $table->json('delivery_info')->nullable();
             $table->string('payment_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
