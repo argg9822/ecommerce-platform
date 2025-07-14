@@ -20,7 +20,7 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, 'resources/js'), // ⬅️ ESTO FALTABA
+            '@': path.resolve(__dirname, 'resources/js'),
             '@sass': path.resolve(__dirname, 'resources/sass'),
         },
     },
