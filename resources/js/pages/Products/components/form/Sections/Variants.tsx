@@ -50,25 +50,20 @@ export default function Variants() {
         data,
         stockIncoherent,
     } = useProductVariants();
-    
-    const dimensionsInputs = [
-        {label: "Largo", value: "length", units: ["cm", "m", "in", "ft"]},
-        {label: "Alto", value: "height", units: ["cm", "m", "in", "ft"]},
-        {label: "Ancho", value: "width", units: ["cm", "m", "in", "ft"]},
-        {label: "Peso", value: "weight", units: ["g", "kg", "lb", "oz"]},
-    ];
 
     const dimensionUnits = ["cm", "m", "in", "ft"];
+    const weightUnits = ["g", "kg", "lb", "oz"];
 
-    const baseColorOptions = [
-        { value: "red", label: "Rojo", color: "text-red-600", selected: false },
-        { value: "silver", label: "Plateado", color: "text-gray-500", selected: false },
-        { value: "blue", label: "Azul", color: "text-blue-500", selected: false },
-        { value: "green", label: "Verde", color: "text-green-600", selected: false },
-        { value: "yellow", label: "Amarillo", color: "text-yellow-400", selected: false },
-        { value: "purple", label: "Morado", color: "text-purple-400", selected: false },
-        { value: "pink", label: "Rosado", color: "text-pink-400", selected: false },
-    ];
+    const getDimensionsSpanish = (key: 'length' | 'width' | 'height' | 'weight') => {
+        const dimension = {
+            length: 'Largo',
+            width: 'Ancho',
+            height: 'Alto',
+            weight: 'Peso'
+        };
+
+        return dimension[key];
+    }
 
     return (
         <Card className="col-span-1 md:col-span-2">
@@ -159,7 +154,7 @@ export default function Variants() {
                                         </Button>
                                     </div>
                                     <div className="flex flex-row gap-3 bg-gray-950/50 rounded-lg items-center justify-center p-1">
-                                        {baseColorOptions.map((item, index) => (
+                                        {data.variants[variant_index].variant_attributes.colors.map((item, index) => (
                                             item.value.startsWith("#") ? (
                                                 <div className="variant__color-picker relative flex items-center gap-2" key={index}>
                                                     <ColorPicker
@@ -203,20 +198,20 @@ export default function Variants() {
                                 </div>
 
                                 <div className="col-span-12">
-                                    <InputLabel htmlFor="weight" value="Dimensiones y peso" />
+                                    <InputLabel value="Dimensiones y peso" />
 
                                     <div className="flex flex-row gap-1 outline-1 outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
                                         {data.variants[variant_index].variant_attributes.dimensions && 
                                             Object.entries(data.variants[variant_index].variant_attributes.dimensions).map(([key, { value, unit }]) => (
                                                 <InputWithAddons
                                                     key={key}
-                                                    value={key || ""}
+                                                    value={value || ""}
                                                     placeholder="0"
                                                     className="pl-[60px]"
                                                     onChange={(e) => handleChangeVariantDimensions(variant_index, key, String(e), "dimension")}
                                                     inputId={`${key}-${variant_index + 1}`}
-                                                    prefix={key}
-                                                    suffixes={dimensionUnits}
+                                                    prefix={getDimensionsSpanish(key as 'length' | 'width' | 'height' | 'weight')}
+                                                    suffixes={key === 'weight' ? weightUnits : dimensionUnits}
                                                     sufixValue={unit || ""}
                                                     onChangeSuffix={(key, value) => handleChangeVariantDimensions(variant_index, unit , value, "unit")}
                                                 />
@@ -235,7 +230,7 @@ export default function Variants() {
                                             type="number"
                                             className="pl-[60px]"
                                             onChangeWithEvent={(e) => handleVariantChange(variant_index, 'price', e.target.value)}
-                                            inputId={`price-${variant_index + 1}`}
+                                            inputId={`variant_price_${variant_index}`}
                                             prefix="Precio"
                                             suffixes={["COP", "USD", "EUR"]}
                                             sufixValue="COP"
@@ -251,7 +246,7 @@ export default function Variants() {
                                             type="number"
                                             className="pl-[145px]"
                                             onChangeWithEvent={(e) => handleVariantChange(variant_index, 'compare_price', e.target.value)}
-                                            inputId={`price-${variant_index + 1}`}
+                                            inputId={`variant_compare_price_${variant_index}`}
                                             prefix="Precio comparativo"
                                             suffixes={["COP", "USD", "EUR"]}
                                             sufixValue="COP"
@@ -262,14 +257,14 @@ export default function Variants() {
                                     {/* Stock variante */}
                                     <div className="col-span-4">
                                         <div className="flex justify-between">
-                                            <InputLabel htmlFor="stock" value="Stock" />
+                                            <InputLabel htmlFor={`variant_stock_${variant_index}`} value="Stock" />
                                             {stockIncoherent && (
                                                 <InputError message="¡Stock incoherente!" />
                                             )}
                                             <span className="text-gray-500">(Opcional)</span>
                                         </div>
                                         <Input 
-                                            id="stock" 
+                                            id={`variant_stock_${variant_index}`}
                                             type="number" 
                                             value={variant.stock}
                                             onChange={(e) => handleVariantChange(variant_index, 'stock', e.target.value)}
