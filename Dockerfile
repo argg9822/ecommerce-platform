@@ -2,7 +2,7 @@ FROM php:8.2-fpm
 
 WORKDIR /var/www
 
-# Instalar dependencias necesarias
+# Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
@@ -17,13 +17,11 @@ RUN apt-get update && apt-get install -y \
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Copiar código fuente al contenedor
 COPY . .
 
-# Instalar dependencias PHP y JS
-RUN composer install --no-dev --optimize-autoloader
+# Instalar dependencias PHP
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-
-# Preparar Laravel
-RUN php artisan config:clear && php artisan route:clear && php artisan view:clear
-
+# Arrancar PHP-FPM
 CMD ["php-fpm"]
