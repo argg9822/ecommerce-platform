@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",                         // <- 🔴 NECESARIO
     "paths": {
-      "@/*": ["resources/js/*"],            // <- ✅ ALIAS FUNCIONAL
+      "@/*": ["./resources/js/*"],            // <- ✅ ALIAS FUNCIONAL
       "@sass/*": ["resources/sass/*"]
     },
     "allowJs": true,
