@@ -23,7 +23,7 @@ jobs:
     - name: Deploy via SSH
       run: |
         ssh -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
-          cd /home/softgenix/htdocs/www.softgenix.space/ecommerce-platform
+          cd /home/softgenix/htdocs/www.softgenix.space
           git pull origin main
           docker-compose down
           docker-compose up -d --build
