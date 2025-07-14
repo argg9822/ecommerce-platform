@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # Servicio de base de datos PostgreSQL
   postgres:
     image: postgres:15
     container_name: postgres_db
@@ -12,24 +13,19 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  # Servicio de aplicación Laravel (backend PHP)
   backend:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: laravel_app
     restart: always
-    environment:
-      DB_CONNECTION: pgsql
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_DATABASE: laravel_db
-      DB_USERNAME: laravel_user
-      DB_PASSWORD: secret
     volumes:
       - .:/var/www
     depends_on:
       - postgres
 
+  # Servicio del servidor web Nginx
   nginx:
     image: nginx:latest
     container_name: nginx_server
