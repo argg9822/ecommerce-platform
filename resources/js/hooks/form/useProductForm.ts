@@ -1,21 +1,12 @@
 import { useForm } from '@inertiajs/react';
 import { ChangeEvent, FormEventHandler, useRef } from 'react';
 import { ProductForm } from '@/types/product-form.type';
-import { ColorOptionsType, ProductVariantsType } from '@/types/product';
+import { ProductVariantsType } from '@/types/product';
 
 type ProductFormData = ProductForm & Record<string, any>;
 
-const BASE_COLOR_OPTIONS: ColorOptionsType[] = [
-    { value: "red", label: "Rojo", color: "text-red-600", selected: false },
-    { value: "silver", label: "Plateado", color: "text-gray-500", selected: false },
-    { value: "blue", label: "Azul", color: "text-blue-500", selected: false },
-    { value: "green", label: "Verde", color: "text-green-600", selected: false },
-    { value: "yellow", label: "Amarillo", color: "text-yellow-400", selected: false },
-    { value: "purple", label: "Morado", color: "text-purple-400", selected: false },
-    { value: "pink", label: "Rosado", color: "text-pink-400", selected: false },
-];
-
 export default function useProductForm( product? : ProductForm ) {    
+    console.log('product', product?.variants[0].variant_attributes);
     
     const refs: Record<string, React.RefObject<HTMLInputElement> | undefined> = {
         name: useRef<HTMLInputElement>(null),
@@ -31,34 +22,49 @@ export default function useProductForm( product? : ProductForm ) {
         barcode: useRef<HTMLInputElement>(null),
     };
     
-    const createColorOptions = () => JSON.parse(JSON.stringify(BASE_COLOR_OPTIONS));
     const BASE_NEW_VARIANT: ProductVariantsType = {
         price: undefined,
         currency_price: 'COP',
         compare_price: undefined,
-        stock: 0,
+        stock: undefined,
         shipment: undefined,
-        dimensions: {
-            length: {
-                value: 0,
-                unit: 'cm',
+        variant_attributes: {
+            custom: [{name: '', value: ''}],
+            dimensions: {
+                length: {
+                    value: 0,
+                    unit: 'cm',
+                },
+                width: {
+                    value: 0,
+                    unit: 'cm',
+                },
+                height: {
+                    value: 0,
+                    unit: 'cm',
+                },
+                weight: {
+                    value: 0,
+                    unit: 'kg',
+                }
             },
-            width: {
-                value: 0,
-                unit: 'cm',
-            },
-            height: {
-                value: 0,
-                unit: 'cm',
-            },
-            weight: {
-                value: 0,
-                unit: 'kg',
-            }
+            colors: [
+                { value: "red", label: "Rojo", color: "text-red-600", selected: false },
+                { value: "silver", label: "Plateado", color: "text-gray-500", selected: false },
+                { value: "blue", label: "Azul", color: "text-blue-500", selected: false },
+                { value: "green", label: "Verde", color: "text-green-600", selected: false },
+                { value: "yellow", label: "Amarillo", color: "text-yellow-400", selected: false },
+                { value: "purple", label: "Morado", color: "text-purple-400", selected: false },
+                { value: "pink", label: "Rosado", color: "text-pink-400", selected: false },
+            ]
         },
-        colors: createColorOptions(),
-        variant_attributes: [{name: '', value: ''}],
         is_available: true,
+    }
+
+    const discountCalc = (price: number, comparePrice: number) => {
+        if (!price || !comparePrice || comparePrice === 0) return undefined;
+        const discount = 100 - ((price * 100)/comparePrice);
+        return Number(discount.toFixed(2));
     }
 
     const {
@@ -75,14 +81,14 @@ export default function useProductForm( product? : ProductForm ) {
         price: product?.price || undefined,
         compare_price: product?.compare_price || undefined,
         cost: product?.cost || undefined,
-        stock: product?.stock || 0,
+        stock: product?.stock || undefined,
         sku: product?.sku || '',
         barcode: product?.barcode || '',
         is_feature: product?.is_feature || false,
         is_available: product?.is_available || true,
-        relevance: product?.relevance || 0,
-        brand_id: product?.brand_id || 1,
-        shipment: product?.shipment || undefined,
+        relevance: typeof product?.relevance === 'number' ? product.relevance : 0,
+        brand_id: typeof product?.brand_id === 'number' ? product.brand_id : 1,
+        shipment: typeof product?.shipment === 'number' ? product.shipment : undefined,
         meta_title: product?.meta_title || '',
         meta_description: product?.meta_description || '',
         key_words: product?.key_words || '',
@@ -91,9 +97,10 @@ export default function useProductForm( product? : ProductForm ) {
         warranty_policy: product?.warranty_policy || '',
         disponibility_text: product?.disponibility_text || '',
 
-        categories: [],
-        profit: undefined,
-        variants: [BASE_NEW_VARIANT],
+        categories: Array.isArray(product?.categories) ? product.categories : [],
+        profit: (product?.price ?? 0) - (product?.cost ?? 0),
+        discount:  discountCalc((product?.price ?? 0), (product?.compare_price ?? 0)),
+        variants: product?.variants || [BASE_NEW_VARIANT],
         images: [],
         currency: 'COP',
     });
@@ -144,7 +151,7 @@ export default function useProductForm( product? : ProductForm ) {
     const handleNumberChangeInput = (e: ChangeEvent<HTMLInputElement>, key: keyof ProductForm) => {
         const number = e.target.value;
         const parsed = e.target.step === '0.01' ? parseFloat(number) : parseInt(number);
-        setData(key, isNaN(parsed) ? 0 : parsed);
+        setData(key, isNaN(parsed) ? undefined : parsed);
     }
 
     const handleNumberChangeSelect = (value: string, key: keyof ProductForm) => {
@@ -160,18 +167,42 @@ export default function useProductForm( product? : ProductForm ) {
         setData('profit', profit);
     }
 
+    const handleDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
+        handleNumberChangeInput(e, 'discount');
+
+        const price = parseFloat(data.price?.toString() || '0');
+        const discount = parseFloat(e.target.value);
+
+        if (!Number.isFinite(price) || !Number.isFinite(discount)) return;
+
+        const discountedPrice = price * (1 - discount / 100);
+        const comparePrice = 2 * price - discountedPrice;
+
+        setData('compare_price', comparePrice);
+    };
+
+    const handleComparePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
+        handleNumberChangeInput(e, 'compare_price');
+        const discountedPrice = parseFloat(e.target.value);
+        const price = parseFloat(data.price?.toString() || '0');
+        const discount = 100 - ((price * 100) / discountedPrice);
+        setData('discount', isNaN(discount) ? 0 : parseFloat(discount.toFixed(3)));
+    }
+
     return {
         data,
         setData,
         errors,
         processing,
         recentlySuccessful,
+        BASE_NEW_VARIANT,
         submit,
         reset,
         handleProfit,
+        handleDiscount,
+        handleComparePrice,
         handleNumberChangeInput,
         handleNumberChangeSelect,
-        createColorOptions,
         refs
     }
 }

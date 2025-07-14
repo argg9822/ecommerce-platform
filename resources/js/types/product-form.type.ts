@@ -9,8 +9,9 @@ export interface ProductForm {
     price: number | undefined;
     compare_price: number | undefined;
     profit: number | undefined;
+    discount: number | undefined;
     cost: number | undefined;
-    stock: number;
+    stock: number | undefined;
     sku: string;
     barcode: string;
     is_feature: boolean;

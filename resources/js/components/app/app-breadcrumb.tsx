@@ -18,7 +18,7 @@ export default function AppBreadcrumb (){
     'tenants': {path: 'Tiendas', route:'tenantIndex'},
     'products': {path: 'Productos', route:'products_index'},
     'dashboard': {path: 'Inicio', route: 'dashboard'},
-    'create': {path: 'Crear', route: 'products_create'},
+    'create': {path: 'Nuevo', route: 'products_create'},
     'profile': {path: 'Perfil', route: 'profile.edit'},
     'edit' : {path: 'Editar', route: 'products_edit'}
   }

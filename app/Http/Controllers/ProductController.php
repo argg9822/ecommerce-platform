@@ -24,6 +24,7 @@ class ProductController extends Controller
     {
         $this->tenantFileService = $tenantService;
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -49,6 +50,8 @@ class ProductController extends Controller
             'relevance'
         )->get();
 
+        Log::info($products);
+
         return Inertia::render('Products/Index', [
             'products' => $products
         ]);
@@ -64,67 +67,76 @@ class ProductController extends Controller
         }])->select('id', 'name', 'description', 'image', 'parent_id')->get();
 
         $brands = Brand::select('id', 'name')->get();
+        $unavailableRelevances = Product::select('relevance')
+            ->whereNotNull('relevance')
+            ->whereBetween('relevance', [1, 5])
+            ->distinct()
+            ->pluck('relevance')
+            ->toArray();
 
         return Inertia::render('Products/ProductEditor', [
             'categories' => $categories,
             'brands' => $brands,
-            'mode' => 'create'
+            'mode' => 'create',
+            'unavailableRelevances' => $unavailableRelevances
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request)
+    // public function store(StoreProductRequest $request)
+    public function store(Request $request)
     {
         try {
-            DB::beginTransaction();
-            $product = Product::create($request->safe()
-            ->merge(
-                ['slug' => Str::slug($request->name)]
-            )->only([
-                'name',
-                'description',
-                'price',
-                'compare_price',
-                'cost',
-                'stock',
-                'sku',
-                'barcode',
-                'is_feature',
-                'is_available',
-                'relevance',
-                'brand_id',
-                'shipment',
-                'meta_title',
-                'meta_description',
-                'key_words',
-                'condition',        
-                'show_condition',
-                'warranty_policy',
-                'disponibility_text'
-            ]));
+            Log::info($request->all());
+            // DB::beginTransaction();
+            // $product = Product::create($request->safe()
+            // ->merge(
+            //     ['slug' => Str::slug($request->name)]
+            // )->only([
+            //     'name',
+            //     'description',
+            //     'price',
+            //     'compare_price',
+            //     'cost',
+            //     'stock',
+            //     'sku',
+            //     'barcode',
+            //     'is_feature',
+            //     'is_available',
+            //     'relevance',
+            //     'brand_id',
+            //     'shipment',
+            //     'meta_title',
+            //     'meta_description',
+            //     'key_words',
+            //     'condition',        
+            //     'show_condition',
+            //     'warranty_policy',
+            //     'disponibility_text'
+            // ]));
 
-            //Guardar categorías
-            if ($request->filled('categories')) {
-                $product->categories()->sync($request->input('categories'));
-            }
+            // //Guardar categorías
+            // if ($request->filled('categories')) {
+            //     $product->categories()->sync($request->input('categories'));
+            // }
 
-            //Guardar imágenes
-            $newImages = $request->file('new_images');
+            // //Guardar imágenes
+            // $newImages = $request->file('new_images');
             
-            if(is_array($newImages) && count(array_filter($newImages))){
-                $this->storeImages($newImages, $product);
-            }
+            // if(is_array($newImages) && count(array_filter($newImages))){
+            //     $this->storeImages($newImages, $product);
+            // }
 
-            //Guardar variantes
-            $variants = $request->input('variants');
+            // //Guardar variantes
+            // $variants = $request->input('variants');
 
-            if (is_array($variants) && count(array_filter($variants))) {
-                $this->saveVariants($variants, $product);
-            }
+            // if (is_array($variants) && count(array_filter($variants))) {
+            //     $this->saveVariants($variants, $product);
+            // }
 
-            DB::commit();
+            // DB::commit();
             return redirect()->back()->with('flash.success', [
                 'title' => 'Éxito',
                 'message' => 'Producto guardado correctamente'
@@ -175,7 +187,7 @@ class ProductController extends Controller
                 if ($dimensionData && isset($dimensionData['value']) && $dimensionData['value'] != 0) {
                     $variant->variantAttributes()->create([
                         'name' => $dimension,
-                        'value' => $dimensionData['value']
+                        'value' => $dimensionData['value'] . " ". $dimensionData['unit']
                     ]);
                 }
             }
@@ -222,8 +234,10 @@ class ProductController extends Controller
                     ->orderBy('price', 'asc')
                     ->with(['variantAttributes:id,product_variant_id,name,value']);
                 },
-            'images:id,product_id,url'
+            'images:id,product_id,url',
         ])->findOrFail($productId);
+
+        $product->categories = $product->categories()->pluck('categories.id');
 
         $categories = Category::with(['parent' => function ($query) {
             $query->select('id', 'name');

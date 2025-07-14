@@ -94,7 +94,6 @@ export default function Index({products}: ProductsProps){
             onView={viewProduct}
           />
         }
-
       </AuthenticatedLayout>
 
       <AlertDialog open={openDialogDeleteProduct}>
