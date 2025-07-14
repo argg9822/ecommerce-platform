@@ -21,7 +21,7 @@ COPY . .
 
 # Instalar dependencias PHP y JS
 RUN composer install --no-dev --optimize-autoloader
-RUN npm install && npm run build
+
 
 # Preparar Laravel
 RUN php artisan config:clear && php artisan route:clear && php artisan view:clear
