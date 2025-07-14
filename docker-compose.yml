@@ -6,9 +6,9 @@ services:
     container_name: postgres_db
     restart: always
     environment:
-      POSTGRES_DB: laravel_db
-      POSTGRES_USER: laravel_user
-      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: ecommerce
+      POSTGRES_USER: sofgenix
+      POSTGRES_PASSWORD: s12345678
     volumes:
       - pgdata:/var/lib/postgresql/data
 
