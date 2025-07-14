@@ -15,7 +15,9 @@ export default function Inventory() {
         errors,
         recentlySuccessful,
         handleNumberChangeInput,
-        handleProfit
+        handleProfit,
+        handleComparePrice,
+        handleDiscount
     } = useProductFormContext();
 
     return (
@@ -51,7 +53,7 @@ export default function Inventory() {
                             value={data.compare_price || ""}
                             placeholder="0.00"
                             className="pl-6 pr-18"
-                            onChangeWithEvent={(e) => handleNumberChangeInput(e, 'compare_price')}
+                            onChangeWithEvent={(e) => handleComparePrice(e)}
                             inputId="compare_price"
                             prefix="$"
                             suffixes={["COP", "USD", "EUR"]}
@@ -83,7 +85,7 @@ export default function Inventory() {
                     </div>
 
                     {/* Ganancias */}
-                    <div className="col-span-6">
+                    <div className="col-span-3">
                         <InputLabel htmlFor="profit" value="Ganancias" />
 
                         <div className="relative flex items-center rounded-md outline-1 outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
@@ -102,6 +104,22 @@ export default function Inventory() {
                                 }).format(data.profit ?? 0)}
                                 onChange={(e) => handleNumberChangeInput(e, 'profit')}
                             />
+                        </div>
+                    </div>
+
+                    <div className="col-span-3">
+                        <InputLabel htmlFor="discount" value="% Descuento" />
+
+                        <div className="relative flex items-center rounded-md outline-1 outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
+                            <Input
+                                id="discount"
+                                type="text"
+                                step="0.01"
+                                placeholder='0.00'
+                                value={data.discount}
+                                onChange={(e) => handleDiscount(e)}
+                            />
+                            <span className="absolute right-3 z-10 shrink-0 text-base text-gray-300 select-none sm:text-sm/6">%</span>
                         </div>
                     </div>
 
@@ -126,14 +144,28 @@ export default function Inventory() {
 
                     <div className="col-span-6 flex flex-row gap-2">
                         <div>
-                            <InputLabel htmlFor="stock" value="Stock" />
-                            <Input id="stock" type="number" value={data.stock} onChange={(e) => handleNumberChangeInput(e, 'stock')} />
+                            <InputLabel htmlFor="stock" value="Stock" inputRequired/>
+                            <Input 
+                                id="stock" 
+                                type="number" 
+                                value={data.stock} 
+                                onChange={(e) => handleNumberChangeInput(e, 'stock')} 
+                                placeholder="0"
+                                required
+                            />
                             <InputError message={errors.stock} />
                         </div>
                         
                         <div>
                             <InputLabel htmlFor="sku" value="SKU" />
-                            <Input id="sku" type="text" value={data.sku} onChange={(e) => setData('sku', e.target.value)} autoComplete="off"/>
+                            <Input 
+                                id="sku" 
+                                type="text" 
+                                value={data.sku} 
+                                onChange={(e) => setData('sku', e.target.value)}
+                                autoComplete="off"
+                                placeholder="Ej. PROD001"
+                            />
                             <InputError message={errors.sku} />
                         </div>
 

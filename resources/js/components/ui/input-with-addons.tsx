@@ -64,7 +64,7 @@ export default function InputWithAddons({
                 <div className="flex justify-between">
                     <div className="flex items-center">
                         {label && (
-                            <InputLabel htmlFor="price" value={label} />
+                            <InputLabel htmlFor="price" value={label} inputRequired={required}/>
                         )}
                         {messageTooltip && (
                             <TooltipProvider>

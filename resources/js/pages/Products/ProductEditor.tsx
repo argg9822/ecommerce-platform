@@ -36,10 +36,11 @@ type CreateProductProps = {
     mode: 'create' | 'edit',
     categories: Category[],
     brands: Brand[],
-    product?: ProductForm
+    product?: ProductForm,
+    unavailableRelevances: number[],
 }
 
-export default function ProductEditor({ mode, categories, brands, product }: CreateProductProps) {    
+export default function ProductEditor({ mode, categories, brands, product, unavailableRelevances }: CreateProductProps) {    
     const form = useProductForm(product || undefined);
 
     const [openDialogCategory, setOpenDialogCategory] = useState(false);
@@ -108,7 +109,7 @@ export default function ProductEditor({ mode, categories, brands, product }: Cre
                                     <p className="text-gray-400">Configura lo que los clientes verán en el storefront.</p>
                                 </AccordionTrigger>
                                 <AccordionContent>
-                                    <StoreFront />
+                                    <StoreFront unavailableRelevances={unavailableRelevances} />
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>

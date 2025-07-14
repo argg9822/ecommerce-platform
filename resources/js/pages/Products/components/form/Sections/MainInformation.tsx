@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/tooltip"
 import { useState } from 'react';
 import { Separator } from '@/components/ui/separator';
+import { log } from 'node:console';
 
 type MainInformationCardProps = {
     brands: Brand[],
@@ -85,7 +86,7 @@ export default function MainInformation({
             <CardContent className="space-y-4">
                 <div className="grid grid-cols-12 gap-4">
                     <div className="col-span-6">
-                        <InputLabel htmlFor="name" value="Nombre del producto" />
+                        <InputLabel htmlFor="name" value="Nombre del producto" inputRequired/>
                         <Input 
                             id="name" 
                             type="text" 
@@ -102,7 +103,7 @@ export default function MainInformation({
                     <div className="col-span-6">
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-column">
-                                <InputLabel htmlFor="brand_id" value="Marca" />
+                                <InputLabel htmlFor="brand_id" value="Marca" inputRequired/>
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
@@ -160,13 +161,14 @@ export default function MainInformation({
                         {data.categories?.length > 0 && (
                             <div className="flex flex-row gap-2 mb-2 w-full">
                                 {data.categories.map((catId) => {
-                                    const category = selectCategories.find(c => c.value === catId);
+                                    const categorySelected = selectCategories.find(c => c.value === catId);
+                                    
                                     return (
                                         <div 
                                             key={catId}
                                             className="flex items-center gap-2 bg-gray-800 rounded-full px-3 py-[3px] text-sm"
                                         >
-                                            <span className="text-gray-100 whitespace-nowrap overflow-hidden">{category?.label}</span>
+                                            <span className="text-gray-100 whitespace-nowrap overflow-hidden">{categorySelected?.label}</span>
                                             <button
                                                 type="button"
                                                 onClick={() => {
@@ -183,7 +185,7 @@ export default function MainInformation({
                         )}
 
                         <div className="flex flex-row justify-between">
-                            <InputLabel value="Categorías" />
+                            <InputLabel value="Categorías" inputRequired/>
                             <Button type="button" className="max-h-[20px] bg-transparent text-blue-500 hover:text-blue-700" title="Añade una categoría" onClick={() => setOpenDialogCategory(true)}>
                                 <PlusIcon />Agregar categoría
                             </Button>
@@ -291,12 +293,7 @@ export default function MainInformation({
                             onCheckedChange={(checked) => setData('is_available_product', !!checked)}
                         />
                         <div className="flex flex-col">
-                            <label
-                                htmlFor="is_available"
-                                className="text-sm font-medium text-gray-400 hover:text-gray-200 cursor-pointer"
-                            >
-                                Disponible
-                            </label>
+                            <InputLabel htmlFor="is_available" value="Disponible" className="mb-0"/>
                             <p className="text-sm text-gray-600">
                                 Establecer producto como disponible en la tienda
                             </p>
