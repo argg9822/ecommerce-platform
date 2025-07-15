@@ -1,18 +1,19 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",                         // <- 🔴 NECESARIO
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./resources/js/*"],            // <- ✅ ALIAS FUNCIONAL
+      "@/*": ["./resources/js/*"],
       "@sass/*": ["resources/sass/*"]
     },
     "allowJs": true,
     "module": "ESNext",
-    "moduleResolution": "node",             // <- 🔴 CAMBIA esto si aún es "bundler"
+    "moduleResolution": "node",
     "jsx": "react-jsx",
     "strict": true,
     "isolatedModules": true,
     "target": "ESNext",
     "esModuleInterop": true,
+    "resolveJsonModule": true,  // <- AÑADE ESTA LÍNEA
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "noEmit": true
@@ -20,6 +21,7 @@
   "include": [
     "resources/js/**/*.ts",
     "resources/js/**/*.tsx",
-    "resources/js/**/*.d.ts"
+    "resources/js/**/*.d.ts",
+    "resources/js/**/*.json"   // <- OPCIONAL: incluye archivos JSON si es necesario
   ]
 }
