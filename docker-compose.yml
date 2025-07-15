@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # Servicio de base de datos PostgreSQL
   postgres:
     image: postgres:15
     container_name: postgres_db
@@ -12,31 +11,45 @@ services:
       POSTGRES_PASSWORD: s12345678
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - app_network
 
-  # Servicio de aplicación Laravel (backend PHP)
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     container_name: laravel_app
     restart: always
     volumes:
       - .:/var/www
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: ecommerce
+      DB_USERNAME: softgenix
+      DB_PASSWORD: s12345678
+    networks:
+      - app_network
     depends_on:
       - postgres
 
-  # Servicio del servidor web Nginx
   nginx:
     image: nginx:latest
     container_name: nginx_server
     restart: always
     ports:
-      - "8080:80"
+      - "80:80"
+      - "443:443"
     volumes:
-      - .:/var/www
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./public:/var/www/public
+    networks:
+      - app_network
     depends_on:
       - backend
 
 volumes:
   pgdata:
+
+networks:
+  app_network:
+    driver: bridge
