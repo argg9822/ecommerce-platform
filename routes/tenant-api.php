@@ -18,8 +18,8 @@ use App\Http\Controllers\Api\V1\OrderPaymentController;
 Route::middleware([
     'api',
     IdentifyTenant::class,
-    InitializeTenancyByDomain::class,
-    PreventAccessFromCentralDomains::class,
+    //InitializeTenancyByDomain::class,
+    //PreventAccessFromCentralDomains::class,
 ])->prefix('v1')->group(function () {
     //Login and register
     Route::post('register', [AuthController::class, 'register']);
