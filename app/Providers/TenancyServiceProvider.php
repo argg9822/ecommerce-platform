@@ -110,11 +110,11 @@ class TenancyServiceProvider extends ServiceProvider
 
         $this->makeTenancyMiddlewareHighestPriority();
 
-        // Event::listen(TenancyInitialized::class, function (TenancyInitialized $event) {
-        //     // $schema = $event->tenancy->tenant->id;
-        //     $schema = "tenant".$event->tenancy->getTenantKey();
-        //     DB::connection('tenant')->statement("SET search_path TO \"$schema\"");
-        // });
+        Event::listen(TenancyInitialized::class, function (TenancyInitialized $event) {
+            // $schema = $event->tenancy->tenant->id;
+            $schema = "tenant".$event->tenancy->getTenantKey();
+            DB::connection('tenant')->statement("SET search_path TO \"$schema\"");
+        });
 
         // Event::listen(BootstrappingTenancy::class, function($event){
         //     $schema = $event->tenancy->tenant->id;            
