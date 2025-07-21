@@ -19,7 +19,7 @@ Route::middleware([
     'api',
     IdentifyTenant::class,
     InitializeTenancyByDomain::class,
-    //PreventAccessFromCentralDomains::class,
+    PreventAccessFromCentralDomains::class,
 ])->prefix('v1')->group(function () {
     //Login and register
     Route::post('register', [AuthController::class, 'register']);
