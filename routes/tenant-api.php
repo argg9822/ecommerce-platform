@@ -53,6 +53,3 @@ Route::middleware([
     });
 });
 
-Route::prefix('v1')->middleware(['api'])->group(function () {
-    Route::get('/products', [ProductController::class, 'index']);
-});
