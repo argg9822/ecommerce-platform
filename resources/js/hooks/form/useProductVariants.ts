@@ -1,5 +1,5 @@
 import { useProductFormContext } from "@/context/product-form.context";
-import { ProductVariantsType, ProductDimensions, VariantAttributes } from '@/types/product';
+import { ProductVariantsType, ProductDimensions } from '@/types/product';
 import { useState } from "react";
 
 export default function useProductVariants(){
@@ -54,6 +54,7 @@ export default function useProductVariants(){
 
     const addFeatureVariant = (variantIndex: number) => {
         const updatedVariants = [...data.variants];
+        console.log('updatedVariants', updatedVariants[variantIndex].variant_attributes);
         const newAttributes = [...updatedVariants[variantIndex].variant_attributes.custom];
         newAttributes.push({name: '', value: ''});
         updatedVariants[variantIndex].variant_attributes.custom = newAttributes;

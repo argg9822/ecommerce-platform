@@ -50,8 +50,6 @@ class ProductController extends Controller
             'relevance'
         )->get();
 
-        Log::info($products);
-
         return Inertia::render('Products/Index', [
             'products' => $products
         ]);
