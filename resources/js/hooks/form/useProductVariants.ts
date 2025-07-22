@@ -79,8 +79,15 @@ export default function useProductVariants(){
         field: string,
         value: string | boolean | string[] | { value: string; label?: string; color?: string; selected: boolean }[]
     ) => {
+        const priceFields = ['price', 'compare_price', 'currency_price', 'stock'];
         const updatedVariants = [...data.variants];
-        (updatedVariants[index] as any)[field] = value;
+
+        if (priceFields.includes(field)) {
+            (updatedVariants[index] as any)[field] = value;
+        }else{
+            (updatedVariants[index].variant_attributes as any)[field] = value;
+        }
+        
         setData('variants', updatedVariants);
         handleStockVariant(updatedVariants);
     }
