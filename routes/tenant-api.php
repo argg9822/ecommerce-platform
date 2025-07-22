@@ -25,12 +25,15 @@ Route::middleware([
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
+
     //Google and register Google
     Route::get('auth/google/redirect', [GoogleAuthController::class, 'redirect']);
     Route::post('auth/google/callback', [GoogleAuthController::class, 'callback']);
+
     //Productos
     Route::apiResource('products', ProductController::class)
         ->only(['index', 'show']);
+        
     //Categorias
     Route::apiResource('categories', CategoryController::class)
         ->only(['index', 'show']);
