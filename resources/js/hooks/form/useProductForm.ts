@@ -6,7 +6,7 @@ import { ProductVariantsType } from '@/types/product';
 type ProductFormData = ProductForm & Record<string, any>;
 
 export default function useProductForm( product? : ProductForm ) {    
-    console.log('product', product?.variants[0].variant_attributes);
+    console.log('product', product?.variants);
     
     const refs: Record<string, React.RefObject<HTMLInputElement> | undefined> = {
         name: useRef<HTMLInputElement>(null),
@@ -21,6 +21,35 @@ export default function useProductForm( product? : ProductForm ) {
         sku: useRef<HTMLInputElement>(null),
         barcode: useRef<HTMLInputElement>(null),
     };
+
+    const initDimensions = {
+        length: {
+            value: 0,
+            unit: 'cm',
+        },
+        width: {
+            value: 0,
+            unit: 'cm',
+        },
+        height: {
+            value: 0,
+            unit: 'cm',
+        },
+        weight: {
+            value: 0,
+            unit: 'kg',
+        }
+    };
+
+    const initColors = [
+        { value: "red", label: "Rojo", color: "text-red-600", selected: false },
+        { value: "silver", label: "Plateado", color: "text-gray-500", selected: false },
+        { value: "blue", label: "Azul", color: "text-blue-500", selected: false },
+        { value: "green", label: "Verde", color: "text-green-600", selected: false },
+        { value: "yellow", label: "Amarillo", color: "text-yellow-400", selected: false },
+        { value: "purple", label: "Morado", color: "text-purple-400", selected: false },
+        { value: "pink", label: "Rosado", color: "text-pink-400", selected: false },
+    ]
     
     const BASE_NEW_VARIANT: ProductVariantsType = {
         price: undefined,
@@ -30,35 +59,30 @@ export default function useProductForm( product? : ProductForm ) {
         shipment: undefined,
         variant_attributes: {
             custom: [{name: '', value: ''}],
-            dimensions: {
-                length: {
-                    value: 0,
-                    unit: 'cm',
-                },
-                width: {
-                    value: 0,
-                    unit: 'cm',
-                },
-                height: {
-                    value: 0,
-                    unit: 'cm',
-                },
-                weight: {
-                    value: 0,
-                    unit: 'kg',
-                }
-            },
-            colors: [
-                { value: "red", label: "Rojo", color: "text-red-600", selected: false },
-                { value: "silver", label: "Plateado", color: "text-gray-500", selected: false },
-                { value: "blue", label: "Azul", color: "text-blue-500", selected: false },
-                { value: "green", label: "Verde", color: "text-green-600", selected: false },
-                { value: "yellow", label: "Amarillo", color: "text-yellow-400", selected: false },
-                { value: "purple", label: "Morado", color: "text-purple-400", selected: false },
-                { value: "pink", label: "Rosado", color: "text-pink-400", selected: false },
-            ]
+            dimensions: initDimensions,
+            colors: initColors,
         },
         is_available: true,
+    }
+
+    const setVariants = () => {
+        if (!product?.variants || product.variants.length === 0) {
+            return [BASE_NEW_VARIANT];
+        }
+        
+        return product.variants.map((variant: ProductVariantsType) => ({
+            ...BASE_NEW_VARIANT,
+            ...variant,
+            variant_attributes: {
+                ...BASE_NEW_VARIANT.variant_attributes,
+                ...variant.variant_attributes,
+                custom: Array.isArray(variant.variant_attributes.custom)
+                    ? variant.variant_attributes.custom
+                    : BASE_NEW_VARIANT.variant_attributes.custom,
+                dimensions: variant.variant_attributes.dimensions || BASE_NEW_VARIANT.variant_attributes.dimensions,
+                colors: variant.variant_attributes.colors || BASE_NEW_VARIANT.variant_attributes.colors,
+            }
+        }));
     }
 
     const discountCalc = (price: number, comparePrice: number) => {
@@ -100,7 +124,7 @@ export default function useProductForm( product? : ProductForm ) {
         categories: Array.isArray(product?.categories) ? product.categories : [],
         profit: (product?.price ?? 0) - (product?.cost ?? 0),
         discount:  discountCalc((product?.price ?? 0), (product?.compare_price ?? 0)),
-        variants: product?.variants || [BASE_NEW_VARIANT],
+        variants: setVariants(),
         images: [],
         currency: 'COP',
     });

@@ -83,58 +83,57 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    // public function store(StoreProductRequest $request)
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)    
     {
         try {
-            Log::info($request->all());
-            // DB::beginTransaction();
-            // $product = Product::create($request->safe()
-            // ->merge(
-            //     ['slug' => Str::slug($request->name)]
-            // )->only([
-            //     'name',
-            //     'description',
-            //     'price',
-            //     'compare_price',
-            //     'cost',
-            //     'stock',
-            //     'sku',
-            //     'barcode',
-            //     'is_feature',
-            //     'is_available',
-            //     'relevance',
-            //     'brand_id',
-            //     'shipment',
-            //     'meta_title',
-            //     'meta_description',
-            //     'key_words',
-            //     'condition',        
-            //     'show_condition',
-            //     'warranty_policy',
-            //     'disponibility_text'
-            // ]));
+            //Log::info($request->all());
+            DB::beginTransaction();
+            $product = Product::create($request->safe()
+            ->merge(
+                ['slug' => Str::slug($request->name)]
+            )->only([
+                'name',
+                'description',
+                'price',
+                'compare_price',
+                'cost',
+                'stock',
+                'sku',
+                'barcode',
+                'is_feature',
+                'is_available',
+                'relevance',
+                'brand_id',
+                'shipment',
+                'meta_title',
+                'meta_description',
+                'key_words',
+                'condition',        
+                'show_condition',
+                'warranty_policy',
+                'disponibility_text'
+            ]));
 
-            // //Guardar categorías
-            // if ($request->filled('categories')) {
-            //     $product->categories()->sync($request->input('categories'));
-            // }
+            //Guardar categorías
+            if ($request->filled('categories')) {
+                $product->categories()->sync($request->input('categories'));
+            }
 
-            // //Guardar imágenes
-            // $newImages = $request->file('new_images');
+            //Guardar imágenes
+            $newImages = $request->file('new_images');
             
-            // if(is_array($newImages) && count(array_filter($newImages))){
-            //     $this->storeImages($newImages, $product);
-            // }
+            if(is_array($newImages) && count(array_filter($newImages))){
+                $this->storeImages($newImages, $product);
+            }
 
-            // //Guardar variantes
-            // $variants = $request->input('variants');
+            //Guardar variantes
+            $variants = $request->input('variants');
 
-            // if (is_array($variants) && count(array_filter($variants))) {
-            //     $this->saveVariants($variants, $product);
-            // }
+            if (is_array($variants) && count(array_filter($variants))) {
+                $this->saveVariants($variants, $product);
+            }
 
-            // DB::commit();
+            DB::commit();
             return redirect()->back()->with('flash.success', [
                 'title' => 'Éxito',
                 'message' => 'Producto guardado correctamente'
@@ -180,33 +179,40 @@ class ProductController extends Controller
                 'is_available' => $variantData['is_available'],
             ]);
 
-            foreach (['length', 'width', 'height', 'weight'] as $dimension) {
-                $dimensionData = $variantData['dimensions'][$dimension] ?? null;
-                if ($dimensionData && isset($dimensionData['value']) && $dimensionData['value'] != 0) {
-                    $variant->variantAttributes()->create([
-                        'name' => $dimension,
-                        'value' => $dimensionData['value'] . " ". $dimensionData['unit']
-                    ]);
-                }
-            }
-
             if (!empty($variantData['variant_attributes'])) {
-                foreach ($variantData['variant_attributes'] as $attribute) {
+                //Guardar dimensiones
+                if (isset($variantData['variant_attributes']['dimensions']) && is_array($variantData['variant_attributes']['dimensions']))
+                {
+                    foreach ($variantData['variant_attributes']['dimensions'] as $key => $dimension) {
+                        if (isset($dimension['value']) && $dimension['value'] > 0) {
+                            $variant->variantAttributes()->create([
+                                'name' => $key,
+                                'value' => $dimension['value'] . " ". $dimension['unit']
+                            ]);
+                        }
+                    }
+                }
+
+                //Guargar atributos personalizados
+                if (!empty($variantData['variant_attributes']['custom'])) {
+                foreach ($variantData['variant_attributes']['custom'] as $attribute) {
                     $variant->variantAttributes()->create([
                         'name' => $attribute['name'],
                         'value' => $attribute['value'],
                     ]);
                 }
-            }
-
-            if (!empty($variantData['colors'])) {
-                foreach ($variantData['colors'] as $color) {
-                    if ($color['selected'] == 1) {
-                        $variant->variantAttributes()->create([
-                            'name' => 'color',
-                            'value' => $color['value'],
-                        ]);
-                    }   
+                }
+                
+                //Guardar colores
+                if (!empty($variantData['variant_attributes']['colors'])) {
+                    foreach ($variantData['variant_attributes']['colors'] as $color) {
+                        if ($color['selected'] == 1) {                            
+                            $variant->variantAttributes()->create([
+                                'name' => 'color',
+                                'value' => $color['value'],
+                            ]);
+                        }   
+                    }
                 }
             }
         }
@@ -229,7 +235,7 @@ class ProductController extends Controller
             'brand:id,name',
             'variants' => function($query){
                 $query->select('id', 'product_id', 'price', 'compare_price', 'stock', 'shipment','is_available')
-                    ->orderBy('price', 'asc')
+                    ->orderBy('id', 'asc')
                     ->with(['variantAttributes:id,product_variant_id,name,value']);
                 },
             'images:id,product_id,url',
