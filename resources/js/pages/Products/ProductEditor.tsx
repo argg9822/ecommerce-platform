@@ -40,7 +40,7 @@ type CreateProductProps = {
     unavailableRelevances: number[],
 }
 
-export default function ProductEditor({ mode, categories, brands, product, unavailableRelevances }: CreateProductProps) {    
+export default function ProductEditor({ mode, categories, brands, product, unavailableRelevances }: CreateProductProps) {
     const form = useProductForm(product || undefined);
     const isEditMode = mode === 'edit';
     const [openDialogCategory, setOpenDialogCategory] = useState(false);

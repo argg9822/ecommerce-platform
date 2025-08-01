@@ -110,7 +110,7 @@ export default function useProductVariants(){
         const newVariants = [...data.variants];
         const currentAttributes = [...newVariants[variantIndex].variant_attributes.colors];
 
-        if (index >= currentAttributes.length - 1) {
+        if (index >= currentAttributes.length) {
             currentAttributes[index] = {value: color as string, selected: true};
         }else{
             currentAttributes[index].selected = color as boolean;

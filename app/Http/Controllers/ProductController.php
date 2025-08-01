@@ -86,54 +86,54 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)    
     {
         try {
-            //Log::info($request->all());
-            DB::beginTransaction();
-            $product = Product::create($request->safe()
-            ->merge(
-                ['slug' => Str::slug($request->name)]
-            )->only([
-                'name',
-                'description',
-                'price',
-                'compare_price',
-                'cost',
-                'stock',
-                'sku',
-                'barcode',
-                'is_feature',
-                'is_available',
-                'relevance',
-                'brand_id',
-                'shipment',
-                'meta_title',
-                'meta_description',
-                'key_words',
-                'condition',        
-                'show_condition',
-                'warranty_policy',
-                'disponibility_text'
-            ]));
+            Log::info($request->all());
+            // DB::beginTransaction();
+            // $product = Product::create($request->safe()
+            // ->merge(
+            //     ['slug' => Str::slug($request->name)]
+            // )->only([
+            //     'name',
+            //     'description',
+            //     'price',
+            //     'compare_price',
+            //     'cost',
+            //     'stock',
+            //     'sku',
+            //     'barcode',
+            //     'is_feature',
+            //     'is_available',
+            //     'relevance',
+            //     'brand_id',
+            //     'shipment',
+            //     'meta_title',
+            //     'meta_description',
+            //     'key_words',
+            //     'condition',        
+            //     'show_condition',
+            //     'warranty_policy',
+            //     'disponibility_text'
+            // ]));
 
-            //Guardar categorías
-            if ($request->filled('categories')) {
-                $product->categories()->sync($request->input('categories'));
-            }
+            // //Guardar categorías
+            // if ($request->filled('categories')) {
+            //     $product->categories()->sync($request->input('categories'));
+            // }
 
-            //Guardar imágenes
-            $newImages = $request->file('new_images');
+            // //Guardar imágenes
+            // $newImages = $request->file('new_images');
             
-            if(is_array($newImages) && count(array_filter($newImages))){
-                $this->storeImages($newImages, $product);
-            }
+            // if(is_array($newImages) && count(array_filter($newImages))){
+            //     $this->storeImages($newImages, $product);
+            // }
 
-            //Guardar variantes
-            $variants = $request->input('variants');
+            // //Guardar variantes
+            // $variants = $request->input('variants');
 
-            if (is_array($variants) && count(array_filter($variants))) {
-                $this->saveVariants($variants, $product);
-            }
+            // if (is_array($variants) && count(array_filter($variants))) {
+            //     $this->saveVariants($variants, $product);
+            // }
 
-            DB::commit();
+            // DB::commit();
             return redirect()->back()->with('flash.success', [
                 'title' => 'Éxito',
                 'message' => 'Producto guardado correctamente'
@@ -243,6 +243,13 @@ class ProductController extends Controller
 
         $product->categories = $product->categories()->pluck('categories.id');
 
+        $unavailableRelevances = Product::select('relevance')
+            ->whereNotNull('relevance')
+            ->whereBetween('relevance', [1, 5])
+            ->distinct()
+            ->pluck('relevance')
+            ->toArray();
+
         $categories = Category::with(['parent' => function ($query) {
             $query->select('id', 'name');
         }])->select('id', 'name', 'description', 'image', 'parent_id')->get();
@@ -253,16 +260,23 @@ class ProductController extends Controller
             'product' => $product,
             'categories' => $categories,
             'brands' => $brands,
-            'mode' => 'edit'
+            'mode' => 'edit',
+            'unavailableRelevances' => $unavailableRelevances
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Product $product)
     {
-        //
+        Log::info('Producto: ' . $product);
+        Log::info('Request: ' . $request->all());
+
+        return redirect()->back()->with('flash.error', [
+            'title' => 'Funcionalidad no implementada',
+            'message' => 'La funcionalidad de actualización de productos aún no está implementada.'
+        ]);
     }
 
     /**

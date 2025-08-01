@@ -6,7 +6,7 @@ import { ProductVariantsType } from '@/types/product';
 type ProductFormData = ProductForm & Record<string, any>;
 
 export default function useProductForm( product? : ProductForm ) {    
-    console.log('product', product?.variants);
+    console.log('product', product);
     
     const refs: Record<string, React.RefObject<HTMLInputElement> | undefined> = {
         name: useRef<HTMLInputElement>(null),
@@ -23,22 +23,10 @@ export default function useProductForm( product? : ProductForm ) {
     };
 
     const initDimensions = {
-        length: {
-            value: 0,
-            unit: 'cm',
-        },
-        width: {
-            value: 0,
-            unit: 'cm',
-        },
-        height: {
-            value: 0,
-            unit: 'cm',
-        },
-        weight: {
-            value: 0,
-            unit: 'kg',
-        }
+        length: { value: 0, unit: 'cm' },
+        width: { value: 0, unit: 'cm' },
+        height: { value: 0, unit: 'cm' },
+        weight: { value: 0, unit: 'kg' }
     };
 
     const initColors = [
@@ -65,25 +53,54 @@ export default function useProductForm( product? : ProductForm ) {
         is_available: true,
     }
 
+    const transformVariant = (variantFromDB: any): ProductVariantsType => {
+        const dimensions = structuredClone(initDimensions);
+        const colors = initColors.map(c => ({ ...c, selected: false }));
+        const custom: { name: string; value: string }[] = [];
+
+        for (const attr of variantFromDB.variant_attributes || []) {
+            const name = attr.name?.toLowerCase();
+            const value = attr.value;
+
+            if (['length', 'width', 'height', 'weight'].includes(name)) {
+                const num = parseFloat(value);
+                if (!isNaN(num)) {
+                    dimensions[name as keyof typeof dimensions].value = num;
+                }
+            } else if (name === 'color') {
+                for (const color of colors) {
+                    if (value.toLowerCase().includes(color.value.toLowerCase())) {
+                        color.selected = true;
+                    }
+                }
+            } else {
+                custom.push({ name: attr.name, value });
+            }
+        }
+
+        return {
+            ...BASE_NEW_VARIANT,
+            price: variantFromDB.price ?? undefined,
+            compare_price: variantFromDB.compare_price ?? undefined,
+            stock: variantFromDB.stock ?? undefined,
+            shipment: variantFromDB.shipment ?? undefined,
+            is_available: variantFromDB.is_available ?? true,
+            variant_attributes: {
+                custom: custom.length ? custom : [{ name: '', value: '' }],
+                dimensions,
+                colors,
+            },
+        };
+    };
+
     const setVariants = () => {
         if (!product?.variants || product.variants.length === 0) {
             return [BASE_NEW_VARIANT];
         }
-        
-        return product.variants.map((variant: ProductVariantsType) => ({
-            ...BASE_NEW_VARIANT,
-            ...variant,
-            variant_attributes: {
-                ...BASE_NEW_VARIANT.variant_attributes,
-                ...variant.variant_attributes,
-                custom: Array.isArray(variant.variant_attributes.custom)
-                    ? variant.variant_attributes.custom
-                    : BASE_NEW_VARIANT.variant_attributes.custom,
-                dimensions: variant.variant_attributes.dimensions || BASE_NEW_VARIANT.variant_attributes.dimensions,
-                colors: variant.variant_attributes.colors || BASE_NEW_VARIANT.variant_attributes.colors,
-            }
-        }));
-    }
+
+        return product.variants.map(transformVariant);
+    };
+
 
     const discountCalc = (price: number, comparePrice: number) => {
         if (!price || !comparePrice || comparePrice === 0) return undefined;
@@ -123,16 +140,17 @@ export default function useProductForm( product? : ProductForm ) {
 
         categories: Array.isArray(product?.categories) ? product.categories : [],
         profit: (product?.price ?? 0) - (product?.cost ?? 0),
-        discount:  discountCalc((product?.price ?? 0), (product?.compare_price ?? 0)),
+        discount: discountCalc((product?.price ?? 0), (product?.compare_price ?? 0)),
         variants: setVariants(),
-        images: [],
+        images: product?.images ?? [],
         currency: 'COP',
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+        const urlRoute = product?.id ? route('products_update', { id: product.id }) : route('products_store');
 
-        post(route('products_store'), {
+        post(urlRoute, {
             preserveScroll: false,
             onSuccess: () => {
                 alert('Guardado')

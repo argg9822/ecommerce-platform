@@ -4,6 +4,7 @@ import { ProductImage, ProductVariantsType, ProductFeatures } from '@/types/prod
 export type ProductFormContextType = ReturnType<typeof useProductForm>;
 
 export interface ProductForm {
+    id?: number;
     name: string;
     description: string;
     price: number | undefined;

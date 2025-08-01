@@ -10,7 +10,7 @@ export default function Images(){
         data,
         setData
     } = useProductFormContext();
-
+    
     const productImagesValue = (newImages: File[]) => {
         setData('new_images', [...data.images, ...newImages]);
     }
@@ -21,9 +21,13 @@ export default function Images(){
                 <UploadImages
                     multiple
                     preview
-                    onFilesSelected={productImagesValue}
+                    maxFiles={5}
+                    existingImages={data.images}
+                    onFilesSelected={(files) => setData('new_images', files)}
+                    onExistingImageRemove={(id) => {
+                        // Opcional: puedes agregar el id a una lista para eliminarlo después en el backend
+                    }}
                 />
-
             </CardContent>
         </Card>
     )

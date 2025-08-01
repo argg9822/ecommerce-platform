@@ -40,6 +40,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'index' => 'products_index',
             'edit' => 'products_edit',
             'create' => 'products_create',
+            'update' => 'products_update',
             'store' => 'products_store',
             'destroy' => 'products_destroy',
         ]);

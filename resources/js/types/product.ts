@@ -55,21 +55,21 @@ export interface ProductVariantsType {
     is_available: boolean;
 }
 
-// export interface Product {
-//     id: number;
-//     name: string;
-//     description: string;
-//     price: number;
-//     compare_price: number;
-//     stock: number;
-//     sku: number;
-//     barcode: string;
-//     is_feature: boolean;
-//     is_available: boolean;
-//     variants: ProductVariantsType[];
-//     brand: string;
-//     images: ProductImage[],
-//     category_id: number;
-//     created_at: string;
-//     updated_at: string;
-// }
+export interface Product {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    compare_price: number;
+    stock: number;
+    sku: number;
+    barcode: string;
+    is_feature: boolean;
+    is_available: boolean;
+    variants: ProductVariantsType[];
+    brand: string;
+    images: ProductImage[],
+    category_id: number;
+    created_at: string;
+    updated_at: string;
+}
