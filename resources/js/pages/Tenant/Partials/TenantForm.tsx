@@ -209,6 +209,7 @@ export default function TenantForm({ className = '', props} : props) {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="com">.com</SelectItem>
+                        <SelectItem value="com.co">.com.co</SelectItem>
                         <SelectItem value="net">.net</SelectItem>
                         <SelectItem value="org">.org</SelectItem>
                         <SelectItem value="co">.co</SelectItem>
