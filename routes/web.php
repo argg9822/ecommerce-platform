@@ -42,6 +42,7 @@ Route::middleware(['auth', 'web',  'verified'])->group(function () {
             'create' => 'products_create',
             'store' => 'products_store',
             'destroy' => 'products_destroy',
+            'show' => 'products_show',
         ])->except('udpate');
 
         Route::post('products/update/{id}', [ProductController::class, 'update'])->name('products_update');
