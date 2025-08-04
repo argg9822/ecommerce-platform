@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Product;
@@ -86,54 +87,54 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)    
     {
         try {
-            Log::info($request->all());
-            // DB::beginTransaction();
-            // $product = Product::create($request->safe()
-            // ->merge(
-            //     ['slug' => Str::slug($request->name)]
-            // )->only([
-            //     'name',
-            //     'description',
-            //     'price',
-            //     'compare_price',
-            //     'cost',
-            //     'stock',
-            //     'sku',
-            //     'barcode',
-            //     'is_feature',
-            //     'is_available',
-            //     'relevance',
-            //     'brand_id',
-            //     'shipment',
-            //     'meta_title',
-            //     'meta_description',
-            //     'key_words',
-            //     'condition',        
-            //     'show_condition',
-            //     'warranty_policy',
-            //     'disponibility_text'
-            // ]));
+            DB::beginTransaction();
+            $product = Product::create($request->safe()
+                ->merge(
+                    ['slug' => Str::slug($request->name)]
+                )->only([
+                    'name',
+                    'description',
+                    'price',
+                    'compare_price',
+                    'cost',
+                    'stock',
+                    'sku',
+                    'barcode',
+                    'is_feature',
+                    'is_available',
+                    'relevance',
+                    'brand_id',
+                    'shipment',
+                    'meta_title',
+                    'meta_description',
+                    'key_words',
+                    'condition',        
+                    'show_condition',
+                    'warranty_policy',
+                    'disponibility_text'
+                ])
+            );
 
-            // //Guardar categorías
-            // if ($request->filled('categories')) {
-            //     $product->categories()->sync($request->input('categories'));
-            // }
+            //Guardar categorías
+            if ($request->filled('categories')) {
+                $product->categories()->sync($request->input('categories'));
+            }
 
-            // //Guardar imágenes
-            // $newImages = $request->file('new_images');
+            //Guardar imágenes
+            $newImages = $request->file('new_images');
             
-            // if(is_array($newImages) && count(array_filter($newImages))){
-            //     $this->storeImages($newImages, $product);
-            // }
+            if(is_array($newImages) && count(array_filter($newImages))){
+                $this->storeImages($newImages, $product);
+            }
 
-            // //Guardar variantes
-            // $variants = $request->input('variants');
+            //Guardar variantes
+            $variants = $request->input('variants');
 
-            // if (is_array($variants) && count(array_filter($variants))) {
-            //     $this->saveVariants($variants, $product);
-            // }
+            if (is_array($variants) && count(array_filter($variants))) {
+                $this->saveVariants($variants, $product);
+            }
 
-            // DB::commit();
+            DB::commit();
             return redirect()->back()->with('flash.success', [
                 'title' => 'Éxito',
                 'message' => 'Producto guardado correctamente'
@@ -168,54 +169,82 @@ class ProductController extends Controller
         }
     }
 
-    private function saveVariants($variants, $savedProduct)
+    private function saveVariants(array $variants, Product $product)
     {
-        foreach ($variants as $variantData) {
-            $variant = $savedProduct->variants()->create([
-                'price' => $variantData['price'],
-                'compare_price' => $variantData['compare_price'],
-                'stock' => $variantData['stock'],
-                'shipment' => $variantData['shipment'],
-                'is_available' => $variantData['is_available'],
-            ]);
+        $idsReceived = [];
 
-            if (!empty($variantData['variant_attributes'])) {
-                //Guardar dimensiones
-                if (isset($variantData['variant_attributes']['dimensions']) && is_array($variantData['variant_attributes']['dimensions']))
-                {
-                    foreach ($variantData['variant_attributes']['dimensions'] as $key => $dimension) {
-                        if (isset($dimension['value']) && $dimension['value'] > 0) {
-                            $variant->variantAttributes()->create([
-                                'name' => $key,
-                                'value' => $dimension['value'] . " ". $dimension['unit']
-                            ]);
-                        }
-                    }
+        foreach ($variants as $variantData) {
+            if (!empty($variantData['id'])) {
+                $variant = $product->variants()->find($variantData['id']);
+                if (!$variant) {
+                    continue;
                 }
 
-                //Guargar atributos personalizados
-                if (!empty($variantData['variant_attributes']['custom'])) {
+                $variant->update([
+                    'price' => $variantData['price'],
+                    'compare_price' => $variantData['compare_price'],
+                    'stock' => $variantData['stock'],
+                    'shipment' => $variantData['shipment'],
+                    'is_available' => $variantData['is_available'],
+                ]);
+
+                $variant->variantAttributes()->delete();
+
+                $idsReceived[] = $variant->id;
+            } else {
+                $variant = $product->variants()->create([
+                    'price' => $variantData['price'],
+                    'compare_price' => $variantData['compare_price'],
+                    'stock' => $variantData['stock'],
+                    'shipment' => $variantData['shipment'],
+                    'is_available' => $variantData['is_available'],
+                ]);
+
+                $idsReceived[] = $variant->id;
+            }
+
+            // Dimensiones
+            if (!empty($variantData['variant_attributes']['dimensions'])) {
+                foreach ($variantData['variant_attributes']['dimensions'] as $key => $dimension) {
+                    if (!empty($dimension['value']) && $dimension['value'] > 0) {
+                        $variant->variantAttributes()->create([
+                            'name' => $key,
+                            'value' => $dimension['value'] . ' ' . $dimension['unit'],
+                        ]);
+                    }
+                }
+            }
+
+            // Variant attributes
+            if (!empty($variantData['variant_attributes']['custom'])) {
                 foreach ($variantData['variant_attributes']['custom'] as $attribute) {
                     $variant->variantAttributes()->create([
                         'name' => $attribute['name'],
                         'value' => $attribute['value'],
                     ]);
                 }
-                }
-                
-                //Guardar colores
-                if (!empty($variantData['variant_attributes']['colors'])) {
-                    foreach ($variantData['variant_attributes']['colors'] as $color) {
-                        if ($color['selected'] == 1) {                            
-                            $variant->variantAttributes()->create([
-                                'name' => 'color',
-                                'value' => $color['value'],
-                            ]);
-                        }   
+            }
+
+            // Colores
+            if (!empty($variantData['variant_attributes']['colors'])) {
+                foreach ($variantData['variant_attributes']['colors'] as $color) {
+                    if (!empty($color['selected']) && $color['selected'] == 1) {
+                        $variant->variantAttributes()->create([
+                            'name' => 'color',
+                            'value' => $color['value'],
+                        ]);
                     }
                 }
             }
         }
+
+        // Eliminar variantes que ya no están
+        $product->variants()
+            ->whereNotIn('id', $idsReceived)
+            ->each(function ($variant) {
+                $variant->variantAttributes()->delete();
+                $variant->delete();
+            });
     }
 
     /**
@@ -268,15 +297,84 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, $productId)
     {
-        Log::info('Producto: ' . $product);
-        Log::info('Request: ' . $request->all());
+        try {
+            DB::beginTransaction();
 
-        return redirect()->back()->with('flash.error', [
-            'title' => 'Funcionalidad no implementada',
-            'message' => 'La funcionalidad de actualización de productos aún no está implementada.'
-        ]);
+            $product = Product::findOrFail($productId);
+            $product->update($request->safe()
+                ->merge(
+                    ['slug' => Str::slug($request->name)]
+                )->only([
+                    'name',
+                    'description',
+                    'price',
+                    'compare_price',
+                    'cost',
+                    'stock',
+                    'sku',
+                    'barcode',
+                    'is_feature',
+                    'is_available',
+                    'relevance',
+                    'brand_id',
+                    'shipment',
+                    'meta_title',
+                    'meta_description',
+                    'key_words',
+                    'condition',
+                    'show_condition',
+                    'warranty_policy',
+                    'disponibility_text'
+                ])
+            );
+
+            //Guardar categorías
+            if ($request->filled('categories')) {
+                $product->categories()->sync($request->input('categories'));
+            } else {
+                $product->categories()->detach();
+            }
+
+            //Guardar imágenes
+            $newImages = $request->file('new_images');
+            if (is_array($newImages) && count(array_filter($newImages))) {
+                $this->storeImages($newImages, $product);
+            }
+
+            //Eliminar imágenes
+            $dropImages = $request->input('drop_images', []);
+            if (is_array($dropImages) && count(array_filter($dropImages))) {
+                $this->deleteImages($dropImages, $product);
+            }
+
+            //Actualizar variantes
+            $this->saveVariants($request->input('variants'), $product);
+
+            DB::commit();
+            return redirect()->back()->with('flash.success', [
+                'title' => 'Éxito',
+                'message' => 'Producto actualizado correctamente'
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::error('Error al iniciar la transacción: ' . $th->getMessage());
+            return redirect()->back()->with('flash.error', [
+                'title' => 'Error', 
+                'message' => 'No se pudo iniciar la transacción para actualizar el producto.'
+            ]);
+        }     
+    }
+
+    private function deleteImages($images, $product)
+    {
+        $imagesToDelete = $product->images()->whereIn('id', $images)->get();
+        foreach ($imagesToDelete as $image) {
+            $this->tenantFileService->deleteImage($image->url);
+        }
+
+        $product->images()->whereIn('id', $images)->delete();
     }
 
     /**

@@ -1,3 +1,4 @@
+import InputError from "@/components/InputError";
 import {
   Card,
   CardContent
@@ -8,7 +9,8 @@ import { useProductFormContext } from "@/context/product-form.context";
 export default function Images(){
     const {
         data,
-        setData
+        setData,
+        errors,
     } = useProductFormContext();
     
     const productImagesValue = (newImages: File[]) => {
@@ -25,9 +27,11 @@ export default function Images(){
                     existingImages={data.images}
                     onFilesSelected={(files) => setData('new_images', files)}
                     onExistingImageRemove={(id) => {
-                        // Opcional: puedes agregar el id a una lista para eliminarlo después en el backend
+                        setData('drop_images', [...data.drop_images, id]);
                     }}
                 />
+
+                <InputError message={errors.new_images} />
             </CardContent>
         </Card>
     )

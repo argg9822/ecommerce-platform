@@ -25,6 +25,7 @@ export interface ProductForm {
     brand_id: number | undefined;
     categories: number[];
     images: ProductImage[];
+    current_images: number[];
     shipment: number | undefined;
     currency: string;
     disponibility_text: string;

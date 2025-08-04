@@ -67,7 +67,7 @@ class StoreProductRequest extends FormRequest
             'new_images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
             
             // Variantes
-            'variants' => 'nullable|array',
+            'variants' => 'required|array',
             'variants.*.price' => 'nullable|numeric|min:0',
             'variants.*.currency_price' => 'required|string|size:3',
             'variants.*.compare_price' => 'nullable|numeric|min:0',
@@ -162,6 +162,8 @@ class StoreProductRequest extends FormRequest
             'relevance.unique' => 'Otro producto ya tiene este nivel de relevancia. Elige otro valor.',
             
             // Variantes
+            'variants.required' => 'Debes definir al menos una variante del producto.',
+            'variants.array' => 'El formato de las variantes no es válido.',
             'variants.*.price.numeric' => 'El precio de la variante debe ser numérico.',
             'variants.*.price.min' => 'El precio de la variante no puede ser negativo.',
             'variants.*.stock.integer' => 'El stock de la variante debe ser un número entero.',

@@ -23,7 +23,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'web',  'verified'])->group(function () {
     Route::resource('tenants', TenantController::class)->names([
         'index' => 'tenantIndex',
         'create' => 'tenantCreate',
@@ -40,10 +40,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'index' => 'products_index',
             'edit' => 'products_edit',
             'create' => 'products_create',
-            'update' => 'products_update',
             'store' => 'products_store',
             'destroy' => 'products_destroy',
-        ]);
+        ])->except('udpate');
+
+        Route::post('products/update/{id}', [ProductController::class, 'update'])->name('products_update');
 
         Route::resource('categories', CategoryController::class)->names([
             'create' => 'categories_create',

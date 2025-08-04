@@ -1,12 +1,13 @@
 import { useForm } from '@inertiajs/react';
-import { ChangeEvent, FormEventHandler, useRef } from 'react';
+import { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
 import { ProductForm } from '@/types/product-form.type';
 import { ProductVariantsType } from '@/types/product';
 
 type ProductFormData = ProductForm & Record<string, any>;
 
 export default function useProductForm( product? : ProductForm ) {    
-    console.log('product', product);
+    //console.log('product', product);
+    const [submitConfirm, setSubmitConfirm] = useState<boolean>(false);
     
     const refs: Record<string, React.RefObject<HTMLInputElement> | undefined> = {
         name: useRef<HTMLInputElement>(null),
@@ -23,20 +24,20 @@ export default function useProductForm( product? : ProductForm ) {
     };
 
     const initDimensions = {
-        length: { value: 0, unit: 'cm' },
-        width: { value: 0, unit: 'cm' },
-        height: { value: 0, unit: 'cm' },
-        weight: { value: 0, unit: 'kg' }
+        length: { value: 0, unit: 'cm', id: undefined as number | undefined },
+        width: { value: 0, unit: 'cm', id: undefined as number | undefined },
+        height: { value: 0, unit: 'cm', id: undefined as number | undefined },
+        weight: { value: 0, unit: 'kg', id: undefined as number | undefined }
     };
 
     const initColors = [
-        { value: "red", label: "Rojo", color: "text-red-600", selected: false },
-        { value: "silver", label: "Plateado", color: "text-gray-500", selected: false },
-        { value: "blue", label: "Azul", color: "text-blue-500", selected: false },
-        { value: "green", label: "Verde", color: "text-green-600", selected: false },
-        { value: "yellow", label: "Amarillo", color: "text-yellow-400", selected: false },
-        { value: "purple", label: "Morado", color: "text-purple-400", selected: false },
-        { value: "pink", label: "Rosado", color: "text-pink-400", selected: false },
+        { id: undefined as number | undefined, value: "red", label: "Rojo", color: "text-red-600", selected: false },
+        { id: undefined as number | undefined, value: "silver", label: "Plateado", color: "text-gray-500", selected: false },
+        { id: undefined as number | undefined, value: "blue", label: "Azul", color: "text-blue-500", selected: false },
+        { id: undefined as number | undefined, value: "green", label: "Verde", color: "text-green-600", selected: false },
+        { id: undefined as number | undefined, value: "yellow", label: "Amarillo", color: "text-yellow-400", selected: false },
+        { id: undefined as number | undefined, value: "purple", label: "Morado", color: "text-purple-400", selected: false },
+        { id: undefined as number | undefined, value: "pink", label: "Rosado", color: "text-pink-400", selected: false },
     ]
     
     const BASE_NEW_VARIANT: ProductVariantsType = {
@@ -56,29 +57,33 @@ export default function useProductForm( product? : ProductForm ) {
     const transformVariant = (variantFromDB: any): ProductVariantsType => {
         const dimensions = structuredClone(initDimensions);
         const colors = initColors.map(c => ({ ...c, selected: false }));
-        const custom: { name: string; value: string }[] = [];
+        const custom: {id?: number, name: string; value: string }[] = [];
 
         for (const attr of variantFromDB.variant_attributes || []) {
             const name = attr.name?.toLowerCase();
             const value = attr.value;
+            const id = attr.id;
 
             if (['length', 'width', 'height', 'weight'].includes(name)) {
                 const num = parseFloat(value);
                 if (!isNaN(num)) {
                     dimensions[name as keyof typeof dimensions].value = num;
+                    dimensions[name as keyof typeof dimensions].id = id;
                 }
             } else if (name === 'color') {
                 for (const color of colors) {
                     if (value.toLowerCase().includes(color.value.toLowerCase())) {
                         color.selected = true;
+                        color.id = id;
                     }
                 }
             } else {
-                custom.push({ name: attr.name, value });
+                custom.push({id: attr.id, name: attr.name, value });
             }
         }
 
         return {
+            id: variantFromDB.id,
             ...BASE_NEW_VARIANT,
             price: variantFromDB.price ?? undefined,
             compare_price: variantFromDB.compare_price ?? undefined,
@@ -101,7 +106,6 @@ export default function useProductForm( product? : ProductForm ) {
         return product.variants.map(transformVariant);
     };
 
-
     const discountCalc = (price: number, comparePrice: number) => {
         if (!price || !comparePrice || comparePrice === 0) return undefined;
         const discount = 100 - ((price * 100)/comparePrice);
@@ -113,6 +117,7 @@ export default function useProductForm( product? : ProductForm ) {
         setData,
         errors,
         post,
+        put,
         reset,
         processing,
         recentlySuccessful,
@@ -142,52 +147,69 @@ export default function useProductForm( product? : ProductForm ) {
         profit: (product?.price ?? 0) - (product?.cost ?? 0),
         discount: discountCalc((product?.price ?? 0), (product?.compare_price ?? 0)),
         variants: setVariants(),
+        new_images: [] as File[],
         images: product?.images ?? [],
+        current_images: product?.images.map(image => image.id) ?? [],
+        drop_images: [],
         currency: 'COP',
     });
 
+    const handleErrors = (errors: Record<string, any>) => {
+        const fieldNames = [
+            'name',
+            'brand_id',
+            'description',
+            'categories',
+            'is_available',
+            'price',
+            'compare_price',
+            'cost',
+            'shipment',
+            'stock',
+            'sku',
+            'barcode',
+            'is_feature',
+            'relevance',
+            'warranty_policy',
+            'condition',        
+            'show_condition',
+            'disponibility_text',
+            'meta_title',
+            'key_words',
+            'meta_description',
+        ];
+
+        const firstError = fieldNames.find(field => errors[field]);
+        if (firstError) {
+            refs[firstError]?.current?.focus();
+        }
+    };
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        const urlRoute = product?.id ? route('products_update', { id: product.id }) : route('products_store');
+        const isEdit = !!product?.id;
+        const urlRoute = isEdit ? route('products_update', { id: product.id }) : route('products_store');
 
-        post(urlRoute, {
-            preserveScroll: false,
-            onSuccess: () => {
-                alert('Guardado')
-                // reset()
-            },
-            onError: (errors) => {
-                const fieldNames = [
-                    'name',
-                    'brand_id',
-                    'description',
-                    'categories',
-                    'is_available',
-                    'price',
-                    'compare_price',
-                    'cost',
-                    'shipment',
-                    'stock',
-                    'sku',
-                    'barcode',
-                    'is_feature',
-                    'relevance',
-                    'warranty_policy',
-                    'condition',        
-                    'show_condition',
-                    'disponibility_text',
-                    'meta_title',
-                    'key_words',
-                    'meta_description',
-                ];
-
-                const firstError = fieldNames.find(field => errors[field]);
-
-                if (firstError) {
-                    refs[firstError]?.current?.focus();
-                }
-            },
-        });
+        console.log('data', data);
+        
+        if (isEdit) {
+            post(urlRoute, {
+                preserveScroll: true,
+                forceFormData: true,
+                onSuccess: () => {
+                    alert('Actualizado correctamente');
+                },
+                onError: (errors) => handleErrors(errors),
+            });
+        } else {
+            post(urlRoute, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    alert('Guardado correctamente');
+                },
+                onError: (errors) => handleErrors(errors),
+            });
+        }
     };
 
     const handleNumberChangeInput = (e: ChangeEvent<HTMLInputElement>, key: keyof ProductForm) => {
