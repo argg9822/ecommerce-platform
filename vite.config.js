@@ -13,14 +13,15 @@ export default defineConfig({
     ],
     css: {
         preprocessorOptions: {
-          scss: {
-            additionalData: '@use "@sass/abstracts" as a;',
-          },
+            scss: {
+                additionalData: '@use "@sass/abstracts" as a;',
+            },
         },
-      },
-      resolve: {
+    },
+    resolve: {
         alias: {
-          '@sass': path.resolve(__dirname, 'resources/sass'),
+            '@': path.resolve(__dirname, './resources/js'),
+            '@sass': path.resolve(__dirname, 'resources/sass'),
         },
-      },
+    },
 });

@@ -18,7 +18,7 @@ use App\Http\Controllers\Api\V1\OrderPaymentController;
 Route::middleware([
     'api',
     IdentifyTenant::class,
-    InitializeTenancyByDomain::class,
+    //InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->prefix('v1')->group(function () {
     //Login and register
@@ -33,7 +33,7 @@ Route::middleware([
     //Productos
     Route::apiResource('products', ProductController::class)
         ->only(['index', 'show']);
-
+        
     //Categorias
     Route::apiResource('categories', CategoryController::class)
         ->only(['index', 'show']);
@@ -52,3 +52,4 @@ Route::middleware([
             ->except(['create', 'edit', 'update', 'destroy']);
     });
 });
+

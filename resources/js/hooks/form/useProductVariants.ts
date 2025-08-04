@@ -1,5 +1,5 @@
 import { useProductFormContext } from "@/context/product-form.context";
-import { ProductVariantsType, ProductDimensions, VariantAttributes } from '@/types/product';
+import { ProductVariantsType, ProductDimensions } from '@/types/product';
 import { useState } from "react";
 
 export default function useProductVariants(){
@@ -54,6 +54,7 @@ export default function useProductVariants(){
 
     const addFeatureVariant = (variantIndex: number) => {
         const updatedVariants = [...data.variants];
+        console.log('updatedVariants', updatedVariants[variantIndex].variant_attributes);
         const newAttributes = [...updatedVariants[variantIndex].variant_attributes.custom];
         newAttributes.push({name: '', value: ''});
         updatedVariants[variantIndex].variant_attributes.custom = newAttributes;
@@ -78,8 +79,15 @@ export default function useProductVariants(){
         field: string,
         value: string | boolean | string[] | { value: string; label?: string; color?: string; selected: boolean }[]
     ) => {
+        const priceFields = ['price', 'compare_price', 'currency_price', 'stock'];
         const updatedVariants = [...data.variants];
-        (updatedVariants[index] as any)[field] = value;
+
+        if (priceFields.includes(field)) {
+            (updatedVariants[index] as any)[field] = value;
+        }else{
+            (updatedVariants[index].variant_attributes as any)[field] = value;
+        }
+        
         setData('variants', updatedVariants);
         handleStockVariant(updatedVariants);
     }
@@ -102,7 +110,7 @@ export default function useProductVariants(){
         const newVariants = [...data.variants];
         const currentAttributes = [...newVariants[variantIndex].variant_attributes.colors];
 
-        if (index >= currentAttributes.length - 1) {
+        if (index >= currentAttributes.length) {
             currentAttributes[index] = {value: color as string, selected: true};
         }else{
             currentAttributes[index].selected = color as boolean;

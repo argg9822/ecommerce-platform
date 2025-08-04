@@ -87,7 +87,7 @@ export default function StoreFront({ unavailableRelevances } : StoreFrontProps) 
                                 >
                                     <div className="flex flex-row space-x-1">
                                         {[...Array(5)].map((_, index) => (
-                                            <ToggleGroupItem value={(index + 1).toString()} key={index} disabled={unavailableRelevances.includes(index + 1)}>
+                                            <ToggleGroupItem value={(index + 1).toString()} key={index} disabled={unavailableRelevances.includes(index + 1) && data.relevance !== index + 1}>
                                                 {index + 1}
                                             </ToggleGroupItem>
                                         ))}
