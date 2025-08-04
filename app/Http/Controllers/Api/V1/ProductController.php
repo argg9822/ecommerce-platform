@@ -81,7 +81,7 @@ class ProductController extends Controller
             'variants' => function($query){
                 $query->select('id', 'product_id', 'price', 'compare_price', 'stock', 'shipment','is_available')
                     ->where('is_available', true)
-                    ->orderBy('price', 'asc')
+                    ->orderBy('id', 'asc')
                     ->with(['variantAttributes:id,product_variant_id,name,value']);
             }, 
             'images',

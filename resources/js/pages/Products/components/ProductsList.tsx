@@ -88,11 +88,13 @@ export default function ProductsList({ products, onEdit, onDelete, onView }: Pro
                   </HoverCard>
 
                   <div className="flex flex-wrap gap-1 my-4">
-                    {product.variants[0]?.variant_attributes.map((attr) => (
-                      <Badge key={attr.id}>
-                        {attr.name}: {attr.value}
-                      </Badge>
-                    ))}
+                    {product.variants?.map(variant =>
+                      variant.variant_attributes.map((attr) => (
+                        <Badge key={attr.id}>
+                          {attr.name}: {attr.value}
+                        </Badge>
+                      ))
+                    )}
                   </div>
                 </div>
               </div>

@@ -22,8 +22,13 @@ import InputError from '@/components/InputError';
 import { Input } from "@/components/ui/input";
 import { CircleHelp } from 'lucide-react';
 import { Textarea } from "@/components/ui/textarea";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-export default function StoreFront() {
+type StoreFrontProps = {
+    unavailableRelevances: number[];
+};
+
+export default function StoreFront({ unavailableRelevances } : StoreFrontProps) {
     const {
         data,
         setData,
@@ -69,14 +74,25 @@ export default function StoreFront() {
                                         </Tooltip>
                                     </TooltipProvider>
                                 </div>
-                                <Input
-                                    id="relevance" 
-                                    type="number"
-                                    placeholder="Relevancia"
-                                    max={5}
-                                    value={data.is_feature ? data.relevance : 0} 
-                                    onChange={(e) => setData('relevance', parseInt(e.target.value))} 
-                                />
+                                
+                                <ToggleGroup
+                                    type="single"
+                                    value={data.relevance ? data.relevance.toString() : undefined}
+                                    onValueChange={(value) => {
+                                        const newRelevance = Number(value);
+                                        if (newRelevance >= 1 && newRelevance <= 5) {
+                                            setData('relevance', newRelevance);
+                                        }
+                                    }}
+                                >
+                                    <div className="flex flex-row space-x-1">
+                                        {[...Array(5)].map((_, index) => (
+                                            <ToggleGroupItem value={(index + 1).toString()} key={index} disabled={unavailableRelevances.includes(index + 1) && data.relevance !== index + 1}>
+                                                {index + 1}
+                                            </ToggleGroupItem>
+                                        ))}
+                                    </div>
+                                </ToggleGroup>
                                 <InputError message={errors.relevance} />
                             </div>
                         )}  

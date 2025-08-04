@@ -35,9 +35,10 @@ class IdentifyTenant
             return response()->json(["error" => "Token inválido"], 403);
         }
 
-        //$domain = $request->getHost();
+        $domain = $request->getHost();
+        Log::info($domain);
 
-        // app()->instance('currentTenant', $tenant);
+        app()->instance('currentTenant', $domain);
 
         return $next($request);
     }

@@ -1,11 +1,13 @@
 import { LabelHTMLAttributes } from 'react';
+import RequiredMark from '@/components/ui/required-mark';
 
 export default function InputLabel({
     value,
     className = '',
     children,
+    inputRequired,
     ...props
-}: LabelHTMLAttributes<HTMLLabelElement> & { value?: string }) {
+}: LabelHTMLAttributes<HTMLLabelElement> & { value?: string, inputRequired?: boolean }) {
     return (
         <label
             {...props}
@@ -15,6 +17,7 @@ export default function InputLabel({
             }
         >
             {value ? value : children}
+            {inputRequired && <RequiredMark />}
         </label>
     );
 }

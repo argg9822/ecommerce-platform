@@ -4,13 +4,15 @@ import { ProductImage, ProductVariantsType, ProductFeatures } from '@/types/prod
 export type ProductFormContextType = ReturnType<typeof useProductForm>;
 
 export interface ProductForm {
+    id?: number;
     name: string;
     description: string;
     price: number | undefined;
     compare_price: number | undefined;
     profit: number | undefined;
+    discount: number | undefined;
     cost: number | undefined;
-    stock: number;
+    stock: number | undefined;
     sku: string;
     barcode: string;
     is_feature: boolean;
@@ -23,6 +25,7 @@ export interface ProductForm {
     brand_id: number | undefined;
     categories: number[];
     images: ProductImage[];
+    current_images: number[];
     shipment: number | undefined;
     currency: string;
     disponibility_text: string;

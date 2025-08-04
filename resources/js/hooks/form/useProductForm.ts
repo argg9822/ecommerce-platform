@@ -1,21 +1,13 @@
 import { useForm } from '@inertiajs/react';
-import { ChangeEvent, FormEventHandler, useRef } from 'react';
+import { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
 import { ProductForm } from '@/types/product-form.type';
-import { ColorOptionsType, ProductVariantsType } from '@/types/product';
+import { ProductVariantsType } from '@/types/product';
 
 type ProductFormData = ProductForm & Record<string, any>;
 
-const BASE_COLOR_OPTIONS: ColorOptionsType[] = [
-    { value: "red", label: "Rojo", color: "text-red-600", selected: false },
-    { value: "silver", label: "Plateado", color: "text-gray-500", selected: false },
-    { value: "blue", label: "Azul", color: "text-blue-500", selected: false },
-    { value: "green", label: "Verde", color: "text-green-600", selected: false },
-    { value: "yellow", label: "Amarillo", color: "text-yellow-400", selected: false },
-    { value: "purple", label: "Morado", color: "text-purple-400", selected: false },
-    { value: "pink", label: "Rosado", color: "text-pink-400", selected: false },
-];
-
 export default function useProductForm( product? : ProductForm ) {    
+    //console.log('product', product);
+    const [submitConfirm, setSubmitConfirm] = useState<boolean>(false);
     
     const refs: Record<string, React.RefObject<HTMLInputElement> | undefined> = {
         name: useRef<HTMLInputElement>(null),
@@ -30,35 +22,94 @@ export default function useProductForm( product? : ProductForm ) {
         sku: useRef<HTMLInputElement>(null),
         barcode: useRef<HTMLInputElement>(null),
     };
+
+    const initDimensions = {
+        length: { value: 0, unit: 'cm', id: undefined as number | undefined },
+        width: { value: 0, unit: 'cm', id: undefined as number | undefined },
+        height: { value: 0, unit: 'cm', id: undefined as number | undefined },
+        weight: { value: 0, unit: 'kg', id: undefined as number | undefined }
+    };
+
+    const initColors = [
+        { id: undefined as number | undefined, value: "red", label: "Rojo", color: "text-red-600", selected: false },
+        { id: undefined as number | undefined, value: "silver", label: "Plateado", color: "text-gray-500", selected: false },
+        { id: undefined as number | undefined, value: "blue", label: "Azul", color: "text-blue-500", selected: false },
+        { id: undefined as number | undefined, value: "green", label: "Verde", color: "text-green-600", selected: false },
+        { id: undefined as number | undefined, value: "yellow", label: "Amarillo", color: "text-yellow-400", selected: false },
+        { id: undefined as number | undefined, value: "purple", label: "Morado", color: "text-purple-400", selected: false },
+        { id: undefined as number | undefined, value: "pink", label: "Rosado", color: "text-pink-400", selected: false },
+    ]
     
-    const createColorOptions = () => JSON.parse(JSON.stringify(BASE_COLOR_OPTIONS));
     const BASE_NEW_VARIANT: ProductVariantsType = {
         price: undefined,
         currency_price: 'COP',
         compare_price: undefined,
-        stock: 0,
+        stock: undefined,
         shipment: undefined,
-        dimensions: {
-            length: {
-                value: 0,
-                unit: 'cm',
-            },
-            width: {
-                value: 0,
-                unit: 'cm',
-            },
-            height: {
-                value: 0,
-                unit: 'cm',
-            },
-            weight: {
-                value: 0,
-                unit: 'kg',
-            }
+        variant_attributes: {
+            custom: [{name: '', value: ''}],
+            dimensions: initDimensions,
+            colors: initColors,
         },
-        colors: createColorOptions(),
-        variant_attributes: [{name: '', value: ''}],
         is_available: true,
+    }
+
+    const transformVariant = (variantFromDB: any): ProductVariantsType => {
+        const dimensions = structuredClone(initDimensions);
+        const colors = initColors.map(c => ({ ...c, selected: false }));
+        const custom: {id?: number, name: string; value: string }[] = [];
+
+        for (const attr of variantFromDB.variant_attributes || []) {
+            const name = attr.name?.toLowerCase();
+            const value = attr.value;
+            const id = attr.id;
+
+            if (['length', 'width', 'height', 'weight'].includes(name)) {
+                const num = parseFloat(value);
+                if (!isNaN(num)) {
+                    dimensions[name as keyof typeof dimensions].value = num;
+                    dimensions[name as keyof typeof dimensions].id = id;
+                }
+            } else if (name === 'color') {
+                for (const color of colors) {
+                    if (value.toLowerCase().includes(color.value.toLowerCase())) {
+                        color.selected = true;
+                        color.id = id;
+                    }
+                }
+            } else {
+                custom.push({id: attr.id, name: attr.name, value });
+            }
+        }
+
+        return {
+            id: variantFromDB.id,
+            ...BASE_NEW_VARIANT,
+            price: variantFromDB.price ?? undefined,
+            compare_price: variantFromDB.compare_price ?? undefined,
+            stock: variantFromDB.stock ?? undefined,
+            shipment: variantFromDB.shipment ?? undefined,
+            is_available: variantFromDB.is_available ?? true,
+            variant_attributes: {
+                custom: custom.length ? custom : [{ name: '', value: '' }],
+                dimensions,
+                colors,
+            },
+        };
+    };
+
+    const setVariants = () => {
+        if (!product?.variants || product.variants.length === 0) {
+            return [BASE_NEW_VARIANT];
+        }
+
+        return product.variants.map(transformVariant);
+    };
+
+    const discountCalc = (price: number, comparePrice: number) => {
+        if (!price || !comparePrice || comparePrice === 0) return undefined;
+        const discount = 100 - ((price * 100)/comparePrice);
+        return Number(discount.toFixed(2));
     }
 
     const {
@@ -66,6 +117,7 @@ export default function useProductForm( product? : ProductForm ) {
         setData,
         errors,
         post,
+        put,
         reset,
         processing,
         recentlySuccessful,
@@ -75,14 +127,14 @@ export default function useProductForm( product? : ProductForm ) {
         price: product?.price || undefined,
         compare_price: product?.compare_price || undefined,
         cost: product?.cost || undefined,
-        stock: product?.stock || 0,
+        stock: product?.stock || undefined,
         sku: product?.sku || '',
         barcode: product?.barcode || '',
         is_feature: product?.is_feature || false,
         is_available: product?.is_available || true,
-        relevance: product?.relevance || 0,
-        brand_id: product?.brand_id || 1,
-        shipment: product?.shipment || undefined,
+        relevance: typeof product?.relevance === 'number' ? product.relevance : 0,
+        brand_id: typeof product?.brand_id === 'number' ? product.brand_id : 1,
+        shipment: typeof product?.shipment === 'number' ? product.shipment : undefined,
         meta_title: product?.meta_title || '',
         meta_description: product?.meta_description || '',
         key_words: product?.key_words || '',
@@ -91,60 +143,79 @@ export default function useProductForm( product? : ProductForm ) {
         warranty_policy: product?.warranty_policy || '',
         disponibility_text: product?.disponibility_text || '',
 
-        categories: [],
-        profit: undefined,
-        variants: [BASE_NEW_VARIANT],
-        images: [],
+        categories: Array.isArray(product?.categories) ? product.categories : [],
+        profit: (product?.price ?? 0) - (product?.cost ?? 0),
+        discount: discountCalc((product?.price ?? 0), (product?.compare_price ?? 0)),
+        variants: setVariants(),
+        new_images: [] as File[],
+        images: product?.images ?? [],
+        current_images: product?.images.map(image => image.id) ?? [],
+        drop_images: [],
         currency: 'COP',
     });
 
+    const handleErrors = (errors: Record<string, any>) => {
+        const fieldNames = [
+            'name',
+            'brand_id',
+            'description',
+            'categories',
+            'is_available',
+            'price',
+            'compare_price',
+            'cost',
+            'shipment',
+            'stock',
+            'sku',
+            'barcode',
+            'is_feature',
+            'relevance',
+            'warranty_policy',
+            'condition',        
+            'show_condition',
+            'disponibility_text',
+            'meta_title',
+            'key_words',
+            'meta_description',
+        ];
+
+        const firstError = fieldNames.find(field => errors[field]);
+        if (firstError) {
+            refs[firstError]?.current?.focus();
+        }
+    };
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+        const isEdit = !!product?.id;
+        const urlRoute = isEdit ? route('products_update', { id: product.id }) : route('products_store');
 
-        post(route('products_store'), {
-            preserveScroll: false,
-            onSuccess: () => {
-                alert('Guardado')
-                // reset()
-            },
-            onError: (errors) => {
-                const fieldNames = [
-                    'name',
-                    'brand_id',
-                    'description',
-                    'categories',
-                    'is_available',
-                    'price',
-                    'compare_price',
-                    'cost',
-                    'shipment',
-                    'stock',
-                    'sku',
-                    'barcode',
-                    'is_feature',
-                    'relevance',
-                    'warranty_policy',
-                    'condition',        
-                    'show_condition',
-                    'disponibility_text',
-                    'meta_title',
-                    'key_words',
-                    'meta_description',
-                ];
-
-                const firstError = fieldNames.find(field => errors[field]);
-
-                if (firstError) {
-                    refs[firstError]?.current?.focus();
-                }
-            },
-        });
+        console.log('data', data);
+        
+        if (isEdit) {
+            post(urlRoute, {
+                preserveScroll: true,
+                forceFormData: true,
+                onSuccess: () => {
+                    alert('Actualizado correctamente');
+                },
+                onError: (errors) => handleErrors(errors),
+            });
+        } else {
+            post(urlRoute, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    alert('Guardado correctamente');
+                },
+                onError: (errors) => handleErrors(errors),
+            });
+        }
     };
 
     const handleNumberChangeInput = (e: ChangeEvent<HTMLInputElement>, key: keyof ProductForm) => {
         const number = e.target.value;
         const parsed = e.target.step === '0.01' ? parseFloat(number) : parseInt(number);
-        setData(key, isNaN(parsed) ? 0 : parsed);
+        setData(key, isNaN(parsed) ? undefined : parsed);
     }
 
     const handleNumberChangeSelect = (value: string, key: keyof ProductForm) => {
@@ -160,18 +231,42 @@ export default function useProductForm( product? : ProductForm ) {
         setData('profit', profit);
     }
 
+    const handleDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
+        handleNumberChangeInput(e, 'discount');
+
+        const price = parseFloat(data.price?.toString() || '0');
+        const discount = parseFloat(e.target.value);
+
+        if (!Number.isFinite(price) || !Number.isFinite(discount)) return;
+
+        const discountedPrice = price * (1 - discount / 100);
+        const comparePrice = 2 * price - discountedPrice;
+
+        setData('compare_price', comparePrice);
+    };
+
+    const handleComparePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
+        handleNumberChangeInput(e, 'compare_price');
+        const discountedPrice = parseFloat(e.target.value);
+        const price = parseFloat(data.price?.toString() || '0');
+        const discount = 100 - ((price * 100) / discountedPrice);
+        setData('discount', isNaN(discount) ? 0 : parseFloat(discount.toFixed(3)));
+    }
+
     return {
         data,
         setData,
         errors,
         processing,
         recentlySuccessful,
+        BASE_NEW_VARIANT,
         submit,
         reset,
         handleProfit,
+        handleDiscount,
+        handleComparePrice,
         handleNumberChangeInput,
         handleNumberChangeSelect,
-        createColorOptions,
         refs
     }
 }
