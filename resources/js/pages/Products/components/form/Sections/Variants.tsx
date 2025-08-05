@@ -154,7 +154,7 @@ export default function Variants() {
                                         </Button>
                                     </div>
                                     <div className="flex flex-row gap-3 bg-gray-950/50 rounded-lg items-center justify-center p-1">
-                                        {variant.colors.map((item, index) => (
+                                        {data.variants[variant_index].variant_attributes.colors.map((item, index) => (
                                             item.value.startsWith("#") ? (
                                                 <div className="variant__color-picker relative flex items-center gap-2" key={index}>
                                                     <ColorPicker
@@ -201,68 +201,79 @@ export default function Variants() {
                                     <InputLabel value="Dimensiones y peso" />
 
                                     <div className="flex flex-row gap-1 outline-1 outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
-                                        {dimensionsInputs.map((dimension, index) => (
-                                            <InputWithAddons
-                                                key={index}
-                                                value={data.variants[variant_index]?.dimensions[dimension.value as keyof ProductDimensions].value || ""}
-                                                placeholder="0"
-                                                className="pl-[60px]"
-                                                onChange={(e) => handleChangeVariantDimensions(variant_index, dimension.value, String(e), "dimension")}
-                                                inputId={`${dimension.value}-${variant_index + 1}`}
-                                                prefix={dimension.label}
-                                                suffixes={dimension.units}
-                                                sufixValue={data.variants[variant_index]?.dimensions[dimension.value as keyof ProductDimensions].unit || ""}
-                                                onChangeSuffix={(key, value) => handleChangeVariantDimensions(variant_index, dimension.value , value, "unit")}
-                                            />
+                                        {data.variants[variant_index].variant_attributes.dimensions && 
+                                            Object.entries(data.variants[variant_index].variant_attributes.dimensions).map(([key, { value, unit }]) => (
+                                                <InputWithAddons
+                                                    key={key}
+                                                    value={value || ""}
+                                                    placeholder="0"
+                                                    className="pl-[60px]"
+                                                    onChange={(e) => handleChangeVariantDimensions(variant_index, key, String(e), "dimension")}
+                                                    inputId={`${key}-${variant_index + 1}`}
+                                                    prefix={getDimensionsSpanish(key as 'length' | 'width' | 'height' | 'weight')}
+                                                    suffixes={key === 'weight' ? weightUnits : dimensionUnits}
+                                                    sufixValue={unit || ""}
+                                                    onChangeSuffix={(key, value) => handleChangeVariantDimensions(variant_index, unit , value, "unit")}
+                                                />
                                             )
                                         )}
                                     </div>
                                 </div>
-
-                                <div className="col-span-4">
-                                    <InputWithAddons
-                                        value={variant.price || ""}
-                                        label="Precio de esta variante"
-                                        placeholder="0.00"
-                                        type="number"
-                                        className="pl-[60px]"
-                                        onChangeWithEvent={(e) => handleVariantChange(variant_index, 'price', e.target.value)}
-                                        inputId={`price-${variant_index + 1}`}
-                                        prefix="Precio"
-                                        suffixes={["COP", "USD", "EUR"]}
-                                        sufixValue="COP"
-                                        onChangeSuffix={(e) => handleVariantChange(variant_index, 'currency_price', e)}
-                                    />
-                                </div>
-
-                                <div className="col-span-4">
-                                    <InputWithAddons
-                                        value={variant.compare_price || ""}
-                                        placeholder="0.00"
-                                        type="number"
-                                        className="pl-[145px]"
-                                        onChangeWithEvent={(e) => handleVariantChange(variant_index, 'compare_price', e.target.value)}
-                                        inputId={`price-${variant_index + 1}`}
-                                        prefix="Precio comparativo"
-                                        suffixes={["COP", "USD", "EUR"]}
-                                        sufixValue="COP"
-                                        onChangeSuffix={(e) => handleVariantChange(variant_index, 'currency_price', e)}
-                                    />
-                                </div>
-
-                                <div className="col-span-4">
-                                    <div className="flex justify-between">
-                                        <InputLabel htmlFor="stock" value="Stock" />
-                                        <span className="text-gray-500">(Opcional)</span>
+                                {variant_index >= 1 && (
+                                <>
+                                    {/* Precio de la variante */}
+                                    <div className="col-span-4">
+                                        <InputWithAddons
+                                            value={variant.price || ""}
+                                            label="Precio de esta variante"
+                                            placeholder="0.00"
+                                            type="number"
+                                            className="pl-[60px]"
+                                            onChangeWithEvent={(e) => handleVariantChange(variant_index, 'price', e.target.value)}
+                                            inputId={`variant_price_${variant_index}`}
+                                            prefix="Precio"
+                                            suffixes={["COP", "USD", "EUR"]}
+                                            sufixValue="COP"
+                                            onChangeSuffix={(e) => handleVariantChange(variant_index, 'currency_price', e)}
+                                        />
                                     </div>
-                                    <Input 
-                                        id="stock" 
-                                        type="number" 
-                                        value={variant.stock} 
-                                        onChange={(e) => handleVariantChange(variant_index, 'stock', e.target.value)}
-                                    />
-                                    <InputError message={errors.stock} />
-                                </div>
+
+                                    {/* Precio comparativo variante */}
+                                    <div className="col-span-4">
+                                        <InputWithAddons
+                                            value={variant.compare_price || ""}
+                                            placeholder="0.00"
+                                            type="number"
+                                            className="pl-[145px]"
+                                            onChangeWithEvent={(e) => handleVariantChange(variant_index, 'compare_price', e.target.value)}
+                                            inputId={`variant_compare_price_${variant_index}`}
+                                            prefix="Precio comparativo"
+                                            suffixes={["COP", "USD", "EUR"]}
+                                            sufixValue="COP"
+                                            onChangeSuffix={(e) => handleVariantChange(variant_index, 'currency_price', e)}
+                                        />
+                                    </div>
+                                    
+                                    {/* Stock variante */}
+                                    <div className="col-span-4">
+                                        <div className="flex justify-between">
+                                            <InputLabel htmlFor={`variant_stock_${variant_index}`} value="Stock" />
+                                            {stockIncoherent && (
+                                                <InputError message="¡Stock incoherente!" />
+                                            )}
+                                            <span className="text-gray-500">(Opcional)</span>
+                                        </div>
+                                        <Input 
+                                            id={`variant_stock_${variant_index}`}
+                                            type="number" 
+                                            value={variant.stock}
+                                            onChange={(e) => handleVariantChange(variant_index, 'stock', e.target.value)}
+                                            placeholder="0"
+                                        />
+                                        <InputError message={errors.stock} />                                        
+                                    </div>
+                                </>
+                                )}
                             </div>
                             
                             <Separator />
