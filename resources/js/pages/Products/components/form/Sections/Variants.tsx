@@ -176,7 +176,7 @@ export default function Variants() {
                                                     type="single" 
                                                     size="sm"
                                                     value={item.selected ? item.value : ''}
-                                                    onValueChange={(selectedValues: string[]) => {
+                                                    onValueChange={(selectedValues: string) => {
                                                         const isSelected = selectedValues.includes(item.value);
                                                         handleColorsChange(variant_index, index, isSelected);
                                                     }}
