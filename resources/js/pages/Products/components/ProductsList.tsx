@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/hover-card"
 import { Button } from '@/components/ui/button';
 import DangerButton from '@/components/ui/danger-button';
+import useProductForm from '@/hooks/form/useProductForm';
 
 type ProductsProps = {
   products: Product[];
@@ -19,6 +20,7 @@ type ProductsProps = {
 }
 
 export default function ProductsList({ products, onEdit, onDelete, onView }: ProductsProps) {
+  const { transformVariant } = useProductForm();
   
   return (
     <div className=" text-gray-100 min-h-screen p-6">
@@ -88,13 +90,13 @@ export default function ProductsList({ products, onEdit, onDelete, onView }: Pro
                   </HoverCard>
 
                   <div className="flex flex-wrap gap-1 my-4">
-                    {product.variants?.map(variant =>
-                      variant.variant_attributes.map((attr) => (
-                        <Badge key={attr.id}>
-                          {attr.name}: {attr.value}
+                    {product.variants?.map((variant, i) => (
+                      transformVariant(variant).variant_attributes.colors?.filter(color => color.selected).map((color, index) => (
+                        <Badge key={index} className={ `${color.color}` }>
+                          {color.label ?? color.value}
                         </Badge>
                       ))
-                    )}
+                    ))}
                   </div>
                 </div>
               </div>

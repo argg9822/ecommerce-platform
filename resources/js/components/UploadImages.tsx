@@ -125,8 +125,6 @@ export default function UploadImages({
                             </div>
                             <Button
                                 type="button"
-                                variant="ghost"
-                                size="icon"
                                 className="absolute top-1 right-1 h-6 w-6 rounded-full bg-red-500/80 hover:bg-red-500 text-white"
                                 onClick={() => removeExistingImage(img.id)}
                             >
@@ -150,8 +148,6 @@ export default function UploadImages({
                             </div>
                             <Button
                                 type="button"
-                                variant="ghost"
-                                size="icon"
                                 className="absolute top-1 right-1 h-6 w-6 rounded-full bg-red-500/80 hover:bg-red-500 text-white"
                                 onClick={() => removeImage(index)}
                             >

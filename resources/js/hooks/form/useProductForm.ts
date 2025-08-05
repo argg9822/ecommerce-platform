@@ -267,6 +267,7 @@ export default function useProductForm( product? : ProductForm ) {
         handleComparePrice,
         handleNumberChangeInput,
         handleNumberChangeSelect,
+        transformVariant,
         refs
     }
 }

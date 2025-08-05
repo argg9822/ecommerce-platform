@@ -1,7 +1,7 @@
 export interface ProductImage {
-    id: number,
-    url: string,
-    product_id: number,
+    id: number;
+    url: string;
+    product_id: number;
     created_at: string;
     updated_at: string;
 }
@@ -74,7 +74,7 @@ export interface Product {
     is_available: boolean;
     variants: ProductVariantsType[];
     brand: string;
-    images: ProductImage[] | number[];
+    images: ProductImage[];
     category_id: number;
     created_at: string;
     updated_at: string;

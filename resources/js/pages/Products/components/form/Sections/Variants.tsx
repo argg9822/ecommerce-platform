@@ -176,7 +176,7 @@ export default function Variants() {
                                                     type="single" 
                                                     size="sm"
                                                     value={item.selected ? item.value : ''}
-                                                    onValueChange={(selectedValues) => {
+                                                    onValueChange={(selectedValues: string[]) => {
                                                         const isSelected = selectedValues.includes(item.value);
                                                         handleColorsChange(variant_index, index, isSelected);
                                                     }}
@@ -292,8 +292,6 @@ export default function Variants() {
                                             <div className="col-span-1">
                                                 <Button
                                                     type="button"
-                                                    variant="ghost"
-                                                    size="sm"
                                                     onClick={() => removeFeature(index, variant_index)}
                                                     className="text-red-500 hover:text-red-600"
                                                 >

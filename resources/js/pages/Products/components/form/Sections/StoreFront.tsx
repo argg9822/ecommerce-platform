@@ -78,7 +78,7 @@ export default function StoreFront({ unavailableRelevances } : StoreFrontProps) 
                                 <ToggleGroup
                                     type="single"
                                     value={data.relevance ? data.relevance.toString() : undefined}
-                                    onValueChange={(value) => {
+                                    onValueChange={(value: string) => {
                                         const newRelevance = Number(value);
                                         if (newRelevance >= 1 && newRelevance <= 5) {
                                             setData('relevance', newRelevance);

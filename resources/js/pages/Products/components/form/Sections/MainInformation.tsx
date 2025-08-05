@@ -194,7 +194,6 @@ export default function MainInformation({
                         <Popover open={openCategoriesSelect} onOpenChange={setOpenCategoriesSelect}>
                             <PopoverTrigger asChild>
                                 <Button
-                                    variant="outline"
                                     role="combobox"
                                     aria-expanded={openCategoriesSelect}
                                     className={`
