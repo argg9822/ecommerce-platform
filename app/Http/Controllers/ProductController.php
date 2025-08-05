@@ -52,8 +52,6 @@ class ProductController extends Controller
             'relevance'
         )->get();
 
-        Log::info($products);
-
         return Inertia::render('Products/Index', [
             'products' => $products
         ]);
@@ -118,26 +116,26 @@ class ProductController extends Controller
                 ])
             );
 
-            // //Guardar categorías
-            // if ($request->filled('categories')) {
-            //     $product->categories()->sync($request->input('categories'));
-            // }
+            //Guardar categorías
+            if ($request->filled('categories')) {
+                $product->categories()->sync($request->input('categories'));
+            }
 
-            // //Guardar imágenes
-            // $newImages = $request->file('new_images');
+            //Guardar imágenes
+            $newImages = $request->file('new_images');
             
-            // if(is_array($newImages) && count(array_filter($newImages))){
-            //     $this->storeImages($newImages, $product);
-            // }
+            if(is_array($newImages) && count(array_filter($newImages))){
+                $this->storeImages($newImages, $product);
+            }
 
-            // //Guardar variantes
-            // $variants = $request->input('variants');
+            //Guardar variantes
+            $variants = $request->input('variants');
 
-            // if (is_array($variants) && count(array_filter($variants))) {
-            //     $this->saveVariants($variants, $product);
-            // }
+            if (is_array($variants) && count(array_filter($variants))) {
+                $this->saveVariants($variants, $product);
+            }
 
-            // DB::commit();
+            DB::commit();
             return redirect()->back()->with('flash.success', [
                 'title' => 'Éxito',
                 'message' => 'Producto guardado correctamente'

@@ -36,7 +36,7 @@ export interface ProductDimensions {
 
 export interface VariantAttributes {
     custom: {
-        id?: number;
+        id?: number,
         name: string;
         value: string;
     }[];
