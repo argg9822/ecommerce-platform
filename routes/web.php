@@ -23,7 +23,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth', 'web',  'verified'])->group(function () {
+Route::middleware(['auth', 'web', 'verified'])->group(function () {
     Route::resource('tenants', TenantController::class)->names([
         'index' => 'tenantIndex',
         'create' => 'tenantCreate',

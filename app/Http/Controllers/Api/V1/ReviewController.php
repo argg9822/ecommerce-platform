@@ -69,7 +69,7 @@ class ReviewController extends Controller
             ]);
 
             return response()->json([
-                'message' => 'Error creating review: ' . $e->getMessage()
+                'message' => 'Error al guardar el comentario'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

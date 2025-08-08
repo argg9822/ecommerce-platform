@@ -4,7 +4,7 @@ namespace App\Models\Api\V1;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DeliveryAddresses extends Model
+class DeliveryAddress extends Model
 {
     protected $table = 'delivery_addresses';
 
@@ -76,42 +76,52 @@ class DeliveryAddresses extends Model
     {
         return $query->where('state', 'like', '%' . $state . '%');
     }
+
     public function scopeWithCountry($query, $country)
     {
         return $query->where('country', 'like', '%' . $country . '%');
     }
+
     public function scopeWithCreatedAt($query, $createdAt)
     {
         return $query->whereDate('created_at', $createdAt);
     }
+
     public function scopeWithUpdatedAt($query, $updatedAt)
     {
         return $query->whereDate('updated_at', $updatedAt);
     }
+
     public function scopeWithDeletedAt($query, $deletedAt)
     {
         return $query->whereDate('deleted_at', $deletedAt);
     }
+
     public function scopeWithTimestamps($query)
     {
         return $query->select('id', 'user_id', 'recipient_name', 'phone', 'address_line_1', 'city', 'state', 'country', 'is_default', 'created_at', 'updated_at');
     }
+
     public function scopeWithSoftDeletes($query)
     {
         return $query->withTrashed();
     }
+
     public function scopeWithSoftDeleted($query)
     {
         return $query->onlyTrashed();
     }
+
     public function scopeWithSoftRestored($query)
     {
         return $query->withTrashed()->whereNotNull('deleted_at');
     }
+
     public function scopeWithSoftForceDeleted($query)
     {
         return $query->onlyTrashed()->whereNotNull('deleted_at');
     }
+
     public function scopeWithSoftRestore($query)
     {
         return $query->withTrashed()->whereNotNull('deleted_at');

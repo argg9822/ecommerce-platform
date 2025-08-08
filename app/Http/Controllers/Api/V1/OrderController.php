@@ -34,7 +34,6 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
-        Log::info('Creating order', $request->all());
         try {
             DB::beginTransaction();
             $total = collect($request->products)->sum(function ($product) {
@@ -43,12 +42,11 @@ class OrderController extends Controller
 
             $delivery_info = [
                 'address' => $request->delivery_info->address,
-                'province' => $request->delivery_info->province,
                 'apartment' => $request->delivery_info->apartment,
+                'province' => $request->delivery_info->province,
                 'phone' => $request->delivery_info->phone,
                 'postalCode' => $request->delivery_info->postalCode,
-                'deliveryType' => $request->delivery_info->deliveryType,
-                'deliveryNotes' => $request->delivery_info->deliveryNotes,
+                'deliveryType' => $request->delivery_info->deliveryType,                
             ];
 
             $order = Order::create([
@@ -67,7 +65,7 @@ class OrderController extends Controller
                     'product_id' => $item['product_id'],
                     'quantity' => $item['quantity'],
                     'price' => $item['unit_price'],
-                    'product_variant_id' => $item['variant_id'] ?? null,
+                    'variants_product' => $item['variantesProducto'] ?? null,
                 ]);
             }
 
@@ -77,7 +75,11 @@ class OrderController extends Controller
             return response()->json(['message' => 'Orden creada correctamente', 'order' => $order], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => 'Error creando la orden: ' . $e->getMessage()], 500);
+            Log::error('Error al generrar la orden: '. $e->getMessage());
+
+            return response()->json([
+                'message' => 'Error creando la orden, intenta nuevamente'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return response()->json(['message' => 'Orden creada correctamente'], Response::HTTP_CREATED);
