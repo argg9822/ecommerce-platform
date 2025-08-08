@@ -11,6 +11,8 @@ import {
 import { Button } from '@/components/ui/button';
 import DangerButton from '@/components/ui/danger-button';
 import useProductForm from '@/hooks/form/useProductForm';
+import { Input } from '@/components/ui/input';
+import { useState } from 'react';
 
 type ProductsProps = {
   products: Product[];
@@ -21,19 +23,34 @@ type ProductsProps = {
 
 export default function ProductsList({ products, onEdit, onDelete, onView }: ProductsProps) {
   const { transformVariant } = useProductForm();
+  const [filterProduct, setFilterProduct] = useState<string>('');
   
   return (
-    <div className=" text-gray-100 min-h-screen p-6">
+    <div className="text-gray-100 min-h-screen p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-bold">Administrar productos</h1>
+
+          <div className='flex items-center gap-4'>
+            <div>
+              <Input
+                id="name" 
+                type="text" 
+                value={filterProduct}
+                onChange={(e) => setFilterProduct(e.target.value)} 
+                autoComplete='off' 
+                className=''
+              />
+            </div>
+
             <Link href={route('products_create')}>
-                <PrimaryButton className="py-2 rounded-xl shadow-lg flex items-center gap-2">
-                    <PlusCircle size={18} />
-                    Nuevo producto
-                </PrimaryButton>
+              <PrimaryButton className="rounded-xl shadow-lg flex items-center gap-2">
+                <PlusCircle size={18} />
+                Nuevo producto
+              </PrimaryButton>
             </Link>
+          </div>
         </div>
 
         {/* Product Grid */}
