@@ -59,8 +59,10 @@ export default function Index({products}: ProductsProps){
     }
   }, [flash]); 
 
-  const handleEditProduct = (productId: number) => {
-    router.visit(route('products_edit', productId));
+  const handleEditProduct = (productSlug: string) => {
+    console.log('productSlug', productSlug);
+    
+    router.visit(route('products_edit', productSlug));
   }
 
   const handleDeleteProduct = () => {
@@ -86,7 +88,7 @@ export default function Index({products}: ProductsProps){
           <EmptyProducts /> : 
           <ProductsList 
             products={products}
-            onEdit={(productId) => handleEditProduct(productId)}
+            onEdit={(productSlug) => handleEditProduct(productSlug)}
             onDelete={(productId) => {
               setOpenDialogDeleteProduct(true);
               setDeleteProductId(productId);

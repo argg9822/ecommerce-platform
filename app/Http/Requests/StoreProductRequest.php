@@ -29,7 +29,7 @@ class StoreProductRequest extends FormRequest
         return [
             // Campos básicos
             'name' => 'required|string|max:255|unique:products,name',
-            'description' => 'nullable|string|max:1000',
+            'description' => 'nullable|string|max:1800',
             'price' => 'required|numeric|min:0',
             'compare_price' => 'nullable|numeric|min:0',
             'cost' => 'required|numeric|min:0',

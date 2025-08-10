@@ -294,6 +294,7 @@ export default function Variants() {
                                                     type="button"
                                                     onClick={() => removeFeature(index, variant_index)}
                                                     className="text-red-500 hover:text-red-600"
+                                                    title="Eliminar característica"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>

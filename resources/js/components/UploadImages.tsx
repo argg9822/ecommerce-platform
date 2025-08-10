@@ -21,7 +21,6 @@ export default function UploadImages({
     multiple = false,
     maxFiles = 5,
     accept = 'image/*',
-    preview = false,
     className = '',
     maxSizeInMB = 2,
     existingImages = [],
@@ -111,7 +110,7 @@ export default function UploadImages({
                 onChange={handleImageUpload}
             />
 
-            {(preview && (existing.length > 0 || images.length > 0)) && (
+            {((existing.length > 0 || images.length > 0)) && (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 place-content-center">
                     {/* EXISTING IMAGES */}
                     {existing.map((img, index) => (

@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { Calendar, Home, Inbox, Search, Settings, ListOrdered } from "lucide-react";
 import { Link, usePage } from '@inertiajs/react';
 import ApplicationLogo from '@/components/ApplicationLogo';
 import NavLink from "@/components/NavLink";
@@ -19,6 +19,7 @@ const items = [
     {title: "Dashboard", url: route("dashboard"), active: route().current("dashboard"), icon: Home, role: ["admin", "superadmin", "owner"]},
     {title: "Tiendas", url: route("tenantIndex"), active: route().current("tenants"), icon: Inbox, role: ["superadmin"]},
     {title: "Productos", url: route("products_index"), active: route().current("products"), icon: Inbox, role: ["admin", "owner"]},
+    {title: "Órdenes", url: route("orders_index"), active: route().current("orders"), icon: ListOrdered, role: ["admin", "owner"]},
 ]
  
 export function AppSidebar() {
@@ -46,10 +47,7 @@ export function AppSidebar() {
                 item.role?.includes(user.role) && (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
-                      <NavLink
-                        href={item.url}
-                        active={item.active}
-                        >
+                      <NavLink href={item.url} active={item.active}>
                           <item.icon />
                           <span>{item.title}</span>
                       </NavLink>

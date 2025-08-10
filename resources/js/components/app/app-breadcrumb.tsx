@@ -16,11 +16,12 @@ interface BreadcrumbItem {
 export default function AppBreadcrumb (){
   const pathNamesMap: Record<string, BreadcrumbItem> = {
     'tenants': {path: 'Tiendas', route:'tenantIndex'},
-    'products': {path: 'Productos', route:'products_index'},
+    'productos': {path: 'Productos', route:'products_index'},
     'dashboard': {path: 'Inicio', route: 'dashboard'},
     'create': {path: 'Nuevo', route: 'products_create'},
     'profile': {path: 'Perfil', route: 'profile.edit'},
-    'edit' : {path: 'Editar', route: 'products_edit'}
+    'edit' : {path: 'Editar', route: 'products_edit'},
+    'orders' : {path: 'Órdenes', route: 'orders_index'}
   }
 
   const [breadrumbs, setBreadrumbs] = useState<string[]>([]);

@@ -22,7 +22,6 @@ export default function Images(){
             <CardContent className='space-y-4'>
                 <UploadImages
                     multiple
-                    preview
                     maxFiles={5}
                     existingImages={data.images}
                     onFilesSelected={(files) => setData('new_images', files)}

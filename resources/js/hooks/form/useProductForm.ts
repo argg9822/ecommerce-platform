@@ -248,6 +248,7 @@ export default function useProductForm( product? : ProductForm ) {
     const handleComparePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
         handleNumberChangeInput(e, 'compare_price');
         const discountedPrice = parseFloat(e.target.value);
+        if(discountedPrice === 0) return;
         const price = parseFloat(data.price?.toString() || '0');
         const discount = 100 - ((price * 100) / discountedPrice);
         setData('discount', isNaN(discount) ? 0 : parseFloat(discount.toFixed(3)));

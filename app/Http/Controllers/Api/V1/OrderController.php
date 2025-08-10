@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -36,26 +37,27 @@ class OrderController extends Controller
     {
         try {
             DB::beginTransaction();
+            Log::info($request);
             $total = collect($request->products)->sum(function ($product) {
                 return $product['unit_price'] * $product['quantity'];
             });
 
             $delivery_info = [
-                'address' => $request->delivery_info->address,
-                'apartment' => $request->delivery_info->apartment,
-                'province' => $request->delivery_info->province,
-                'phone' => $request->delivery_info->phone,
-                'postalCode' => $request->delivery_info->postalCode,
-                'deliveryType' => $request->delivery_info->deliveryType,                
+                'address' => $request->delivery_info['address'],
+                'apartment' => $request->delivery_info['apartment'],
+                'province' => $request->delivery_info['province'],
+                'phone' => $request->delivery_info['phone'],
+                'postalCode' => $request->delivery_info['postalCode'],
+                'deliveryType' => $request->delivery_info['deliveryType'],
             ];
 
             $order = Order::create([
                 'preference_id' => $request->preference_id,
                 'total' => $total,
                 'status' => $request->status,
-                'notes' => $request->delivery_info->deliveryNotes,
+                'notes' => $request->delivery_info['deliveryNotes'],
                 'user_id' => Auth::id(),
-                'shipping_city' => $request->delivery_info->city,
+                'shipping_city' => $request->delivery_info['city'],
                 'delivery_info' => json_encode($delivery_info),
             ]);
 
@@ -64,7 +66,7 @@ class OrderController extends Controller
                 $order->items()->create([
                     'product_id' => $item['product_id'],
                     'quantity' => $item['quantity'],
-                    'price' => $item['unit_price'],
+                    'unit_price' => $item['unit_price'],
                     'variants_product' => $item['variantesProducto'] ?? null,
                 ]);
             }

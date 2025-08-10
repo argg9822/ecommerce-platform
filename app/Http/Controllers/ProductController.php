@@ -42,6 +42,7 @@ class ProductController extends Controller
             'images:id,product_id,url'
         ])->select(
             'id',
+            'slug',
             'name',
             'description',
             'price',
@@ -85,16 +86,17 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request)    
+    public function store(StoreProductRequest $request)
     {
         try {
             DB::beginTransaction();
             $product = Product::create($request->safe()
                 ->merge(
-                    ['slug' => Str::slug($request->name)]
+                    ['slug' => Str::slug($request->input('name'))]
                 )->only([
                     'name',
                     'description',
+                    'slug',
                     'price',
                     'compare_price',
                     'cost',
@@ -259,40 +261,49 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($productId)
+    public function edit($productSlug)
     {
-        $product = Product::with([
-            'brand:id,name',
-            'variants' => function($query){
-                $query->select('id', 'product_id', 'price', 'compare_price', 'stock', 'shipment','is_available')
-                    ->orderBy('id', 'asc')
-                    ->with(['variantAttributes:id,product_variant_id,name,value']);
-                },
-            'images:id,product_id,url',
-        ])->findOrFail($productId);
+        try{
+            $product = Product::with([
+                'brand:id,name',
+                'variants' => function($query){
+                    $query->select('id', 'product_id', 'price', 'compare_price', 'stock', 'shipment','is_available')
+                        ->orderBy('id', 'asc')
+                        ->with(['variantAttributes:id,product_variant_id,name,value']);
+                    },
+                'images:id,product_id,url',
+            ])->where('slug', $productSlug)->firstOrFail();
 
-        $product->categories = $product->categories()->pluck('categories.id');
+            $product->categories = $product->categories()->pluck('categories.id');
 
-        $unavailableRelevances = Product::select('relevance')
-            ->whereNotNull('relevance')
-            ->whereBetween('relevance', [1, 5])
-            ->distinct()
-            ->pluck('relevance')
-            ->toArray();
+            $unavailableRelevances = Product::select('relevance')
+                ->whereNotNull('relevance')
+                ->whereBetween('relevance', [1, 5])
+                ->distinct()
+                ->pluck('relevance')
+                ->toArray();
 
-        $categories = Category::with(['parent' => function ($query) {
-            $query->select('id', 'name');
-        }])->select('id', 'name', 'description', 'image', 'parent_id')->get();
+            $categories = Category::with(['parent' => function ($query) {
+                $query->select('id', 'name');
+            }])->select('id', 'name', 'description', 'image', 'parent_id')->get();
 
-        $brands = Brand::select('id', 'name')->get();
+            $brands = Brand::select('id', 'name')->get();
 
-        return Inertia::render('Products/ProductEditor', [
-            'product' => $product,
-            'categories' => $categories,
-            'brands' => $brands,
-            'mode' => 'edit',
-            'unavailableRelevances' => $unavailableRelevances
-        ]);
+            return Inertia::render('Products/ProductEditor', [
+                'product' => $product,
+                'categories' => $categories,
+                'brands' => $brands,
+                'mode' => 'edit',
+                'unavailableRelevances' => $unavailableRelevances
+            ]);
+        }catch(\Exception $e){
+            Log::error('No se pudo cargar el producto para editar: '. $e->getMessage());
+            return redirect()->back()->with('flash.error', [
+                'title' => 'Error', 
+                'message' => 'No se pudo iniciar la transacción para actualizar el producto.'
+            ]);
+        }
+        
     }
 
     /**
@@ -302,13 +313,13 @@ class ProductController extends Controller
     {
         try {
             DB::beginTransaction();
-
             $product = Product::findOrFail($productId);
             $product->update($request->safe()
                 ->merge(
-                    ['slug' => Str::slug($request->name)]
+                    ['slug' => Str::slug($request->input('name'))]
                 )->only([
                     'name',
+                    'slug',
                     'description',
                     'price',
                     'compare_price',
@@ -354,10 +365,8 @@ class ProductController extends Controller
             $this->saveVariants($request->input('variants'), $product);
 
             DB::commit();
-            return redirect()->back()->with('flash.success', [
-                'title' => 'Éxito',
-                'message' => 'Producto actualizado correctamente'
-            ]);
+            return redirect()->route('products_edit', $product->slug)
+                ->with('success', 'Producto actualizado correctamente.');
         } catch (\Throwable $th) {
             DB::rollBack();
             Log::error('Error al iniciar la transacción: ' . $th->getMessage());

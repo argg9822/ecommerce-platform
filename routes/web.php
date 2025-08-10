@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
@@ -36,7 +37,7 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
     Route::middleware(TenantSessionMiddleware::class)->group(function () {
-        Route::resource('products', ProductController::class)->names([
+        Route::resource('productos', ProductController::class)->names([
             'index' => 'products_index',
             'edit' => 'products_edit',
             'create' => 'products_create',
@@ -45,7 +46,7 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
             'show' => 'products_show',
         ])->except('udpate');
 
-        Route::post('products/update/{id}', [ProductController::class, 'update'])->name('products_update');
+        Route::post('productos/update/{id}', [ProductController::class, 'update'])->name('products_update');
 
         Route::resource('categories', CategoryController::class)->names([
             'create' => 'categories_create',
@@ -57,6 +58,10 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
             'store' => 'brands_store'
         ]);
 
+        Route::resource('orders', OrderController::class)->names([
+            'index' => 'orders_index'
+        ]);
+        
         //Proxy files tenants admin
         Route::get('media/images/{path}/{tenantId}', function($path, $tenantId){
             $filePath = "$tenantId/images/$path";
@@ -65,12 +70,12 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
                 Log::error('Archivo no encontrado:', ['ruta' => $filePath]);
                 abort(404);
             }
-
+            
             return response()->file(Storage::disk('tenant')->path($filePath));
         })->where('path', '.*')->name('tenant_media_admin');
 
         //Proxy files tenants owners
-        Route::get('/images/{path}', function ($path) {
+        Route::get('tenants/images/{path}', function ($path) {
             $tenant = tenant();
 
             if (!$tenant) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Api\V1;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -10,6 +10,10 @@ class Order extends Model
     public $incrementing = false;
     protected $keyType = 'string';
     
+    protected $casts = [
+        'delivery_info' => 'array',
+    ];
+    
     protected $fillable = [
         'id',
         'preference_id',
@@ -18,10 +22,8 @@ class Order extends Model
         'status',
         'total',
         'notes',
-        'shipping_city',
         'shipping_address',
         'payment_id',
-        'delivery_info',
     ];
 
     public function items()
@@ -32,6 +34,11 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function statusHistory()
+    {
+        return $this->hasMany(OrderStatusHistory::class);
     }
 
     protected static function boot()
