@@ -37,68 +37,54 @@ class OrderController extends Controller
     {
         try {
             DB::beginTransaction();
-            
-            // Log completo de la solicitud
-            Log::info('Solicitud de creación de orden recibida:', $request->all());
-
-            // Calcular el total
+            Log::info($request);
             $total = collect($request->products)->sum(function ($product) {
                 return $product['unit_price'] * $product['quantity'];
             });
 
-            // Preparar información de entrega
             $delivery_info = [
-                'address' => $request->delivery_info['address'] ?? null,
-                'department' => $request->delivery_info['department'] ?? null,
-                'city' => $request->delivery_info['city'] ?? null,
-                'province' => $request->delivery_info['province'] ?? null,
-                'postalCode' => $request->delivery_info['postalCode'] ?? null,
-                'phone' => $request->delivery_info['phone'] ?? null,
-                'deliveryType' => $request->delivery_info['deliveryType'] ?? 'casa',
-                'deliveryNotes' => $request->delivery_info['deliveryNotes'] ?? null,
+                'address' => $request->delivery_info['address'],
+                'apartment' => $request->delivery_info['apartment'],
+                'province' => $request->delivery_info['province'],
+                'phone' => $request->delivery_info['phone'],
+                'postalCode' => $request->delivery_info['postalCode'],
+                'deliveryType' => $request->delivery_info['deliveryType'],
             ];
 
-            // Crear la orden
             $order = Order::create([
                 'preference_id' => $request->preference_id,
                 'total' => $total,
-                'status' => $request->status ?? 'pending',
-                'notes' => $request->delivery_info['deliveryNotes'] ?? null,
+                'status' => $request->status,
+                'notes' => $request->delivery_info['deliveryNotes'],
                 'user_id' => Auth::id(),
-                'shipping_city' => $request->delivery_info['city'] ?? null,
+                'shipping_city' => $request->delivery_info['city'],
                 'delivery_info' => json_encode($delivery_info),
             ]);
 
-            // Guardar los items de la orden
+            //Guardar los items de la orden
             foreach ($request->input('products', []) as $item) {
                 $order->items()->create([
                     'product_id' => $item['product_id'],
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['unit_price'],
                     'variants_product' => $item['variantesProducto'] ?? null,
-                    'variant_id' => $item['variante_id'] ?? null,
                 ]);
             }
 
+            $order->load(['items', 'user']);
+
             DB::commit();
-            
-            Log::info('Orden creada exitosamente:', $order->toArray());
-            
-            return response()->json([
-                'message' => 'Orden creada correctamente', 
-                'order' => $order->load(['items', 'user'])
-            ], Response::HTTP_CREATED);
-            
+            return response()->json(['message' => 'Orden creada correctamente', 'order' => $order], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error al generar la orden: '. $e->getMessage());
-            Log::error('Trace completo:', ['trace' => $e->getTraceAsString()]);
+            Log::error('Error al generrar la orden: '. $e->getMessage());
 
             return response()->json([
-                'message' => 'Error creando la orden',
-                'error' => $e->getMessage()
+                'message' => 'Error creando la orden, intenta nuevamente'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+        return response()->json(['message' => 'Orden creada correctamente'], Response::HTTP_CREATED);
     }
 
     /**
