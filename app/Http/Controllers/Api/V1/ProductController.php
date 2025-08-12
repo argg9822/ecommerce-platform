@@ -22,9 +22,10 @@ class ProductController extends Controller
             'images:id,product_id,url',
             'categories:id,name,slug,description,image,parent_id',
         ])->select(
-            'id', 
+            'id',
+            'slug',
             'name', 
-            'description', 
+            'description',
             'price', 
             'compare_price', 
             'stock', 
@@ -89,7 +90,8 @@ class ProductController extends Controller
             'categories:id,name,slug,description,image,parent_id'
         ])->select(
             'id', 
-            'name', 
+            'name',
+            'slug',
             'description', 
             'price', 
             'compare_price', 
@@ -125,7 +127,7 @@ class ProductController extends Controller
                     ->with(['variantAttributes:id,product_variant_id,name,value']);
             },
             'images'
-        ])->select('id', 'name', 'description', 'price', 'compare_price', 'stock', 'is_available', 'is_feature', 'brand_id', 'relevance');
+        ])->select('id', 'name', 'slug', 'description', 'price', 'compare_price', 'stock', 'is_available', 'is_feature', 'brand_id', 'relevance');
 
         if (!empty($request->product_name)) {
             $productQuery->where('name', 'like', '%' . $request->product_name . '%');

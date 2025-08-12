@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
+use App\Http\Resources\V1\OrderResource;
 use App\Models\Api\V1\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +20,12 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        $userAuthId = Auth::id();
+        $orders = Order::with(['items' => function($query){
+            $query->with('product:id,name,description,price,compare_price,is_available,slug');
+        }])->where('user_id', $userAuthId)->get();
+
+        return OrderResource::collection($orders);
     }
 
     /**
@@ -37,7 +43,7 @@ class OrderController extends Controller
     {
         try {
             DB::beginTransaction();
-            Log::info($request);
+
             $total = collect($request->products)->sum(function ($product) {
                 return $product['unit_price'] * $product['quantity'];
             });
