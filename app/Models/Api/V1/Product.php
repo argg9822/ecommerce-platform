@@ -8,6 +8,11 @@ class Product extends Model
 {
     protected $appends = ['average_rating', 'count_reviews'];
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function getAverageRatingAttribute(): float
     {
         return round($this->reviews()->avg('rating') ?? 0, 1);

@@ -34,6 +34,11 @@ class Product extends Model
         'disponibility_text',
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function brand()
     {
         return $this->belongsTo(Brand::class);
@@ -52,10 +57,5 @@ class Product extends Model
     public function images()
     {
         return $this->hasMany(ProductImage::class);
-    }
-    
-    public function getRouteKeyName()
-    {
-        return 'slug';
     }
 }
