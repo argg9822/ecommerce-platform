@@ -47,6 +47,10 @@ class ProductController extends Controller
             $productQuery->where('relevance', $request->relevance);
         }
 
+        if (!empty($request->slug)) {
+            $productQuery->where('slug', $request->slug);
+        }
+
         $products = $productQuery->latest()->paginate(10);
 
         if($products->isEmpty()){
