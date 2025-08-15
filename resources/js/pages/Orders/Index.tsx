@@ -68,7 +68,7 @@ export default function ({ orders }: OrderProps) {
     } = useOrders(orders);
 
     const [openOrderDetail, setOpenOrderDetail] = useState<boolean>(false);
-    const [orderViewDetail, setOrderViewDetail] = useState<Order>(orders[0]);
+    const [orderViewDetail, setOrderViewDetail] = useState<Order>(orders[0] ?? []);
 
     return (
         <AuthenticatedLayout>
@@ -233,7 +233,9 @@ export default function ({ orders }: OrderProps) {
                 </div>
             </div>
 
-            <OrderDetail onChangeStatus={onChangeStatus} setIsOpen={setOpenOrderDetail} order={orderViewDetail} isOpen={openOrderDetail}/>
+            {filteredOrders.length > 0 && (
+                <OrderDetail onChangeStatus={onChangeStatus} setIsOpen={setOpenOrderDetail} order={orderViewDetail} isOpen={openOrderDetail}/>
+            )}
          
         </AuthenticatedLayout>
     )

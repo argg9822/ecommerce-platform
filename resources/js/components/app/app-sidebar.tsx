@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings, ListOrdered } from "lucide-react";
+import { Calendar, Home, Inbox, Search, Settings, ListOrdered, ShoppingBasket } from "lucide-react";
 import { Link, usePage } from '@inertiajs/react';
 import ApplicationLogo from '@/components/ApplicationLogo';
 import NavLink from "@/components/NavLink";
@@ -15,13 +15,32 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+
+import { 
+  Accordion, 
+  AccordionContent, 
+  AccordionItem, 
+  AccordionTrigger 
+} from "@/components/ui/accordion";
+
 const items = [
     {title: "Dashboard", url: route("dashboard"), active: route().current("dashboard"), icon: Home, role: ["admin", "superadmin", "owner"]},
     {title: "Tiendas", url: route("tenantIndex"), active: route().current("tenants"), icon: Inbox, role: ["superadmin"]},
     {title: "Productos", url: route("products_index"), active: route().current("products"), icon: Inbox, role: ["admin", "owner"]},
-    {title: "Órdenes", url: route("orders_index"), active: route().current("orders"), icon: ListOrdered, role: ["admin", "owner"]},
-]
- 
+    {title: "Órdenes", url: route("orders_index"), active: route().current("ordenes"), icon: ListOrdered, role: ["admin", "owner"]},
+    {title: "Marketing", active: route().current("marketing"), icon: ShoppingBasket, role: ["admin", "owner"]},
+    {title: "Cupones", url: route("coupons_index"), active: route().current("marketing"), icon: ShoppingBasket, role: ["admin", "owner"]},
+];
+
 export function AppSidebar() {
   const user = usePage().props.auth.user;
   
@@ -45,15 +64,29 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 item.role?.includes(user.role) && (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <NavLink href={item.url} active={item.active}>
-                          <item.icon />
-                          <span>{item.title}</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                )
+                  item.url 
+                    ?
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton asChild>
+                          <NavLink href={item.url} active={item.active}>
+                              <item.icon />
+                              <span>{item.title}</span>
+                          </NavLink>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    :
+                      <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
+                        <AccordionItem value="item-1">
+                          <AccordionTrigger className="text-gray-200">Marketing</AccordionTrigger>
+                          <AccordionContent>
+                            <NavLink href={route("coupons_index")} active={route().current("marketing")}>
+                              <item.icon />
+                              <span>Cupones</span>
+                            </NavLink>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                  )
               ))}
             </SidebarMenu>
           </SidebarGroupContent>

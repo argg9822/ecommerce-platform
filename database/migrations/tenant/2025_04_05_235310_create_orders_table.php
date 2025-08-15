@@ -17,13 +17,13 @@ return new class extends Migration
             $table->decimal('total', 10, 2);
             $table->enum('status', [
                 'pending',          // Orden creada, esperando pago (cuando el pago no es instantáneo)
-                'paid',             // Pago confirmado, preparando el pedido
+                'paid',             // Pago confirmado, preparando el pedido //CORREO
                 'processing',       // En proceso de empaque/verificación (puede usarse si hay pasos intermedios)
                 'ready_to_ship',    // Listo para ser enviado (pero aún no despachado)
-                'shipped',          // Orden despachada (en camino)
+                'shipped',          // Orden despachada (en camino)  //CORREO 
                 'out_for_delivery', // En reparto (opcional, útil para seguimiento en tiempo real)
-                'delivered',        // Entregado al cliente
-                'cancelled',        // Orden cancelada (antes del envío)
+                'delivered',        // Entregado al cliente //CORREO
+                'cancelled',        // Orden cancelada (antes del envío) //CORREO
                 'refunded',         // Reembolsado (si el cliente devuelve el producto)
                 'failed',           // Falló el pago o no se pudo completar
             ])->default('pending');

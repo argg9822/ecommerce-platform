@@ -3,6 +3,7 @@
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
@@ -58,10 +59,14 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
             'store' => 'brands_store'
         ]);
 
-        Route::resource('orders', OrderController::class)->names([
+        Route::resource('ordenes', OrderController::class)->names([
             'index' => 'orders_index'
         ]);
         
+        Route::resource('cupones', CouponController::class)->names([
+            'index' => 'coupons_index'
+        ]);
+
         //Proxy files tenants admin
         Route::get('media/images/{path}/{tenantId}', function($path, $tenantId){
             $filePath = "$tenantId/images/$path";
