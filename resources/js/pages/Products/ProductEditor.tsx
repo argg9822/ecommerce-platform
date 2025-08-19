@@ -28,7 +28,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
 import PrimaryButton from '@/components/PrimaryButton';
 import { ProductForm } from '@/types/product-form.type';
 

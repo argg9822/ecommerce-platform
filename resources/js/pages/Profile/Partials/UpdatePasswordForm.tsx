@@ -59,7 +59,7 @@ export default function UpdatePasswordForm({
         <section className={className}>
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-lg font-medium">
+                    <CardTitle className="text-lg font-medium text-gray-100">
                         Actualizar contraseña
                     </CardTitle>
                     <CardDescription>

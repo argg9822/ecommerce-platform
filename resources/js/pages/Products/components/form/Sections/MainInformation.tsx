@@ -42,8 +42,6 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useState } from 'react';
-import { Separator } from '@/components/ui/separator';
-import { log } from 'node:console';
 
 type MainInformationCardProps = {
     brands: Brand[],
@@ -80,7 +78,9 @@ export default function MainInformation({
     return (
         <Card>
             <CardHeader>
-                <CardTitle><h2 className="text-lg text-center">Información del producto</h2></CardTitle>
+                <CardTitle className="flex justify-center w-full">
+                    <h3 className="accordion-cards-title">Información del producto</h3>
+                </CardTitle>
             </CardHeader>
 
             <CardContent className="space-y-4">

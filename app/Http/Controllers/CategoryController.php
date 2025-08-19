@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
 
 class CategoryController extends Controller
 {
@@ -18,7 +19,11 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::select('id', 'name')->get();
+
+        return response()->json([
+            'categories' => $categories
+        ], Response::HTTP_OK);
     }
 
     /**

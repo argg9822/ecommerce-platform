@@ -6,7 +6,6 @@ import { ProductVariantsType } from '@/types/product';
 type ProductFormData = ProductForm & Record<string, any>;
 
 export default function useProductForm( product? : ProductForm ) {    
-    //console.log('product', product);
     const [submitConfirm, setSubmitConfirm] = useState<boolean>(false);
     
     const refs: Record<string, React.RefObject<HTMLInputElement> | undefined> = {
@@ -188,9 +187,7 @@ export default function useProductForm( product? : ProductForm ) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         const isEdit = !!product?.id;
-        const urlRoute = isEdit ? route('products_update', { id: product.id }) : route('products_store');
-
-        console.log('data', data);
+        const urlRoute = isEdit ? route('products_update', { id: product.id }) : route('products_store');        
         
         if (isEdit) {
             post(urlRoute, {

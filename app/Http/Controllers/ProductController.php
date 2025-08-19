@@ -13,6 +13,7 @@ use App\Services\TenantFileService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
 {
@@ -56,6 +57,16 @@ class ProductController extends Controller
         return Inertia::render('Products/Index', [
             'products' => $products
         ]);
+    }
+
+    public function indexLite()
+    {
+        $products = Product::select('id', 'name')->get();
+        Log::info($products);
+
+        return response()->json([
+            'products' => $products
+        ], Response::HTTP_OK);
     }
 
     /**

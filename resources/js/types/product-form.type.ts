@@ -1,5 +1,5 @@
 import useProductForm from '@/hooks/form/useProductForm';
-import { ProductImage, ProductVariantsType, ProductFeatures } from '@/types/product';
+import { ProductImage, ProductVariantsType } from '@/types/product';
 
 export type ProductFormContextType = ReturnType<typeof useProductForm>;
 
