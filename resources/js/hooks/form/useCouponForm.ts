@@ -1,14 +1,17 @@
 import { Conditions, CouponForm } from "@/types/coupon-form.type";
 import { useForm } from '@inertiajs/react';
+import { log } from "node:console";
 import { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
 
 type CouponFormData = CouponForm & Record<string, any>;
 
 export function useCouponForm() {
-    const initConditions: Conditions = {
-        name: 'min_amount',
-        value: undefined
-    };
+    const initConditions: Conditions[] = [
+        {
+            name: 'min_amount',
+            value: undefined
+        }
+    ];
 
     const {
         data,
@@ -22,7 +25,8 @@ export function useCouponForm() {
     } = useForm<CouponFormData>({
         code: '',
         type: 'percentage',
-        conditions: [initConditions],
+        amount: undefined,
+        conditions: initConditions,
         usage_limit: undefined,
         usage_per_user: undefined
     });
@@ -33,23 +37,57 @@ export function useCouponForm() {
         setData(key, isNaN(parsed) ? undefined : parsed);
     }
 
-    const handleConditionChange = (value: number | string, field: string, index: number) => {
-        const dataConditions: Conditions[] = [...data.conditions];
-        const currentCondition = dataConditions[index];
-        const updatedCurrentCondition = {
-            ...currentCondition,
-            [field]: value
-        };
+    const validateIfExistsId = (currentIds: number[], id: number | string) => {
+        if (!Array.isArray(currentIds)) return;
 
-        const updatedConditions = [...dataConditions];
-        updatedConditions[index] = updatedCurrentCondition;
-        console.log(updatedConditions);
-
-        setData('conditions', updatedConditions);
+        if (currentIds.indexOf(Number(id)) === -1) {
+            return [...currentIds, Number(id)];
+        } else {
+            return currentIds.filter(i => i !== Number(id));
+        }
     }
 
+    const handleConditionChange = (
+        value: string | number,
+        field: keyof Conditions,
+        index: number
+    ) => {
+        const updatedConditions = [...data.conditions];
+        const currentCondition = updatedConditions[index];
+        if (!currentCondition) return;
+
+        if (field === "value") {
+            const newValue = Array.isArray(currentCondition.value)
+                ? validateIfExistsId(currentCondition.value, value)
+                : [value];
+
+            const filteredValue = Array.isArray(newValue)
+                ? newValue.filter(v => typeof v === "number")
+                : typeof newValue === "number"
+                    ? newValue
+                    : undefined;
+
+            updatedConditions[index] = {
+                ...currentCondition,
+                value: filteredValue,
+            };
+        } else {
+            if (field === "name" && typeof value === "string") {
+                updatedConditions[index] = {
+                    ...currentCondition,
+                    name: value,
+                };
+            }
+        }
+
+        console.log(updatedConditions);
+        console.log("data.conditions", data.conditions);
+
+        setData("conditions", updatedConditions);
+    };
+
     const addCondition = () => {
-        const newCondition = [...data.conditions, initConditions]
+        const newCondition = [...data.conditions, { name: 'min_amount', value: undefined }]
         setData('conditions', newCondition);
     }
 
@@ -60,14 +98,14 @@ export function useCouponForm() {
             preserveScroll: true,
             forceFormData: true,
             onSuccess: () => {
-                alert('Actualizado correctamente');
+                alert('Cupón creado correctamente');
             },
             onError: (errors) => {
                 alert('Ocurrió un error');
                 // handleErrors(errors)
             },
         });
-        
+
     };
 
     return {

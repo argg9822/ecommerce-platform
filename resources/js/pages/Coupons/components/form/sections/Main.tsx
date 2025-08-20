@@ -72,7 +72,10 @@ export default function Main () {
                         <InputLabel htmlFor="discount_value" value="Valor del descuento" />
                         <TextInput
                             id="discount_value"
+                            step={0.1}
                             type="number"
+                            value={data.amount ?? ''}
+                            onChange={(e) => setData('amount', e.target.value ? parseFloat(e.target.value) : undefined)}
                             name="discount_value"
                             placeholder="Ej: 20"
                         />

@@ -62,7 +62,6 @@ class ProductController extends Controller
     public function indexLite()
     {
         $products = Product::select('id', 'name')->get();
-        Log::info($products);
 
         return response()->json([
             'products' => $products

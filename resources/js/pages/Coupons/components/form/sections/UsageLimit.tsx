@@ -22,7 +22,7 @@ export default function () {
                     <TextInput
                         id="usage_per_user"
                         type="number"
-                        value={data.usage_per_user}
+                        value={data.usage_per_user || ''}
                         onChange={(e) => handleNumberChangeInput(e, 'usage_per_user')}
                         name="usage_per_user"
                         placeholder="Ej: 20"
@@ -37,7 +37,7 @@ export default function () {
                         id="usage_limit"
                         type="number"
                         name="usage_limit"
-                        value={data.usage_limit}
+                        value={data.usage_limit || ''}
                         onChange={(e) => handleNumberChangeInput(e, 'usage_limit')}
                         placeholder="Ej: 20"
                     />

@@ -1,7 +1,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ButtonAdd from "@/components/ui/button-add";
-import CategorySelectList from "@/pages/Categories/CategorySelectList";
-import ProductSelectList from "@/pages/Products/ProductSelectList";
+import CategorySelectList from "@/pages/Coupons/components/form/CategorySelectList";
+import ProductSelectList from "@/pages/Coupons/components/form/ProductSelectList";
 import InputError from "@/components/InputError";
 import InputWithAddons from "@/components/ui/input-with-addons";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +14,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { useCouponForm } from "@/hooks/form/useCouponForm";
-import ClientSelectList from "@/pages/Clients/ClientSelectList";
+import ClientSelectList from "@/pages/Coupons/components/form/ClientSelectList";
 
 export default function Conditions() {
     const {
@@ -23,10 +23,6 @@ export default function Conditions() {
         addCondition,
         handleConditionChange
     } = useCouponForm();
-
-    const handleValueChange = (value: number) => {
-     //   const 
-    }
 
     return (
         <Card>
@@ -86,17 +82,17 @@ export default function Conditions() {
                                 <ScrollArea className="flex items-center max-h-[100px] mt-3 rounded-md">
                                     {/* Si es categoría */}
                                     {item.name === "category" && (
-                                        <CategorySelectList condition_index={index} onChange={handleValueChange}/>
+                                        <CategorySelectList condition_index={index} onChange={handleConditionChange} />
                                     )}
 
                                     {/* Si es productos */}
                                     {item.name === "product" && (
-                                        <ProductSelectList condition_index={index} />
+                                        <ProductSelectList condition_index={index} onChange={handleConditionChange} />
                                     )}
 
                                     {/* Si es clientes */}
                                     {item.name === "client" && (
-                                        <ClientSelectList condition_index={index} />
+                                        <ClientSelectList condition_index={index} onChange={handleConditionChange} />
                                     )}
                                 </ScrollArea>
                             </div>

@@ -1,11 +1,12 @@
 import Checkbox from "@/components/Checkbox";
 import InputLabel from "@/components/InputLabel";
 import useCategories from "@/hooks/get/use-categories";
+import { Conditions } from "@/types/coupon-form.type";
 import { motion } from "framer-motion"
 
 type CategorySelectListProps = {
     condition_index: number,
-    onChange: (value: number) => void
+    onChange: (value: string | number, field: keyof Conditions, index: number) => void 
 }
 
 export default function CategorySelectList({ condition_index, onChange }: CategorySelectListProps) {
@@ -41,9 +42,8 @@ export default function CategorySelectList({ condition_index, onChange }: Catego
                                     name={`categories_condition_${condition_index}`}
                                     value={c.id}
                                     className="mt-1 h-5 w-5 rounded-md border-zinc-500 
-                                    data-[state=checked]:border-red-600 data-[state=checked]:bg-red-600 data-[state=checked]:text-white
-                                    dark:data-[state=checked]:border-red-500 dark:data-[state=checked]:bg-red-500"
-                                    onChange={(e) => onChange(Number(e))}
+                                    data-[state=checked]:border-red-600 data-[state=checked]:text-white"
+                                    onChange={(e) => onChange(Number(e.target.value), 'value', condition_index)}
                                 />
                                 <span className="text-sm font-medium text-gray-200">{c.name}</span>
                             </div>
