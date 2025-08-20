@@ -25,7 +25,7 @@ export default function Main () {
         <Card>
             <CardHeader>
                 <CardTitle className="flex justify-center w-full">
-                    <h3 className="accordion-cards-title">Configurar cupón</h3>
+                    Configurar cupón
                 </CardTitle>
             </CardHeader>
 

@@ -79,7 +79,7 @@ export default function MainInformation({
         <Card>
             <CardHeader>
                 <CardTitle className="flex justify-center w-full">
-                    <h3 className="accordion-cards-title">Información del producto</h3>
+                    Información del producto
                 </CardTitle>
             </CardHeader>
 
@@ -238,12 +238,12 @@ export default function MainInformation({
                                                 key={category.value}
                                                 value={String(category.value)}
                                                 onSelect={() => {
-                                                const isSelected = data.categories?.includes(category.value);
-                                                setData('categories', 
-                                                    isSelected
-                                                    ? data.categories.filter(id => id !== category.value)
-                                                    : [...(data.categories || []), category.value]
-                                                );
+                                                    const isSelected = data.categories?.includes(category.value);
+                                                    setData('categories', 
+                                                        isSelected
+                                                        ? data.categories.filter(id => id !== category.value)
+                                                        : [...(data.categories || []), category.value]
+                                                    );
                                                 }}
                                                 className={`
                                                     flex items-center

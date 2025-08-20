@@ -116,7 +116,7 @@ export default function Inventory() {
                                 type="text"
                                 step="0.01"
                                 placeholder='0.00'
-                                value={data.discount}
+                                value={data.discount || ""}
                                 onChange={(e) => handleDiscount(e)}
                             />
                             <span className="absolute right-3 z-10 shrink-0 text-base text-gray-300 select-none sm:text-sm/6">%</span>
@@ -148,7 +148,7 @@ export default function Inventory() {
                             <Input 
                                 id="stock" 
                                 type="number" 
-                                value={data.stock} 
+                                value={data.stock || ""}
                                 onChange={(e) => handleNumberChangeInput(e, 'stock')} 
                                 placeholder="0"
                                 required
@@ -161,7 +161,7 @@ export default function Inventory() {
                             <Input 
                                 id="sku" 
                                 type="text" 
-                                value={data.sku} 
+                                value={data.sku || ""} 
                                 onChange={(e) => setData('sku', e.target.value)}
                                 autoComplete="off"
                                 placeholder="Ej. PROD001"

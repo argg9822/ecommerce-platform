@@ -46,6 +46,7 @@ const CardTitle = React.forwardRef<
     className={cn(
       "text-lg font-semibold tracking-wide text-gray-100",
       "bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent",
+      "accordion-cards-title",
       className
     )}
     {...props}

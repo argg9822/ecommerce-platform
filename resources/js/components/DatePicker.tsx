@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as chrono from "chrono-node";
 import { CalendarIcon } from "lucide-react";
-
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import InputLabel from "@/components/InputLabel";
+import { useCouponFormContext } from "@/context/coupon-form.context";
 
 function formatDate(date: Date | undefined) {
   if (!date) return "";
@@ -26,19 +27,19 @@ function formatDate(date: Date | undefined) {
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }
 
-interface DatePickerPromps{
+interface DatePickerProps{
     labelText: string;
     disablePast?: boolean;
     disableFuture?: boolean;
 }
 
-export default function DatePicker({ labelText, disablePast, disableFuture} : DatePickerPromps ) {
+export default function DatePicker({ labelText, disablePast, disableFuture }: DatePickerProps) {
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("En 2 dias")
-  const [date, setDate] = React.useState<Date | undefined>(
-    chrono.es.parseDate(value) || undefined
-  )
-  const [month, setMonth] = React.useState<Date | undefined>(date)
+
+  const { data, setData } = useCouponFormContext()
+
+  // Convertimos lo que haya en data.expiration_date a Date (si existe)
+  const parsedDate = data.expiration_date ? new Date(data.expiration_date) : undefined
 
   return (
     <div className="flex flex-col">
@@ -46,14 +47,14 @@ export default function DatePicker({ labelText, disablePast, disableFuture} : Da
       <div className="relative flex gap-2">
         <Input
           id="date"
-          value={value}          
+          value={data.expiration_date ?? ""}
           className="bg-background pr-10"
           onChange={(e) => {
-            setValue(e.target.value)
             const date = chrono.es.parseDate(e.target.value)
             if (date) {
-              setDate(date)
-              setMonth(date)
+              setData("expiration_date", format(date, "yyyy-MM-dd"))
+            } else {
+              setData("expiration_date", e.target.value) // fallback si no parsea
             }
           }}
           onKeyDown={(e) => {
@@ -77,14 +78,13 @@ export default function DatePicker({ labelText, disablePast, disableFuture} : Da
           <PopoverContent className="w-auto overflow-hidden p-0" align="end">
             <Calendar
               mode="single"
-              selected={date}
               captionLayout="dropdown"
-              month={month}
-              onMonthChange={setMonth}
+              selected={parsedDate}
               onSelect={(date) => {
-                setDate(date)
-                setValue(formatDate(date))
-                setOpen(false)
+                if (date) {
+                  setData("expiration_date", format(date, "yyyy-MM-dd"))
+                  setOpen(false)
+                }
               }}
               disabled={(d: Date) => {
                 if (disablePast && d < new Date()) return true

@@ -11,7 +11,8 @@ export interface CouponForm {
     id?: number;
     code: string;
     amount: number | undefined;
-    type: 'percentage' | 'fixed' | 'free_shipping' | 'bogo' | 'client';
+    expiration_date: string | undefined;
+    type: 'percentage' | 'fixed' | 'free_shipping' | 'bogo' ;
     conditions: Conditions[];
     usage_limit: number | undefined;
     usage_per_user: number | undefined;

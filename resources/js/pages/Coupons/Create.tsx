@@ -22,7 +22,7 @@ export default function Create() {
             <Head title="Crear cupón" />
 
             <CouponFormContext.Provider value={form}>
-                <form onSubmit={form.submit} className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8 mt-8">
+                <form onSubmit={form.submit} encType="multipart/form-data" className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8 mt-8">
                     <Main />
 
                     {/* Condiciones del cupón */}

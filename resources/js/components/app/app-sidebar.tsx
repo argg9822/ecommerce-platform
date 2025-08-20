@@ -22,7 +22,7 @@ import {
   AccordionTrigger
 } from "@/components/ui/accordion";
 import { ItemText } from "@radix-ui/react-select";
-import PrimaryButton from "../PrimaryButton";
+import { Button } from "../ui/button";
 
 const items = [
   {
@@ -92,26 +92,33 @@ export function AppSidebar() {
 
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {items.map((item, index) => (
                 item.role?.includes(user.role) && (
                   !item.subMenu
                     ?
-                    <SidebarMenuItem key={item.title}>
+                    <SidebarMenuItem key={`menu-item-${item.title}`}>
                       <SidebarMenuButton asChild>
-                        <NavLink href={item.url} active={item.active} className="relative">
-                          <item.icon />
-                          <span>{item.title}</span>
-
+                        <div className="relative">
+                          <NavLink href={item.url} active={item.active} className="w-full">
+                            <item.icon />
+                            <span>{item.title}</span>
+                          </NavLink>
+                          
                           {item.createRoute && (
-                            <Link href={route('products_create')} className="absolute right-2" title="Crear producto">
+                            <Link 
+                              href={route('products_create')} 
+                              className="absolute right-2 top-1/2 transform -translate-y-1/2" 
+                              title="Crear producto"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               <PlusCircle className="text-blue-300" size={15} />
                             </Link>
                           )}
-                        </NavLink>
+                        </div>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                     :
-                    <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
+                    <Accordion key={`accordion-${item.title}-${index}`} type="single" collapsible className="w-full" defaultValue="item-1">
                       <AccordionItem value="item-1">
                         <AccordionTrigger className="text-gray-100  pb-0">
                           <SidebarGroupLabel className="text-sm text-gray-100">

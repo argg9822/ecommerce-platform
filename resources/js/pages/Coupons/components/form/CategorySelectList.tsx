@@ -41,7 +41,7 @@ export default function CategorySelectList({ condition_index, onChange }: Catego
                                     id={`category_${c.id}`}
                                     name={`categories_condition_${condition_index}`}
                                     value={c.id}
-                                    className="mt-1 h-5 w-5 rounded-md border-zinc-500 
+                                    className="mt-1 h-5 w-5 rounded-md border-zinc-500
                                     data-[state=checked]:border-red-600 data-[state=checked]:text-white"
                                     onChange={(e) => onChange(Number(e.target.value), 'value', condition_index)}
                                 />

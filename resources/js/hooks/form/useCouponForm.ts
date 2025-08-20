@@ -1,7 +1,7 @@
 import { Conditions, CouponForm } from "@/types/coupon-form.type";
 import { useForm } from '@inertiajs/react';
-import { log } from "node:console";
-import { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
+import { format } from "date-fns";
+import { ChangeEvent, FormEventHandler, useEffect, useRef } from 'react';
 
 type CouponFormData = CouponForm & Record<string, any>;
 
@@ -26,7 +26,8 @@ export function useCouponForm() {
         code: '',
         type: 'percentage',
         amount: undefined,
-        conditions: initConditions,
+        expiration_date: format(new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),"yyyy-MM-dd"),
+        conditions: initConditions as Conditions[],
         usage_limit: undefined,
         usage_per_user: undefined
     });
@@ -37,75 +38,56 @@ export function useCouponForm() {
         setData(key, isNaN(parsed) ? undefined : parsed);
     }
 
-    const validateIfExistsId = (currentIds: number[], id: number | string) => {
-        if (!Array.isArray(currentIds)) return;
+    useEffect(() => {
+        console.log("data.conditions cambió:", data);
+    }, [data]);
 
-        if (currentIds.indexOf(Number(id)) === -1) {
-            return [...currentIds, Number(id)];
-        } else {
-            return currentIds.filter(i => i !== Number(id));
-        }
-    }
+    const handleConditionChange = (newValue: number | string, key: "name" | "value", condition_index: number) => {
+        const updated = data.conditions.map((cond, i) => {
+            if (i !== condition_index) return cond;
 
-    const handleConditionChange = (
-        value: string | number,
-        field: keyof Conditions,
-        index: number
-    ) => {
-        const updatedConditions = [...data.conditions];
-        const currentCondition = updatedConditions[index];
-        if (!currentCondition) return;
+            let newCond = { ...cond };
 
-        if (field === "value") {
-            const newValue = Array.isArray(currentCondition.value)
-                ? validateIfExistsId(currentCondition.value, value)
-                : [value];
-
-            const filteredValue = Array.isArray(newValue)
-                ? newValue.filter(v => typeof v === "number")
-                : typeof newValue === "number"
-                    ? newValue
-                    : undefined;
-
-            updatedConditions[index] = {
-                ...currentCondition,
-                value: filteredValue,
-            };
-        } else {
-            if (field === "name" && typeof value === "string") {
-                updatedConditions[index] = {
-                    ...currentCondition,
-                    name: value,
-                };
+            if (key === "value") {
+                if (Array.isArray(newCond.value)) {
+                    const num = Number(newValue);
+                    newCond.value = newCond.value.includes(num)
+                        ? newCond.value.filter(v => v !== num)
+                        : [...newCond.value, num];
+                } else {
+                    newCond.value = [Number(newValue)];
+                }
             }
-        }
 
-        console.log(updatedConditions);
-        console.log("data.conditions", data.conditions);
+            if (key === "name") {
+                newCond.name = String(newValue);
+            }
 
-        setData("conditions", updatedConditions);
+            return newCond;
+        });
+
+        setData("conditions", updated);
     };
 
     const addCondition = () => {
         const newCondition = [...data.conditions, { name: 'min_amount', value: undefined }]
         setData('conditions', newCondition);
-    }
+    };
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+        console.log("data.conditions submit", data.conditions);
 
         post(route('coupons_store'), {
             preserveScroll: true,
-            forceFormData: true,
             onSuccess: () => {
                 alert('Cupón creado correctamente');
             },
             onError: (errors) => {
                 alert('Ocurrió un error');
-                // handleErrors(errors)
+                //handleErrors(errors)
             },
         });
-
     };
 
     return {
