@@ -10,9 +10,10 @@ export interface Conditions{
 export interface CouponForm {
     id?: number;
     code: string;
-    amount: number | undefined;
-    expiration_date: string | undefined;
-    type: 'percentage' | 'fixed' | 'free_shipping' | 'bogo' ;
+    discount_value: number | undefined;
+    expires_at: string | undefined;
+    only_first_order: boolean;
+    discount_type: 'percentage' | 'fixed' | 'free_shipping' | 'bogo';
     conditions: Conditions[];
     usage_limit: number | undefined;
     usage_per_user: number | undefined;

@@ -35,11 +35,9 @@ interface DatePickerProps{
 
 export default function DatePicker({ labelText, disablePast, disableFuture }: DatePickerProps) {
   const [open, setOpen] = React.useState(false)
-
   const { data, setData } = useCouponFormContext()
 
-  // Convertimos lo que haya en data.expiration_date a Date (si existe)
-  const parsedDate = data.expiration_date ? new Date(data.expiration_date) : undefined
+  const parsedDate = data.expires_at ? new Date(data.expires_at) : undefined
 
   return (
     <div className="flex flex-col">
@@ -47,14 +45,14 @@ export default function DatePicker({ labelText, disablePast, disableFuture }: Da
       <div className="relative flex gap-2">
         <Input
           id="date"
-          value={data.expiration_date ?? ""}
+          value={data.expires_at ?? ""}
           className="bg-background pr-10"
           onChange={(e) => {
             const date = chrono.es.parseDate(e.target.value)
             if (date) {
-              setData("expiration_date", format(date, "yyyy-MM-dd"))
+              setData("expires_at", format(date, "yyyy-MM-dd"))
             } else {
-              setData("expiration_date", e.target.value) // fallback si no parsea
+              setData("expires_at", e.target.value) // fallback si no parsea
             }
           }}
           onKeyDown={(e) => {
@@ -82,7 +80,7 @@ export default function DatePicker({ labelText, disablePast, disableFuture }: Da
               selected={parsedDate}
               onSelect={(date) => {
                 if (date) {
-                  setData("expiration_date", format(date, "yyyy-MM-dd"))
+                  setData("expires_at", format(date, "yyyy-MM-dd"))
                   setOpen(false)
                 }
               }}

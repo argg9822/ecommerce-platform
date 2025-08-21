@@ -30,21 +30,25 @@ class CouponController extends Controller
             DB::beginTransaction();
 
             $coupon = Coupon::create([
-                'code' => $request->input('code'),
-                'type' => $request->input('type'),
-                'amount' => $request->input('amount'),
-                'expiration_date' => $request->input('expiration_date'),
-                'usage_limit' => $request->input('usage_limit'),
-                'usage_per_user' => $request->input('usage_per_user'),
+                'code' => $request->code,
+                'description' => $request->description,
+                'discount_type' => $request->discount_type,
+                'discount_value' => $request->discount_value,
+                'expires_at' => $request->expires_at,
+                'usage_limit' => $request->usage_limit,
+                'usage_per_user' => $request->usage_per_user,
             ]);
 
             $coupon->conditions()->createMany($request->input('conditions'));
 
+            DB::commit();
             return redirect()->back()->with('flash.success', [
                 'title' => 'Cupón creado correctamente',
                 'message' => 'Se ha creado el cupón correctamente'
             ]);
         } catch (\Exception $e) {
+            DB::rollBack();
+            
             Log::error('Error starting transaction: ' . $e->getMessage());
             return redirect()->back()->with('flash.error', [
                 'title' => 'Error al crear el cupón',

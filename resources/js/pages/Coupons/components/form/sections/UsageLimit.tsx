@@ -7,9 +7,7 @@ import { useCouponFormContext } from "@/context/coupon-form.context";
 export default function () {
     const {
         data,
-        setData,
-        addCondition,
-        handleConditionChange,
+        errors,        
         handleNumberChangeInput
     } = useCouponFormContext();
 
@@ -27,7 +25,7 @@ export default function () {
                         name="usage_per_user"
                         placeholder="Ej: 20"
                     />
-                    <InputError message="" />
+                    <InputError message={errors.usage_per_user} />
                 </div>
 
                 {/* Máximo número de usos globales */}
@@ -41,7 +39,7 @@ export default function () {
                         onChange={(e) => handleNumberChangeInput(e, 'usage_limit')}
                         placeholder="Ej: 20"
                     />
-                    <InputError message="" />
+                    <InputError message={errors.usage_limit} />
                 </div>
             </CardContent>
         </Card>

@@ -1,7 +1,7 @@
 import Checkbox from "@/components/Checkbox";
 import InputLabel from "@/components/InputLabel";
+import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useCouponFormContext } from "@/context/coupon-form.context";
 import useProducts from "@/hooks/get/use-products";
 import { Conditions } from "@/types/coupon-form.type";
 import { motion } from "framer-motion"
@@ -55,14 +55,23 @@ export default function ProductSelectList({ condition_index, onChange }: Product
                                         name={`categories_condition_${condition_index}`}
                                         value={p.id}
                                         className="mt-1 h-5 w-5 rounded-md border-zinc-500 
-                                        data-[state=checked]:border-red-600 data-[state=checked]:bg-red-600 data-[state=checked]:text-white
-                                        dark:data-[state=checked]:border-red-500 dark:data-[state=checked]:bg-red-500"
+                                            data-[state=checked]:border-red-600 data-[state=checked]:bg-red-600 data-[state=checked]:text-white
+                                            dark:data-[state=checked]:border-red-500 dark:data-[state=checked]:bg-red-500"
                                         onChange={(e) => onChange(Number(e.target.value), 'value', condition_index)}
                                     />
-                                    <span className="text-sm font-medium text-gray-200 truncate max-w-[120px] block">
-                                        {productNameToLower(p.name)}
-                                    </span>
+
+                                    {/* Contenedor nombre + precio */}
+                                    <div className="flex flex-col min-w-0">
+                                        <span className="text-sm font-medium text-gray-200 truncate block">
+                                            {productNameToLower(p.name)}
+                                        </span>
+
+                                        <Badge className="h-4 w-fit rounded px-1 text-[11px]  bg-gray-900">
+                                            $ {p.price.toLocaleString()}
+                                        </Badge>
+                                    </div>
                                 </div>
+
                             </InputLabel>
                         </motion.div>
                     ))}

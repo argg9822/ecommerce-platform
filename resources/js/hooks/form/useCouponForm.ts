@@ -24,12 +24,13 @@ export function useCouponForm() {
         recentlySuccessful,
     } = useForm<CouponFormData>({
         code: '',
-        type: 'percentage',
-        amount: undefined,
-        expiration_date: format(new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),"yyyy-MM-dd"),
+        discount_type: 'percentage',
+        discount_value: undefined,
+        expires_at: format(new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),"yyyy-MM-dd"),
         conditions: initConditions as Conditions[],
-        usage_limit: undefined,
-        usage_per_user: undefined
+        only_first_order: false,
+        usage_limit: 1,
+        usage_per_user: 1
     });
 
     const handleNumberChangeInput = (e: ChangeEvent<HTMLInputElement>, key: string) => {
@@ -37,10 +38,6 @@ export function useCouponForm() {
         const parsed = e.target.step === '0.01' ? parseFloat(number) : parseInt(number);
         setData(key, isNaN(parsed) ? undefined : parsed);
     }
-
-    useEffect(() => {
-        console.log("data.conditions cambió:", data);
-    }, [data]);
 
     const handleConditionChange = (newValue: number | string, key: "name" | "value", condition_index: number) => {
         const updated = data.conditions.map((cond, i) => {
@@ -74,6 +71,11 @@ export function useCouponForm() {
         setData('conditions', newCondition);
     };
 
+    const removeCondition = (condition_index: number) => {
+        const updated = data.conditions.filter((_, i) => i !== condition_index);
+        setData("conditions", updated);
+    };
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         console.log("data.conditions submit", data.conditions);
@@ -92,9 +94,12 @@ export function useCouponForm() {
 
     return {
         data,
+        processing,
+        errors,
         submit,
         setData,
         addCondition,
+        removeCondition,
         handleConditionChange,
         handleNumberChangeInput
     }

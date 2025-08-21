@@ -52,7 +52,7 @@ export default function Create() {
                     <CardFooter>
                         {/* Botones */}
                         <div className="flex justify-center">
-                            <PrimaryButton>Guardar cupón</PrimaryButton>
+                            <PrimaryButton disabled={form.processing}>Guardar cupón</PrimaryButton>
                         </div>
                     </CardFooter>
                 </form>

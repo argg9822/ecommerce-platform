@@ -84,4 +84,5 @@ export interface Product {
 export interface ProductLite {
     id: number;
     name: string;
+    price: number;
 }

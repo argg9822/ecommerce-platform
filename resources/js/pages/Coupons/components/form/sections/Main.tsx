@@ -16,9 +16,8 @@ import { useCouponFormContext } from "@/context/coupon-form.context";
 export default function Main () {
     const {
         data,
+        errors,
         setData,
-        addCondition,
-        handleConditionChange
     } = useCouponFormContext();
 
     return (
@@ -41,15 +40,15 @@ export default function Main () {
                         onChange={(e) => setData('code', e.target.value.toUpperCase())}
                         placeholder="EJEMPLO2025"
                     />
-                    <InputError message="" />
+                    <InputError message={errors.code} />
                 </div>
 
                 {/* Tipo de descuento */}
                 <div className="mt-0">
                     <InputLabel value="Tipo de descuento" />
                     <Select
-                        onValueChange={(e) => setData('type', e as 'percentage' | 'fixed' | 'free_shipping' | 'bogo')}
-                        defaultValue={data.type}
+                        onValueChange={(e) => setData('discount_type', e as 'percentage' | 'fixed' | 'free_shipping' | 'bogo')}
+                        defaultValue={data.discount_type}
                     >
                         <SelectTrigger className='h-[30px]'>
                             <SelectValue placeholder="Selecciona una opción" />
@@ -63,7 +62,7 @@ export default function Main () {
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-                    <InputError message="" />
+                    <InputError message={errors.discount_type} />
                 </div>
 
                 {/* Valor del descuento */}
@@ -74,19 +73,19 @@ export default function Main () {
                             id="discount_value"
                             step={0.1}
                             type="number"
-                            value={data.amount ?? ''}
-                            onChange={(e) => setData('amount', e.target.value ? parseFloat(e.target.value) : undefined)}
+                            value={data.discount_value ?? ''}
+                            onChange={(e) => setData('discount_value', e.target.value ? parseFloat(e.target.value) : undefined)}
                             name="discount_value"
                             placeholder="Ej: 20"
                         />
-                        <InputError message="" />
+                        <InputError message={errors.discount_value} />
                     </div>
                 )}
 
                 {/* Fecha de expiración */}
                 <div>
                     <DatePicker labelText="Fecha de expiración" disablePast={true} />
-                    <InputError message="" />
+                    <InputError message={errors.expires_at} />
                 </div>
             </CardContent>
         </Card>
