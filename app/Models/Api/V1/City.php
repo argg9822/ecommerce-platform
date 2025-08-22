@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Api\V1;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CouponRedemptions extends Model
+class City extends Model
 {
     //
 }

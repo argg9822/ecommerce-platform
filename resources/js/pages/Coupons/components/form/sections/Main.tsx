@@ -66,21 +66,23 @@ export default function Main () {
                 </div>
 
                 {/* Valor del descuento */}
-                {data.type !== 'free_shipping' && (
-                    <div>
-                        <InputLabel htmlFor="discount_value" value="Valor del descuento" />
-                        <TextInput
-                            id="discount_value"
-                            step={0.1}
-                            type="number"
-                            value={data.discount_value ?? ''}
-                            onChange={(e) => setData('discount_value', e.target.value ? parseFloat(e.target.value) : undefined)}
-                            name="discount_value"
-                            placeholder="Ej: 20"
-                        />
-                        <InputError message={errors.discount_value} />
-                    </div>
-                )}
+                
+                <div>
+                    <InputLabel htmlFor="discount_value" value="Valor del descuento" />
+                    <TextInput
+                        id="discount_value"
+                        step={0.1}
+                        type="number"
+                        value={data.discount_value ?? ''}
+                        onChange={(e) => setData('discount_value', e.target.value ? parseFloat(e.target.value) : undefined)}
+                        name="discount_value"
+                        disabled={data.discount_type === 'bogo' || data.discount_type === 'free_shipping'}
+                        required={data.discount_type !== 'bogo' && data.discount_type !== 'free_shipping'}
+                        placeholder="Ej: 20"
+                    />
+                    <InputError message={errors.discount_value} />
+                </div>
+                
 
                 {/* Fecha de expiración */}
                 <div>

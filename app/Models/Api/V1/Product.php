@@ -49,4 +49,9 @@ class Product extends Model
             ->where('is_visible', true)
             ->where('is_approved', true);
     }
+
+    public function coupons()
+    {
+        return $this->belongsToMany(Coupon::class);
+    }
 }

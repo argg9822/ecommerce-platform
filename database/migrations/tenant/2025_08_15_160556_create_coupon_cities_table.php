@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('coupon_city', function (Blueprint $table) {
             $table->foreignId('coupon_id')->constrained()->onDelete('cascade');
             $table->foreignId('city_id')->constrained()->onDelete('cascade');
+            $table->primary(['coupon_id', 'city_id']);
+            $table->foreignId('coupon_condition_id')->constrained()->cascadeOnDelete();
         });
     }
 

@@ -1,26 +1,18 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Api\V1;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Coupon extends Model
 {
+    public function getRouteKeyName()
+    {
+        return 'code';
+    }
 
     protected $casts = [
         'expires_at' => 'datetime',
-        'only_first_order' => 'boolean',
-    ];
-
-    protected $fillable = [
-        'code',
-        'description',
-        'discount_type',
-        'discount_value',
-        'expires_at',
-        'usage_limit',
-        'usage_per_user',
-        'only_first_order'
     ];
 
     public function conditions()

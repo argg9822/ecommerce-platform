@@ -54,7 +54,6 @@ export default function useProductVariants(){
 
     const addFeatureVariant = (variantIndex: number) => {
         const updatedVariants = [...data.variants];
-        console.log('updatedVariants', updatedVariants[variantIndex].variant_attributes);
         const newAttributes = [...updatedVariants[variantIndex].variant_attributes.custom];
         newAttributes.push({name: '', value: ''});
         updatedVariants[variantIndex].variant_attributes.custom = newAttributes;

@@ -14,12 +14,11 @@ return new class extends Migration
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
             $table->string('code');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->enum('discount_type', ['%', 'percentage', 'fixed', 'free_shipping', 'bogo']);
-            $table->decimal('discount_value', 10, 2);
+            $table->decimal('discount_value', 10, 2)->nullable();
             $table->integer('usage_limit')->nullable();
             $table->integer('usage_per_user')->nullable();
-            $table->decimal('min_order_value')->nullable(); //Valor mínimo de compra para aplicar
             $table->datetime('expires_at')->nullable();
             $table->boolean('only_first_order')->default(false);
             $table->timestamps();

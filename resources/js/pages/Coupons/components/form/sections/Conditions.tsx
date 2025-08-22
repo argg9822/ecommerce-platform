@@ -19,6 +19,7 @@ import { useCouponFormContext } from "@/context/coupon-form.context";
 import { Checkbox } from "@/components/ui/checkbox";
 import DangerButton from "@/components/ui/danger-button";
 import { X } from "lucide-react";
+import { useEffect } from "react";
 
 export default function Conditions() {
     const {
@@ -30,6 +31,10 @@ export default function Conditions() {
         handleConditionChange,
         handleNumberChangeInput
     } = useCouponFormContext();
+
+    useEffect(() => {
+
+    }, [data.conditions]);
 
     return (
         <Card>
@@ -65,7 +70,7 @@ export default function Conditions() {
                                     </h3>
 
                                     {index > 0 && (
-                                        <DangerButton   
+                                        <DangerButton
                                             type="button"
                                             title="Eliminar condición"
                                             onClick={() => removeCondition(index)}
@@ -90,13 +95,18 @@ export default function Conditions() {
                                         </SelectTrigger>
 
                                         <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem value="min_amount">Compra mayor a</SelectItem>
-                                                <SelectItem value="category">Categoría</SelectItem>
-                                                <SelectItem value="product">Productos</SelectItem>
-                                                <SelectItem value="city">Ciudad</SelectItem>
-                                                <SelectItem value="client">Cliente</SelectItem>
-                                            </SelectGroup>
+                                            {["min_amount", "category", "product", "city", "client"].map((option) => {
+                                                const exists = data.conditions.some((cond) => cond.name === option);
+                                                return (
+                                                    <SelectItem key={option} value={option} disabled={exists}>
+                                                        {option === "min_amount" && "Compra mayor a"}
+                                                        {option === "category" && "Categoría"}
+                                                        {option === "product" && "Producto"}
+                                                        {option === "city" && "Ciudad"}
+                                                        {option === "client" && "Cliente"}
+                                                    </SelectItem>
+                                                );
+                                            })}
                                         </SelectContent>
                                     </Select>
 
@@ -113,6 +123,7 @@ export default function Conditions() {
                                             }
                                             sufixValue="COP"
                                             suffixes={['COP']}
+                                            className="ml-2"
                                             onChange={(e) => handleConditionChange(Number(e), 'value', index)}
                                         />
                                     )}

@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('coupon_conditions', function (Blueprint $table) {
-            $table->id();
+        Schema::create('coupon_condition_category', function (Blueprint $table) {
             $table->foreignId('coupon_id')->constrained()->onDelete('cascade');
-            $table->enum('condition_type', ['min_amount', 'customer_group']);
-            $table->string('condition_value');
-            $table->timestamps();
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->primary(['coupon_id', 'category_id']);
+            $table->foreignId('coupon_condition_id')->constrained()->cascadeOnDelete();
         });
     }
 
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('coupon_conditions');
+        Schema::dropIfExists('coupon_condition_category ');
     }
 };

@@ -92,6 +92,15 @@ export function useCouponForm() {
         });
     };
 
+    const productNameToLower = (productName: string) => {
+        if (!productName) return "";
+
+        const firstLetter = productName[0].toUpperCase();
+        const rest = productName.slice(1).toLowerCase();
+
+        return firstLetter + rest;
+    };
+
     return {
         data,
         processing,
@@ -100,6 +109,7 @@ export function useCouponForm() {
         setData,
         addCondition,
         removeCondition,
+        productNameToLower,
         handleConditionChange,
         handleNumberChangeInput
     }

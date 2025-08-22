@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\GoogleAuthController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\CouponController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\OrderPaymentController;
@@ -50,6 +51,8 @@ Route::middleware([
         // Pagos de órdenes
         Route::apiResource('order-payments', OrderPaymentController::class)
             ->except(['create', 'edit', 'update', 'destroy']);
+        
+        Route::apiResource('coupons', CouponController::class)
+            ->only(['show']);
     });
 });
-
