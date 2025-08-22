@@ -51,8 +51,7 @@ Route::middleware([
         // Pagos de órdenes
         Route::apiResource('order-payments', OrderPaymentController::class)
             ->except(['create', 'edit', 'update', 'destroy']);
-        
-        Route::apiResource('coupons', CouponController::class)
-            ->only(['show']);
+
+        Route::post('coupons/{coupon}', [CouponController::class, 'show']);
     });
 });

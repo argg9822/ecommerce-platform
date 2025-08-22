@@ -58,7 +58,6 @@ class CouponController extends Controller
             switch ($condition->condition_type) {
 
                 case Product::class:
-                    Log::info($condition);
                     $allowedProducts = $condition->products()->pluck('products.id')->toArray();
                     $productIds = $products->pluck('id')->toArray();
 
@@ -92,7 +91,8 @@ class CouponController extends Controller
         }
 
         return response()->json([
-            'is_valid' => $isValid
+            'is_valid' => $isValid,
+            'coupon_expiration' => $coupon->expires_at
         ]);
     }
 
