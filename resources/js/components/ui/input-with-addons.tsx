@@ -93,7 +93,7 @@ export default function InputWithAddons({
                         step="0.01"
                         placeholder={placeholder || ""}
                         className={`w-full pl-6 pr-16 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${className}`}
-                        value={value}
+                        value={typeof value === "number" && isNaN(value) ? undefined : value}
                         onChange={handleInputChange}
                         required={required}
                     />

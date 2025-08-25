@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCouponRequest;
+use App\Http\Resources\CouponResource;
 use App\Models\Category;
 use App\Models\Coupon;
 use App\Models\Product;
@@ -16,9 +17,17 @@ class CouponController extends Controller
 {
     public function index()
     {
-        $coupons = Coupon::get();
+        $coupons = Coupon::with([
+            'conditions' => fn($query) => $query->with([
+                'products:id,name', 
+                'users:id,name',
+                'categories:id,name'])
+        ])->get();
+
+        $couponsResource = json_encode(CouponResource::collection($coupons));
+
         return Inertia::render('Coupons/Index', [
-            'coupons' => $coupons
+            'coupons' => $couponsResource
         ]);
     }
 
@@ -30,8 +39,7 @@ class CouponController extends Controller
     public function store(StoreCouponRequest $request)
     {
         try {
-            DB::beginTransaction();
-            Log::info($request->all());
+            DB::beginTransaction();            
             $coupon = Coupon::create([
                 'code' => $request->code,
                 'description' => $request->description,
@@ -52,7 +60,7 @@ class CouponController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('Error starting transaction: ' . $e->getMessage());
+            Log::error('Error al crear el cupón: ' . $e->getMessage());
             return redirect()->back()->with('flash.error', [
                 'title' => 'Error al crear el cupón',
                 'message' => 'Ocurrió un error al generar el cupón.'
@@ -67,42 +75,43 @@ class CouponController extends Controller
                 foreach ($conditions as $condition) {
                     switch ($condition['name']) {
                         case 'product':
-                            $coupon->conditions()->create([
+                            $conditionsModel = $coupon->conditions()->create([
                                 'condition_type' => Product::class,
                                 'condition_value' => null,
                             ]);
 
-                            $coupon->products()->syncWithoutDetaching($condition['value']);
+                            $conditionsModel->products()->syncWithoutDetaching($condition['value']);
                             break;
 
                         case 'client':
-                            $coupon->conditions()->create([
+                            $conditionsModel = $coupon->conditions()->create([
                                 'condition_type' => User::class,
                                 'condition_value' => null,
                             ]);
 
-                            $coupon->users()->syncWithoutDetaching($condition['value']);
+                            $conditionsModel->users()->syncWithoutDetaching($condition['value']);
                             break;
 
                         case 'category':
-                            $coupon->conditions()->create([
+                            $conditionsModel = $coupon->conditions()->create([
                                 'condition_type' => Category::class,
                                 'condition_value' => null,
                             ]);
 
-                            $coupon->categories()->syncWithoutDetaching($condition['value']);
+                            $conditionsModel->categories()->syncWithoutDetaching($condition['value']);
                             break;
 
                         case 'min_amount':
                             $coupon->conditions()->create([
                                 'condition_type' => 'min_amount',
-                                'condition_value' => $condition['value'][0],
+                                'condition_value' => $condition['value'],
                             ]);
                             break;
                     }
                 }
             });
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Error creando condiciones: ' . $e->getMessage());
         }
     }

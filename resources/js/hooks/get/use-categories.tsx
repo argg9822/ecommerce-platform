@@ -11,7 +11,7 @@ export default function useCategories() {
       setLoadingCategories(true)
       setError(null)
 
-      axios.get(route('categories_index'))
+      axios.get(route('categories_list'))
       .then(res => setCategories(res.data.categories))
       .catch(err => setError(err.message))
       .finally(() => setLoadingCategories(false))

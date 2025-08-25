@@ -32,24 +32,4 @@ class Coupon extends Model
     {
         return $this->hasMany(CouponRedemption::class);
     }
-
-    public function users()
-    {
-        return $this->belongsToMany(User::class, 'coupon_user');
-    }
-
-    public function cities()
-    {
-        return $this->belongsToMany(City::class, 'coupon_city');
-    }
-
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'coupon_product');
-    }
-
-    public function categories()
-    {
-        return $this->belongsToMany(Category::class, 'coupon_category');
-    }
 }

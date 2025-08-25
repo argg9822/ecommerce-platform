@@ -52,6 +52,7 @@ Route::middleware([
         Route::apiResource('order-payments', OrderPaymentController::class)
             ->except(['create', 'edit', 'update', 'destroy']);
 
-        Route::post('coupons/{coupon}', [CouponController::class, 'show']);
+        // Cupones
+        Route::post('coupons/validate/{coupon}', [CouponController::class, 'validate']);
     });
 });

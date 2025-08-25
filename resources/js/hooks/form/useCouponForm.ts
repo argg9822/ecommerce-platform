@@ -6,13 +6,6 @@ import { ChangeEvent, FormEventHandler, useEffect, useRef } from 'react';
 type CouponFormData = CouponForm & Record<string, any>;
 
 export function useCouponForm() {
-    const initConditions: Conditions[] = [
-        {
-            name: 'min_amount',
-            value: undefined
-        }
-    ];
-
     const {
         data,
         setData,
@@ -27,7 +20,7 @@ export function useCouponForm() {
         discount_type: 'percentage',
         discount_value: undefined,
         expires_at: format(new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),"yyyy-MM-dd"),
-        conditions: initConditions as Conditions[],
+        conditions: [] as Conditions[],
         only_first_order: false,
         usage_limit: 1,
         usage_per_user: 1
@@ -39,12 +32,21 @@ export function useCouponForm() {
         setData(key, isNaN(parsed) ? undefined : parsed);
     }
 
-    const handleConditionChange = (newValue: number | string, key: "name" | "value", condition_index: number) => {
+    useEffect(() => {
+        console.log(data.conditions);
+    }, [data.conditions]);
+
+    const handleConditionChange = (newValue: number | string, key: "name" | "value", condition_index: number, e?: ChangeEvent<HTMLInputElement>) => {
+        if (e) {
+            handleNumberChangeInput(e, `conditions[${condition_index}].value`);
+            return;
+        }
+
         const updated = data.conditions.map((cond, i) => {
             if (i !== condition_index) return cond;
 
             let newCond = { ...cond };
-
+            
             if (key === "value") {
                 if (Array.isArray(newCond.value)) {
                     const num = Number(newValue);

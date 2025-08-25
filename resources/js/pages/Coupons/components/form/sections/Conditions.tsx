@@ -29,12 +29,7 @@ export default function Conditions() {
         addCondition,
         removeCondition,
         handleConditionChange,
-        handleNumberChangeInput
     } = useCouponFormContext();
-
-    useEffect(() => {
-
-    }, [data.conditions]);
 
     return (
         <Card>
@@ -68,17 +63,16 @@ export default function Conditions() {
                                     <h3 className="text-sm font-semibold text-blue-300">
                                         Condición {index + 1}
                                     </h3>
-
-                                    {index > 0 && (
-                                        <DangerButton
-                                            type="button"
-                                            title="Eliminar condición"
-                                            onClick={() => removeCondition(index)}
-                                            className="!px-2"
-                                        >
-                                            <X className="h-3 w-3" />
-                                        </DangerButton>
-                                    )}
+                                    
+                                    <DangerButton
+                                        type="button"
+                                        title="Eliminar condición"
+                                        onClick={() => removeCondition(index)}
+                                        className="!px-2"
+                                    >
+                                        <X className="h-3 w-3" />
+                                    </DangerButton>
+                                    
                                 </div>
                                 <InputError message={errors.conditions?.[index]} />
 
@@ -119,12 +113,12 @@ export default function Conditions() {
                                             inputId={`min_amount_${index}`}
                                             value={
                                                 Array.isArray(data.conditions[index].value)
-                                                    ? 0 : data.conditions[index].value ?? 0
+                                                    ? "" : data.conditions[index].value ?? ""
                                             }
                                             sufixValue="COP"
                                             suffixes={['COP']}
                                             className="ml-2"
-                                            onChange={(e) => handleConditionChange(Number(e), 'value', index)}
+                                            onChangeWithEvent={(e) => handleConditionChange(Number(e), 'value', index, e)}
                                         />
                                     )}
                                 </div>

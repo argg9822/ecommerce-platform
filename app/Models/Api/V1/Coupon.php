@@ -27,21 +27,21 @@ class Coupon extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'coupon_user');
+        return $this->belongsToMany(User::class);
     }
 
     public function cities()
     {
-        return $this->belongsToMany(City::class, 'coupon_city');
+        return $this->belongsToMany(City::class);
     }
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'coupon_product');
+        return $this->belongsToMany(Product::class);
     }
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'coupon_category');
+        return $this->belongsToMany(Category::class);
     }
 }

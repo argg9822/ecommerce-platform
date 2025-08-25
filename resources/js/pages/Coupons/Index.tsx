@@ -1,9 +1,13 @@
 import PrimaryButton from "@/components/PrimaryButton";
 import AuthenticatedLayout from "@/layouts/AuthenticatedLayout";
+import { Coupon } from "@/types/coupon";
 import { Head, Link } from "@inertiajs/react";
 import { PlusCircle } from "lucide-react";
+import { DataTable } from "@/pages/Coupons/components/data-table";
 
-export default function Index(){
+export default function Index({ coupons } : { coupons: Coupon[] }) {
+    console.log(JSON.parse(String(coupons)));
+    
     return (
         <AuthenticatedLayout>
             <Head title="Cupones" />
@@ -20,6 +24,8 @@ export default function Index(){
                             </PrimaryButton>
                         </Link>
                     </div>
+
+                    <DataTable data={JSON.parse(String(coupons))}/>
                 </div>
             </div>
         </AuthenticatedLayout>

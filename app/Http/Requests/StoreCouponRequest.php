@@ -27,9 +27,8 @@ class StoreCouponRequest extends FormRequest
             'code'             => 'required|string|max:50|unique:coupons,code',
             'discount_type'    => 'required|in:percentage,fixed,free_shipping,bogo',
             'discount_value'   => [
-                'required',
                 'numeric',
-                Rule::when(in_array($this->input('discount_type'), ['percentage', 'fixed']), 'min:1'),
+                Rule::when(in_array($this->input('discount_type'), ['percentage', 'fixed']), 'min:1|required'),
             ],
             'expires_at'       => 'required|date|after:today',
             'only_first_order' => 'boolean',

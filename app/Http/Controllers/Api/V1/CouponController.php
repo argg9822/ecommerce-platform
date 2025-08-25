@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 
 class CouponController extends Controller
 {
@@ -42,6 +43,14 @@ class CouponController extends Controller
      * Display the specified resource.
      */
     public function show(Request $request, Coupon $coupon)
+    {
+        //
+    }
+
+    /**
+     * Validate the coupon.
+     */
+    public function validate(Request $request, Coupon $coupon)
     {
         $products = collect($request->input('products', []));
         $user     = Auth::user();
@@ -83,19 +92,25 @@ class CouponController extends Controller
 
                 case 'min_amount':
                     $cartTotal = $products->sum(fn($p) => $p['cantidad'] * ProductModel::find($p['id'])->price);
-                    if ($cartTotal < $condition->value) {
+                    if ($cartTotal < $condition->condition_value) {
                         $isValid = false;
                     }
                     break;
             }
         }
 
+        if(!$isValid) {
+            return response()->json([
+                'is_valid' => $isValid,
+                'message' => 'El cupón no es válido para los productos seleccionados o ha expirado.',
+            ], Response::HTTP_OK);
+        }
+        
         return response()->json([
             'is_valid' => $isValid,
-            'coupon_expiration' => $coupon->expires_at
-        ]);
+            'discount_value' => $coupon->discount_type === 'percentage' ? ($coupon->discount_value / 100) : $coupon->discount_value ?? $coupon->discount_type,
+        ], Response::HTTP_OK);
     }
-
 
     /**
      * Show the form for editing the specified resource.

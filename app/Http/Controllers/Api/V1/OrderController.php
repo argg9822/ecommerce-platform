@@ -80,7 +80,10 @@ class OrderController extends Controller
             $order->load(['items', 'user']);
 
             DB::commit();
-            return response()->json(['message' => 'Orden creada correctamente', 'order' => $order], Response::HTTP_CREATED);
+            return response()->json([
+                'message' => 'Orden creada correctamente',
+                'order' => $order
+            ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error al generrar la orden: '. $e->getMessage());
@@ -89,8 +92,6 @@ class OrderController extends Controller
                 'message' => 'Error creando la orden, intenta nuevamente'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return response()->json(['message' => 'Orden creada correctamente'], Response::HTTP_CREATED);
     }
 
     /**

@@ -12,10 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('coupon_condition_category', function (Blueprint $table) {
-            $table->foreignId('coupon_id')->constrained()->onDelete('cascade');
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->primary(['coupon_id', 'category_id']);
             $table->foreignId('coupon_condition_id')->constrained()->cascadeOnDelete();
+            $table->primary(['coupon_condition_id', 'category_id']);
         });
     }
 

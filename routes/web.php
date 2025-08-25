@@ -53,11 +53,13 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
         Route::post('productos/update/{id}', [ProductController::class, 'update'])->name('products_update');
 
         // Categories
+        Route::get('categories/list', [CategoryController::class, 'list'])->name('categories_list');
         Route::resource('categories', CategoryController::class)->names([
             'index'  => 'categories_index',
             'create' => 'categories_create',
             'store'  => 'categories_store'
         ]);
+
 
         // Brands
         Route::resource('brands', BrandController::class)->names([

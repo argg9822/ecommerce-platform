@@ -19,8 +19,8 @@ return new class extends Migration
             $table->enum('status', ['pending', 'approved', 'failed', 'refunded'])->default('pending');
             $table->uuid('order_id');
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
-            $table->string('currency_id')->nullable();
-            $table->string('operation_type ')->nullable();
+            $table->string('currency_id')->nullable(); // Moneda en la que se hizo la transacción
+            $table->string('operation_type')->nullable(); // Tipo de operación (p. ej., "payment", "refund")
             $table->timestamp('approved_at')->nullable();
             $table->timestamps();
             $table->softDeletes();

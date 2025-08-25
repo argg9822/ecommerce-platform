@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings, ListOrdered, ShoppingBasket, PlusCircle } from "lucide-react";
+import { Home, Inbox, Search, Settings, ListOrdered, ShoppingBasket, PlusCircle } from "lucide-react";
 import { Link, usePage } from '@inertiajs/react';
 import ApplicationLogo from '@/components/ApplicationLogo';
 import NavLink from "@/components/NavLink";
@@ -21,10 +21,18 @@ import {
   AccordionItem,
   AccordionTrigger
 } from "@/components/ui/accordion";
-import { ItemText } from "@radix-ui/react-select";
-import { Button } from "../ui/button";
 
-const items = [
+type MenuItem = {
+  title: string;
+  url?: string;
+  active?: boolean;
+  icon: React.ElementType;
+  role?: string[];
+  createRoute?: string;
+  subMenu?: MenuItem[];
+}
+
+const menuItems: MenuItem[] = [
   {
     title: "Dashboard",
     url: route("dashboard"),
@@ -33,30 +41,35 @@ const items = [
     role: ["admin", "superadmin", "owner"]
   },
   {
-    title: "Tiendas",
-    url: route("tenantIndex"),
-    active: route().current("tenants"),
-    icon: Inbox,
-    role: ["superadmin"]
-  },
-  {
-    title: "Productos",
-    url: route("products_index"),
-    active: route().current("products"),
-    icon: Inbox,
-    role: ["admin", "owner"],
-    createRoute: route('products_create')
-  },
-  {
-    title: "Órdenes",
-    url: route("orders_index"),
-    active: route().current("ordenes"),
-    icon: ListOrdered,
-    role: ["admin", "owner"]
+    title: "Administrar",
+    icon: ShoppingBasket,
+    subMenu: [
+      {
+        title: "Tiendas",
+        url: route("tenantIndex"),
+        active: route().current("tenants"),
+        icon: Inbox,
+        role: ["superadmin"]
+      },
+      {
+        title: "Productos",
+        url: route("products_index"),
+        active: route().current("products"),
+        icon: Inbox,
+        role: ["admin", "owner"],
+        createRoute: route('products_create')
+      },
+      {
+        title: "Órdenes",
+        url: route("orders_index"),
+        active: route().current("ordenes"),
+        icon: ListOrdered,
+        role: ["admin", "owner"]
+      }
+    ]
   },
   {
     title: "Marketing",
-    active: route().current("marketing"),
     icon: ShoppingBasket,
     role: ["admin", "owner"],
     subMenu: [
@@ -86,60 +99,70 @@ export function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sm text-gray-100">
-            <span>Administrar</span>
-          </SidebarGroupLabel>
-
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item, index) => (
-                item.role?.includes(user.role) && (
-                  !item.subMenu
-                    ?
-                    <SidebarMenuItem key={`menu-item-${item.title}`}>
-                      <SidebarMenuButton asChild>
-                        <div className="relative">
-                          <NavLink href={item.url} active={item.active} className="w-full">
-                            <item.icon />
+              {menuItems.map((item, index) => (
+                !item.subMenu
+                  ?
+                  <SidebarMenuItem key={`menu-item-${item.title}`}>
+                    {item.role?.includes(user.role) && (
+                      
+                        <SidebarMenuButton className="flex justify-between">
+                          <NavLink href={item.url ?? "#"} active={item.active ?? false} className="w-full text-sm">
+                            <item.icon size={16} />
                             <span>{item.title}</span>
                           </NavLink>
-                          
+
                           {item.createRoute && (
-                            <Link 
-                              href={route('products_create')} 
-                              className="absolute right-2 top-1/2 transform -translate-y-1/2" 
+                            <Link
+                              href={route('products_create')}
                               title="Crear producto"
                               onClick={(e) => e.stopPropagation()}
                             >
                               <PlusCircle className="text-blue-300" size={15} />
                             </Link>
                           )}
-                        </div>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    :
-                    <Accordion key={`accordion-${item.title}-${index}`} type="single" collapsible className="w-full" defaultValue="item-1">
-                      <AccordionItem value="item-1">
-                        <AccordionTrigger className="text-gray-100  pb-0">
-                          <SidebarGroupLabel className="text-sm text-gray-100">
-                            {item.title}
-                          </SidebarGroupLabel>
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          {item.subMenu.map((option) => (
+                        </SidebarMenuButton>
+                    )}
+                  </SidebarMenuItem>
+                  :
+                  <Accordion key={`accordion-${item.title}-${index}`} type="single" collapsible className="w-full" defaultValue="item-1">
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger className="text-gray-100  pb-0">
+                        <SidebarGroupLabel className="text-sm text-gray-100">
+                          {item.title}
+                        </SidebarGroupLabel>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        {item.subMenu.map((option) => (
+                          option.role?.includes(user.role) && (
                             <SidebarMenuItem key={option.title}>
-                              <SidebarMenuButton asChild>
-                                <NavLink href={option.url} active={option.active}>
-                                  <option.icon />
-                                  <span>{option.title}</span>
+                              <SidebarMenuButton>
+                                <NavLink href={option.url ?? "#"} active={option.active ?? false} className="flex justify-between w-full">
+                                  <div className="flex items-center gap-2 text-sm">
+                                    <option.icon size={16} />
+                                    <span>{option.title}</span>
+                                  </div>
+
+                                  {option.createRoute && (
+                                    <Link
+                                      href={route('products_create')}
+                                      title="Crear producto"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      <PlusCircle className="text-blue-300" size={15} />
+                                    </Link>
+                                  )}
                                 </NavLink>
+
+
                               </SidebarMenuButton>
                             </SidebarMenuItem>
-                          ))}
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                )
+                          )
+                        ))}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>

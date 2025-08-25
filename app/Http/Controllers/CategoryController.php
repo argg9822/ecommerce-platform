@@ -26,6 +26,16 @@ class CategoryController extends Controller
         ], Response::HTTP_OK);
     }
 
+    public function list()
+    {
+        Log::info('Listado de categorías ');
+        $categories = Category::select('id', 'name')->get();
+
+        return response()->json([
+            'categories' => $categories
+        ], Response::HTTP_OK);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
