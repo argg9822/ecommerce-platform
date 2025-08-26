@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger('rating')->default(5);
+            $table->unsignedTinyInteger('rating')->default(5)->nullable();
             $table->boolean('is_approved')->default(true);
             $table->boolean('is_visible')->default(true);
             $table->string('title')->nullable();

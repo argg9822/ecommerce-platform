@@ -23,9 +23,9 @@ class StoreReviewRequest extends FormRequest
     {
         return [
             'product_id' => 'required|exists:products,id',
-            'rating' => 'required|integer|min:1|max:5',
+            'rating' => 'nullable|integer|min:1|max:5',
             'comment' => 'nullable|string|max:1000',
-            'title' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'ip_address' => 'nullable|ip',
         ];
     }
@@ -35,13 +35,11 @@ class StoreReviewRequest extends FormRequest
         return [
             'product_id.required' => 'no se ha proporcionado el ID del producto.',
             'product_id.exists' => 'El producto especificado no existe.',
-            'rating.required' => 'La calificación es obligatoria.',
             'rating.integer' => 'La calificación debe ser un número entero.',
             'rating.min' => 'La calificación debe ser al menos 1.',
             'rating.max' => 'La calificación no puede ser mayor a 5.',
             'comment.string' => 'El comentario debe ser una cadena de texto.',
             'comment.max' => 'El comentario no puede exceder los 1000 caracteres.',
-            'title.required' => 'El título es obligatorio.',
             'title.string' => 'El título debe ser una cadena de texto.',
             'title.max' => 'El título no puede exceder los 255 caracteres.',
             'ip_address.ip' => 'La dirección IP debe ser una dirección IP válida.',
