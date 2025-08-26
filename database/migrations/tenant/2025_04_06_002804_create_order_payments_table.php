@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->decimal('amount', 10, 2);
             $table->string('payment_method');
+            $table->string('preference_id')->unique()->nullable();
             $table->string('transaction_id')->nullable();
-            $table->enum('status', ['pending', 'approved', 'failed', 'refunded'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'cancelled', 'refunded', 'in_process', 'rejected', 'charged_back'])->default('pending');
             $table->uuid('order_id');
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->string('currency_id')->nullable(); // Moneda en la que se hizo la transacción

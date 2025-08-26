@@ -57,7 +57,8 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
         Route::resource('categories', CategoryController::class)->names([
             'index'  => 'categories_index',
             'create' => 'categories_create',
-            'store'  => 'categories_store'
+            'store'  => 'categories_store',
+            'show'   => 'categories_show'
         ]);
 
 

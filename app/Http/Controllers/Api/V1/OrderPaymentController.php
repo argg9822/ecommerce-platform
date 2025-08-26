@@ -35,18 +35,27 @@ class OrderPaymentController extends Controller
     {
         try {
             $approved_at = $request->status === 'approved' ? now() : null;
+
+            $orderToupdate = Order::where('preference_id', $request->preference_id);
+
+            $updatedOrder = $orderToupdate->update([
+                'status' => $request->status === 'approved' ? 'paid' : $request->status
+            ]);
+
+            if (!$updatedOrder) {
+                return response()->json([
+                    'message' => 'Orden no encontrada o no se pudo actualizar'
+                ], Response::HTTP_NOT_FOUND);
+            }
     
             OrderPayment::create([
                 'transaction_id' => $request->transaction_id,
                 'status' => $request->status,
-                'order_id' => $request->order_id,
+                'order_id' => $orderToupdate->first()->id,
                 'amount' => $request->amount,
                 'payment_method' => $request->payment_method,
                 'approved_at' => $approved_at,
-            ]);
-
-            Order::where('id', $request->order_id)->update([
-                'status' => $request->status === 'approved' ? 'paid' : $request->status
+                'operation_type' => 'payment',           
             ]);
 
             return response()->json([
