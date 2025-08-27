@@ -24,6 +24,7 @@ class StoreOrderRequest extends FormRequest
         return [
             'preference_id' => 'required|string|unique:orders,preference_id',
             'status' => 'required|string|in:pending,paid,processing,ready_to_ship,shipped,out_for_delivery,delivered,cancelled,refunded,failed',
+            'payment_type' => 'required|string|in:mercado_pago,contra_entrega',
             
             // Validar productos
             'products' => 'required|array|min:1',
@@ -50,6 +51,9 @@ class StoreOrderRequest extends FormRequest
         return [
             'preference_id.required' => 'El ID de preferencia es obligatorio.',
             'preference_id.unique' => 'Ya hay una transacción con este ID de preferencia.',
+            'payment_type.in' => 'El tipo de pago debe ser Mercado pago o contraentrega',
+            'payment_type.required' => 'El tipo de pago es obligatorio',
+            'payment_type.string' => 'El tipo de pago debe ser un string',
             'status.required' => 'El estado es obligatorio.',
             'status.in' => 'El estado debe ser uno de los siguientes: pending, paid, processing, ready_to_ship, shipped, out_for_delivery, delivered, cancelled, refunded, failed.',
             'products.required' => 'Debe proporcionar al menos un producto.',

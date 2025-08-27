@@ -20,7 +20,7 @@ class Order extends Model
         'notes',
         'shipping_city',
         'shipping_address',
-        'payment_id',
+        'payment_type',
         'delivery_info',
     ];
 
@@ -32,6 +32,11 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(OrderPayment::class);
     }
 
     protected static function boot()

@@ -64,6 +64,7 @@ class OrderController extends Controller
                 'notes' => $request->delivery_info['deliveryNotes'],
                 'user_id' => Auth::id(),
                 'shipping_city' => $request->delivery_info['city'],
+                'payment_type' => $request->payment_type,
                 'delivery_info' => json_encode($delivery_info),
             ]);
 
