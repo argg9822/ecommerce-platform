@@ -25,6 +25,7 @@ class OrderController extends Controller
             'notes',
             'shipping_city',
             'delivery_info',
+            'payment_type',
             'created_at',
             'updated_at',
         ])->orderBy('created_at', 'desc')->get();

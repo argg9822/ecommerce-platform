@@ -45,6 +45,7 @@ import { useOrders } from '@/hooks/use-orders';
 import { OrderStatusBadge } from './OrderStatusBadge';
 import OrderDetail from './OrderDetail';
 import { DataTable } from './components/data-table';
+import { log } from 'node:console';
 
 interface OnKeyDownEvent extends React.KeyboardEvent<HTMLInputElement> { }
 
@@ -70,6 +71,9 @@ export default function ({ orders }: OrderProps) {
 
     const [openOrderDetail, setOpenOrderDetail] = useState<boolean>(false);
     const [orderViewDetail, setOrderViewDetail] = useState<Order>(orders[0] ?? []);
+
+    console.log(orders);
+    
 
     return (
         <AuthenticatedLayout>
@@ -238,7 +242,7 @@ export default function ({ orders }: OrderProps) {
                 <OrderDetail onChangeStatus={onChangeStatus} setIsOpen={setOpenOrderDetail} order={orderViewDetail} isOpen={openOrderDetail}/>
             )}
 
-            <DataTable />
+            {/* <DataTable data={filteredOrders} /> */}
 
         </AuthenticatedLayout>
     )
