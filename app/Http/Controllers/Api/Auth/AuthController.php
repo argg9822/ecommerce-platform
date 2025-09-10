@@ -34,7 +34,7 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
-            'device_name' => 'required'
+            'device_name' => 'required|string|max:255',
         ]);
 
         $user = User::where('email', $request->email)->first();
@@ -43,10 +43,13 @@ class AuthController extends Controller
             return response()->json(['message' => 'Credenciales incorrectas'], Response::HTTP_UNAUTHORIZED);
         }
 
+        $totalPurchases = $user->orders()->where('status', 'delivered')->count();
+
         return response()->json([
             'message' => 'Login exitoso',
             'token' => $user->createToken($request->device_name)->plainTextToken,
-            'user' => $user
+            'user' => $user,
+            'total_purchases' => $totalPurchases
         ]);
     }
 
