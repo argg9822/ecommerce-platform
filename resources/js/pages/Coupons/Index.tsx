@@ -6,8 +6,6 @@ import { PlusCircle } from "lucide-react";
 import { DataTable } from "@/pages/Coupons/components/data-table";
 
 export default function Index({ coupons } : { coupons: Coupon[] }) {
-    console.log(JSON.parse(String(coupons)));
-    
     return (
         <AuthenticatedLayout>
             <Head title="Cupones" />

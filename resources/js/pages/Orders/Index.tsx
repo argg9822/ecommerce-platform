@@ -72,9 +72,6 @@ export default function ({ orders }: OrderProps) {
     const [openOrderDetail, setOpenOrderDetail] = useState<boolean>(false);
     const [orderViewDetail, setOrderViewDetail] = useState<Order>(orders[0] ?? []);
 
-    console.log(orders);
-    
-
     return (
         <AuthenticatedLayout>
             <Head title="Órdenes" />
@@ -174,75 +171,13 @@ export default function ({ orders }: OrderProps) {
                         </div>
                     </div>
 
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="border-gray-700">
-                                <TableHead className="text-gray-300">Cliente</TableHead>
-                                <TableHead className="text-gray-300">Fecha</TableHead>
-                                <TableHead className="text-gray-300">Ciudad</TableHead>
-                                <TableHead className="text-gray-300">Estado</TableHead>
-                                <TableHead className="text-gray-300 text-right">Total</TableHead>
-                                <TableHead className="text-gray-300 text-center">Acciones</TableHead>
-                            </TableRow>
-                        </TableHeader>
-
-                        <TableBody>
-                            {filteredOrders.length > 0 ? (
-                                filteredOrders.map((order) => (
-                                    <TableRow
-                                        key={order.id}
-                                        className="hover:bg-white/5 border-gray-800"
-                                    >
-                                        <TableCell className="font-medium text-gray-200">
-                                            {order.user?.name || "Sin nombre"}
-                                        </TableCell>
-                                        <TableCell className="text-gray-300">
-                                            {formatDate(order.created_at)}
-                                        </TableCell>
-                                        <TableCell className="text-gray-300">
-                                            {order.shipping_city}
-                                        </TableCell>
-                                        <TableCell>
-                                           <OrderStatusBadge status={order.status} />
-                                        </TableCell>
-                                        <TableCell className="text-right text-gray-200">
-                                            ${order.total}
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                            <Button
-                                                onClick={() => {
-                                                    setOrderViewDetail(order);
-                                                    setOpenOrderDetail(true)
-                                                }}
-                                                variant="secondary"
-                                                size="sm"
-                                                className="bg-white/10 hover:bg-white/20 text-white"
-                                            >
-                                                Ver detalles
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell
-                                        colSpan={6}
-                                        className="text-center text-gray-400 py-6"
-                                    >
-                                        No hay órdenes registradas
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
+                    <DataTable data={filteredOrders} />
                 </div>
             </div>
 
             {filteredOrders.length > 0 && (
                 <OrderDetail onChangeStatus={onChangeStatus} setIsOpen={setOpenOrderDetail} order={orderViewDetail} isOpen={openOrderDetail}/>
             )}
-
-            {/* <DataTable data={filteredOrders} /> */}
 
         </AuthenticatedLayout>
     )

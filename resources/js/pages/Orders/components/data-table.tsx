@@ -1,4 +1,5 @@
 import * as React from "react";
+import dayjs from 'dayjs';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -12,7 +13,6 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -34,6 +34,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Order } from "@/types/order";
+import { OrderStatusBadge } from "@/pages/Orders/OrderStatusBadge";
+
+interface FormatDateFn {
+    (date: string | number | Date | dayjs.Dayjs): string;
+}
+
+const formatDate: FormatDateFn = (date) => {
+  return dayjs(date)
+    .locale('es')
+    .format('dddd D [de] MMMM [de] YYYY');
+}
 
 export const columns: ColumnDef<Order>[] = [
   {
@@ -59,38 +70,52 @@ export const columns: ColumnDef<Order>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "Estado",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
-    ),
+    accessorKey: "user",
+    header: "Cliente",
+    cell: ({ row }) => {
+      const user = row.original.user;
+      return <div className="capitalize">{user?.name}</div>
+    },
   },
   {
-    accessorKey: "email",
+    accessorKey: "created_at",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          Fecha
           <ArrowUpDown />
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => <div className="lowercase">{formatDate(row.getValue("created_at"))}</div>,
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    accessorKey: "shipping_city",
+    header: "Ciudad",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("shipping_city")}</div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: "Estado",
+    cell: ({ row }) => (
+      <OrderStatusBadge status={row.getValue("status")} />
+    ),
+  },
+  {
+    accessorKey: "total",
+    header: () => <div className="text-right">Total</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
+      const amount = parseFloat(row.getValue("total"));
+      const formatted = new Intl.NumberFormat("es-CO", {
         style: "currency",
-        currency: "USD",
-      }).format(amount)
+        currency: "COP",
+        minimumFractionDigits: 0,
+      }).format(amount);
 
       return <div className="text-right font-medium">{formatted}</div>
     },
@@ -99,32 +124,44 @@ export const columns: ColumnDef<Order>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original
-
+      const order = row.original
+    
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Abrir menu</span>
               <MoreHorizontal />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
+            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigator.clipboard.writeText(order.id)}
+            >
+              Copiar ID de la orden
+            </DropdownMenuItem>
+            <DropdownMenuItem>Cancelar orden</DropdownMenuItem>
+            <DropdownMenuItem>
+              {/* <Button
+                  onClick={() => {
+                      setOrderViewDetail(order);
+                      setOpenOrderDetail(true)
+                  }}
+                  variant="secondary"
+                  size="sm"
+                  className="bg-white/10 hover:bg-white/20 text-white"
+              > */}
+                  Ver detalles
+              {/* </Button> */}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
     },
   },
-]
+];
 
 export function DataTable({ data } : { data: Order[] } ) {
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -158,17 +195,17 @@ export function DataTable({ data } : { data: Order[] } ) {
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Buscar cliente..."
+          value={(table.getColumn("user")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("user")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
+              Columnas <ChevronDown />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -192,6 +229,7 @@ export function DataTable({ data } : { data: Order[] } ) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
       <div className="overflow-hidden rounded-md border border-gray-800">
         <Table>
           <TableHeader>
@@ -244,8 +282,8 @@ export function DataTable({ data } : { data: Order[] } ) {
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="text-muted-foreground flex-1 text-sm">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {table.getFilteredSelectedRowModel().rows.length} de{" "}
+          {table.getFilteredRowModel().rows.length} filas seleccionadas.
         </div>
         <div className="space-x-2">
           <Button
