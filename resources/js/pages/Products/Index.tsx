@@ -14,7 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 import { useForm } from '@inertiajs/react';
 import { FlashMessage } from '@/types';
 import { toast } from '@/hooks/use-toast';

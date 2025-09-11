@@ -69,6 +69,7 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
         ]);
 
         // Orders
+        Route::post('ordenes/update-status/{order}', [OrderController::class, 'updateStatus'])->name('orders_update_status');
         Route::resource('ordenes', OrderController::class)->names([
             'index' => 'orders_index'
         ]);

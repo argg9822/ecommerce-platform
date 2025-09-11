@@ -6,6 +6,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
 
 class OrderController extends Controller
 {
@@ -73,6 +74,30 @@ class OrderController extends Controller
     public function update(Request $request, string $id)
     {
         //
+    }
+
+    public function updateStatus(Request $request, $orderId)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,paid,shipped,delivered,canceled'
+        ]);
+
+        try {
+            $order = Order::findOrFail($orderId);
+            $order->update([
+                'status' => $request->input('status')
+            ]);
+
+            return response()->json([
+                'message' => 'Estado de la orden actualizado correctamente.'
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::error('Error al actualizar el estado de la orden: ' . $e->getMessage());
+
+            return response()->json([
+                'message' => 'Error al actualizar el estado de la orden.'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**

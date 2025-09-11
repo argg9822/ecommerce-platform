@@ -1,17 +1,9 @@
 import 'dayjs/locale/es';
+import { ChevronDownIcon } from "lucide-react";
 
 import AuthenticatedLayout from "@/layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
 import {
     Sheet,
     SheetClose,
@@ -31,7 +23,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { ChevronDownIcon, ListChecks } from "lucide-react";
 import {
     Popover,
     PopoverContent,
@@ -42,12 +33,8 @@ import { Order } from "@/types/order";
 import { Button } from "@/components/ui/button";
 import { useState } from 'react';
 import { useOrders } from '@/hooks/use-orders';
-import { OrderStatusBadge } from './OrderStatusBadge';
 import OrderDetail from './OrderDetail';
 import { DataTable } from './components/data-table';
-import { log } from 'node:console';
-
-interface OnKeyDownEvent extends React.KeyboardEvent<HTMLInputElement> { }
 
 interface OrderProps {
     orders: Order[]

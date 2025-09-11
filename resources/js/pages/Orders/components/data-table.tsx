@@ -35,9 +35,11 @@ import {
 } from "@/components/ui/table";
 import { Order } from "@/types/order";
 import { OrderStatusBadge } from "@/pages/Orders/OrderStatusBadge";
+import DangerButton from "@/components/ui/danger-button";
+import { useOrderForm } from "@/hooks/form/useOrderForm";
 
 interface FormatDateFn {
-    (date: string | number | Date | dayjs.Dayjs): string;
+  (date: string | number | Date | dayjs.Dayjs): string;
 }
 
 const formatDate: FormatDateFn = (date) => {
@@ -124,6 +126,10 @@ export const columns: ColumnDef<Order>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
+      const {
+        updateOrderStatus
+      } = useOrderForm();
+      
       const order = row.original
     
       return (
@@ -142,7 +148,6 @@ export const columns: ColumnDef<Order>[] = [
             >
               Copiar ID de la orden
             </DropdownMenuItem>
-            <DropdownMenuItem>Cancelar orden</DropdownMenuItem>
             <DropdownMenuItem>
               {/* <Button
                   onClick={() => {
@@ -155,6 +160,11 @@ export const columns: ColumnDef<Order>[] = [
               > */}
                   Ver detalles
               {/* </Button> */}
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <DangerButton onClick={() => updateOrderStatus(order.id, 'canceled')}>
+                Cancelar orden
+              </DangerButton>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
