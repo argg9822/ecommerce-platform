@@ -3,7 +3,7 @@ import { PaymentForm } from "@/types/payment-form.type";
 import { useForm, usePage } from "@inertiajs/react";
 import { FlashMessage } from '@/types';
 import { Order } from "@/types/order";
-import { useEffect } from "react";
+import { FormEventHandler, useEffect } from "react";
 
 type PaymentFormData = PaymentForm & Record<string, any>;
 

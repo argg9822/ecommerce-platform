@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { FormEventHandler, useEffect, useState } from "react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -7,9 +7,11 @@ import { Order } from "@/types/order"
 import InputWithAddons from "@/components/ui/input-with-addons"
 import InputLabel from "@/components/InputLabel"
 import { usePaymentForm } from "@/hooks/form/usePaymentForm"
+import { useOrders } from "@/hooks/use-orders"
 
-export function OrderStatusForm({ order }: { order: Order }) {
+export function OrderStatusForm({ orderBD }: { orderBD: Order }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [order, setOrder] = useState<Order>(orderBD);
     const {
         data,
         setData,
@@ -17,6 +19,32 @@ export function OrderStatusForm({ order }: { order: Order }) {
         processing,
         storePayment
     } = usePaymentForm({ order });
+
+    const updateFilteredOrders = () =>{
+        console.log('Updating filtered orders');
+        
+        // const {
+        //     filteredOrders,
+        //     setFilteredOrder
+        // } = useOrders();
+
+        // const newFilteredOrders = [...filteredOrders];
+        // const 
+
+        // setFilteredOrder(newFilteredOrders.map((order, index) => {
+        //     if (index === orderIndex) {
+        //         return { ...order, payment: data };
+        //     }
+        //     return order;
+        // }));
+    }
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        storePayment(() => {
+            updateFilteredOrders();
+        });
+    };
 
     return (
         <Collapsible
@@ -38,7 +66,7 @@ export function OrderStatusForm({ order }: { order: Order }) {
             </div>
 
             <CollapsibleContent>
-                <form onSubmit={storePayment} className="flex flex-col gap-4 rounded-t-md bg-gray-950 p-4">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-t-md bg-gray-950 p-4">
                     <div className="flex flex-row gap-3">
                         {/* Amount */}
                         <div className="w-1/2">
