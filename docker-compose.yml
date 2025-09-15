@@ -33,6 +33,8 @@ services:
       - app_network
     depends_on:
       - postgres
+    expose:
+      - "9000"
 
   nginx:
     image: nginx:latest
