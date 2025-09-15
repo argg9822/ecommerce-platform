@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use Symfony\Component\HttpFoundation\Response;
 
 class OrderController extends Controller
 {
@@ -16,8 +16,14 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::with([
-            'items',
-            'user:id,name,email'
+            'items' => function ($query) {
+                $query->with('products:id,name');
+            },
+            'user:id,name,email',
+            'payments' => function ($query) {
+                $query->select('id', 'order_id', 'transaction_id', 'status', 'amount', 'payment_method', 'approved_at', 'created_at');
+            },
+            'statusHistory:id,order_id,old_status,new_status,changed_by,created_at',
         ])->select([
             'id',
             'total',
@@ -79,7 +85,7 @@ class OrderController extends Controller
     public function updateStatus(Request $request, $orderId)
     {
         $request->validate([
-            'status' => 'required|in:pending,paid,shipped,delivered,canceled'
+            'status' => 'required|in:pending,paid,shipped,delivered,cancelled'
         ]);
 
         try {
@@ -88,15 +94,17 @@ class OrderController extends Controller
                 'status' => $request->input('status')
             ]);
 
-            return response()->json([
-                'message' => 'Estado de la orden actualizado correctamente.'
-            ], Response::HTTP_OK);
+            return redirect()->back()->with('flash.success', [
+                'title' => 'Estado de la orden actualizado correctamente',
+                'message' => 'El estado de la orden ha sido actualizado exitosamente.'
+            ]);
         } catch (\Exception $e) {
             Log::error('Error al actualizar el estado de la orden: ' . $e->getMessage());
 
-            return response()->json([
-                'message' => 'Error al actualizar el estado de la orden.'
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return redirect()->back()->with('flash.error', [
+                'title' => 'Error',
+                'message' => 'Hubo un error al actualizar el estado de la orden. Por favor, inténtalo de nuevo.'
+            ]);
         }
     }
 

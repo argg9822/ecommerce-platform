@@ -242,7 +242,7 @@ export function DataTable({ data }: { data: Coupon[] }) {
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filtrar cupones..."
+          placeholder="Filtrar por código de cupón..."
           value={(table.getColumn("code")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("code")?.setFilterValue(event.target.value)
@@ -252,7 +252,7 @@ export function DataTable({ data }: { data: Coupon[] }) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columnas <ChevronDown />
+              Mostrar columnas <ChevronDown />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

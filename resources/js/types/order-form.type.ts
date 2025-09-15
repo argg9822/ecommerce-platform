@@ -6,7 +6,7 @@ export interface OrderForm {
     id: string;
     preference_id: string;
     user_id: number | undefined;
-    status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'canceled' | undefined;
+    status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled' | undefined;
     total: number | undefined;
     notes: string | undefined;
     shipping_city: string | undefined;

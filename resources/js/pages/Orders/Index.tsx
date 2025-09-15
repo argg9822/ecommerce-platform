@@ -36,15 +36,12 @@ import { useOrders } from '@/hooks/use-orders';
 import OrderDetail from './OrderDetail';
 import { DataTable } from './components/data-table';
 
-interface OrderProps {
-    orders: Order[]
-}
-
-export default function ({ orders }: OrderProps) {
+export default function ({ orders }: { orders: Order[] }) {
     const {
         orderFilterStatus,
         setOrderFilterStatus,
         filteredOrders,
+        setFilteredOrder,
         filterOrders,
         isOpenSheet,
         setIsOpenSheet,
@@ -53,9 +50,8 @@ export default function ({ orders }: OrderProps) {
         setOpenDatepickerInit,
         dateFilterInitDate,
         setDateFilterInitDate,
-        onChangeStatus
     } = useOrders(orders);
-
+    
     const [openOrderDetail, setOpenOrderDetail] = useState<boolean>(false);
     const [orderViewDetail, setOrderViewDetail] = useState<Order>(orders[0] ?? []);
 
@@ -67,6 +63,7 @@ export default function ({ orders }: OrderProps) {
                     <div className="flex justify-between items-center mb-8">
                         <h1 className="text-2xl font-bold">Órdenes</h1>
 
+                        {/* Filtro */}
                         <div className='flex items-center gap-4'>
                             <Sheet open={isOpenSheet} onOpenChange={setIsOpenSheet}>
                                 <SheetTrigger asChild>
@@ -91,7 +88,7 @@ export default function ({ orders }: OrderProps) {
                                                 <SelectContent>
                                                     <SelectGroup>
                                                         <SelectLabel>Estado</SelectLabel>
-                                                        <SelectItem value="all">Todos</SelectItem>
+                                                        <SelectItem value="all">Todos los estados</SelectItem>
                                                         <SelectItem value="pending">Pendiente</SelectItem>
                                                         <SelectItem value="paid">Pagada</SelectItem>
                                                         <SelectItem value="processing">Procesando</SelectItem>
@@ -158,12 +155,12 @@ export default function ({ orders }: OrderProps) {
                         </div>
                     </div>
 
-                    <DataTable data={filteredOrders} />
+                    <DataTable data={filteredOrders} setOrders={setFilteredOrder} setOpenDetails={setOpenOrderDetail} setOrderViewDetail={setOrderViewDetail} />
                 </div>
             </div>
 
             {filteredOrders.length > 0 && (
-                <OrderDetail onChangeStatus={onChangeStatus} setIsOpen={setOpenOrderDetail} order={orderViewDetail} isOpen={openOrderDetail}/>
+                <OrderDetail setIsOpen={setOpenOrderDetail} order={orderViewDetail} index={filteredOrders.findIndex(order => order.id === orderViewDetail.id)} isOpen={openOrderDetail}/>
             )}
 
         </AuthenticatedLayout>
