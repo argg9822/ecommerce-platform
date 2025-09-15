@@ -15,6 +15,7 @@ export function useOrderForm(){
         errors,
         post,
         reset,
+        transform,
         processing,
         recentlySuccessful
     } = useForm<OrderFormData>({
@@ -70,14 +71,19 @@ export function useOrderForm(){
         });
     }
 
-    const updateOrderStatus = (orderId: string, status: | 'paid' | 'shipped' | 'delivered' | 'canceled', onSuccess?:  () => void) => {
+    const updateOrderStatus = (orderId: string, status: | 'paid' | 'shipped' | 'delivered' | 'cancelled', updateFilteredOrders?: (status: string) => void) => {
         setData('status', status);
+
+        transform((data) => ({
+            ...data,
+            status: status
+        }));
 
         post(route('orders_update_status', { order: orderId }), {
             preserveScroll: true,
             onSuccess: () => {
                 reset();
-                if (onSuccess) onSuccess();
+                if (updateFilteredOrders) updateFilteredOrders(status);
             },
             onError: () => {
                 if (errors.status) reset('status');

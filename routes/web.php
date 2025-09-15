@@ -5,6 +5,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderPaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TenantController;
@@ -61,7 +62,6 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
             'show'   => 'categories_show'
         ]);
 
-
         // Brands
         Route::resource('brands', BrandController::class)->names([
             'create' => 'brands_create',
@@ -73,6 +73,11 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
         Route::resource('ordenes', OrderController::class)->names([
             'index' => 'orders_index'
         ]);
+
+        // Payments
+        Route::resource('payment', OrderPaymentController::class)->names([
+            'store'  => 'payment_store'
+        ])->only(['store']);
         
         // Coupons
         Route::resource('cupones', CouponController::class)->names([

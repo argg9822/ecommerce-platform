@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class Order extends Model
@@ -41,6 +42,11 @@ class Order extends Model
         return $this->hasMany(OrderStatusHistory::class);
     }
 
+    public function payments()
+    {
+        return $this->hasMany(OrderPayment::class);
+    }
+
     protected static function boot()
     {
         parent::boot();
@@ -48,6 +54,23 @@ class Order extends Model
         static::creating(function ($model) {
             if (empty($model->id)) {
                 $model->id = (string) Str::uuid();
+            }
+        });
+
+        static::updating(function ($order) {
+            if ($order->isDirty('status')) {
+                $changeBy = Auth::user() ? [
+                    'name'  => Auth::user()->name,
+                    'email' => Auth::user()->email,
+                    'role' => Auth::user()->role ?? 'customer',
+                ] : null;
+                
+                OrderStatusHistory::create([
+                    'order_id'   => $order->id,
+                    'old_status' => $order->getOriginal('status'),
+                    'new_status' => $order->status,
+                    'changed_by' => $changeBy,
+                ]);
             }
         });
     }

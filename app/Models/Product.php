@@ -58,4 +58,9 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class);
     }
+
+    public function orderItems()
+    {
+        return $this->belongsToMany(OrderItem::class, 'order_items', 'product_id', 'id');
+    }
 }

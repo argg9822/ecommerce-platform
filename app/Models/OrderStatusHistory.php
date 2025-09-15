@@ -13,6 +13,10 @@ class OrderStatusHistory extends Model
         'changed_by'
     ];
 
+    protected $casts = [
+        'changed_by' => 'array',
+    ];
+
     public function order()
     {
         return $this->belongsTo(Order::class);

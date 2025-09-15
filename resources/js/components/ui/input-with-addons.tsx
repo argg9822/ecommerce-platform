@@ -96,6 +96,7 @@ export default function InputWithAddons({
                         value={typeof value === "number" && isNaN(value) ? undefined : value}
                         onChange={handleInputChange}
                         required={required}
+                        readOnly={onChange ? false : true}
                     />
 
                     <div className="absolute right-0 top-0 h-full flex items-center">

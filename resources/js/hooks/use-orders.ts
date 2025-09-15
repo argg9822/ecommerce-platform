@@ -10,6 +10,8 @@ import {
     XCircle,
     RotateCcw,
     AlertTriangle,
+    IdCardIcon,
+    HouseIcon
 } from "lucide-react";
 import { ElementType, useState } from "react";
 
@@ -23,7 +25,7 @@ type StatusInfo = {
     icon: ElementType;
 };
 
-export function useOrders(orders? : Order[]) {
+export function useOrders(orders?: Order[]) {
     // Filtro estado
     const [orderFilterStatus, setOrderFilterStatus] = useState('all');
     const [filteredOrders, setFilteredOrder] = useState<Order[]>(orders ?? []);
@@ -74,13 +76,13 @@ export function useOrders(orders? : Order[]) {
                 };
             case "delivered":
                 return {
-                    bg: "bg-green-900/30 text-green-400",
+                    bg: "text-green-400",
                     text: "Entregado",
                     icon: CheckCheck,
                 };
             case "cancelled":
                 return {
-                    bg: "bg-gray-800/50 text-gray-400",
+                    bg: "text-red-300",
                     text: "Cancelado",
                     icon: XCircle,
                 };
@@ -105,15 +107,25 @@ export function useOrders(orders? : Order[]) {
         }
     };
 
+    const getPaymentTypeInfo = (type: string): { paymentText: string, PaymentIcon: typeof IdCardIcon } => {
+        switch (type) {
+            case 'mercado_pago':
+                return { paymentText: 'Mercado pago', PaymentIcon: IdCardIcon };
+            case 'contra_entrega':
+                return { paymentText: 'Contraentrega', PaymentIcon: HouseIcon };
+            default:
+                return { paymentText: 'Desconocido', PaymentIcon: IdCardIcon };
+        }
+    };
+
     const filterOrders = () => {
         if (orderFilterStatus === 'all') {
             setFilteredOrder((orders ?? []));
-        }else{
+        } else {
             setFilteredOrder((orders ?? []).filter(o => o.status === orderFilterStatus));
         }
         setIsOpenSheet(false);
     }
-
 
     const formatDate: FormatDateFn = (date) => {
         return dayjs(date)
@@ -121,24 +133,20 @@ export function useOrders(orders? : Order[]) {
             .format('dddd D [de] MMMM [de] YYYY');
     }
 
-    const onChangeStatus = (order: Order) => {
-        console.log(order);
-        
-    }
-
     return {
         orderFilterStatus,
         setOrderFilterStatus,
         filteredOrders,
+        setFilteredOrder,
         filterOrders,
         isOpenSheet,
         setIsOpenSheet,
         getOrderStatusInfo,
+        getPaymentTypeInfo,
         openDatepickerInit,
         setOpenDatepickerInit,
         dateFilterInitDate,
         setDateFilterInitDate,
         formatDate,
-        onChangeStatus
     }
 }
