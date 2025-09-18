@@ -50,6 +50,8 @@ export default function InputWithAddons({
     required=false
 } : InputWithAddonsProps) {
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        console.log(e.target.value);
+        
         if (onChangeWithEvent) {
             onChangeWithEvent(e);
         } else if (onChange) {
@@ -96,7 +98,7 @@ export default function InputWithAddons({
                         value={typeof value === "number" && isNaN(value) ? undefined : value}
                         onChange={handleInputChange}
                         required={required}
-                        readOnly={onChange ? false : true}
+                        readOnly={(onChange || onChangeWithEvent)? false : true}
                     />
 
                     <div className="absolute right-0 top-0 h-full flex items-center">
