@@ -43,6 +43,7 @@ const menuItems: MenuItem[] = [
   {
     title: "Administrar",
     icon: ShoppingBasket,
+    role: ["superadmin", "admin", "owner"],
     subMenu: [
       {
         title: "Tiendas",
@@ -102,67 +103,72 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item, index) => (
-                !item.subMenu
-                  ?
-                  <SidebarMenuItem key={`menu-item-${item.title}`}>
-                    {item.role?.includes(user.role) && (
-                      
-                        <SidebarMenuButton className="flex justify-between">
-                          <NavLink href={item.url ?? "#"} active={item.active ?? false} className="w-full text-sm">
-                            <item.icon size={16} />
-                            <span>{item.title}</span>
-                          </NavLink>
+                item.role?.includes(user.role) && (
+                  !item.subMenu ? (
+                    <SidebarMenuItem key={`menu-item-${item.title}`}>
+                      <SidebarMenuButton className="flex justify-between">
+                        <NavLink
+                          href={item.url ?? "#"}
+                          active={item.active ?? false}
+                          className="w-full text-sm"
+                        >
+                          <item.icon size={16} className="text-gray-400" />
+                          <span className="text-gray-400">{item.title}</span>
+                        </NavLink>
 
-                          {item.createRoute && (
-                            <Link
-                              href={route('products_create')}
-                              title="Crear producto"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <PlusCircle className="text-blue-300" size={15} />
-                            </Link>
+                        {item.createRoute && (
+                          <Link
+                            href={route("products_create")}
+                            title="Crear producto"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <PlusCircle className="text-blue-300" size={15} />
+                          </Link>
+                        )}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ) : (
+                    <Accordion key={`accordion-${item.title}-${index}`} type="single" collapsible className="w-full" defaultValue="item-1">
+                      <AccordionItem value="item-1">
+                        <AccordionTrigger className="text-gray-100 pb-0">
+                          <SidebarGroupLabel className="text-sm text-gray-100">
+                            {item.title}
+                          </SidebarGroupLabel>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          {item.subMenu?.map((option) =>
+                            option.role?.includes(user.role) && (
+                              <SidebarMenuItem key={option.title}>
+                                <SidebarMenuButton>
+                                  <NavLink
+                                    href={option.url ?? "#"}
+                                    active={option.active ?? false}
+                                    className="flex justify-between w-full"
+                                  >
+                                    <div className="flex items-center gap-2 text-sm">
+                                      <option.icon size={16} />
+                                      <span>{option.title}</span>
+                                    </div>
+
+                                    {option.createRoute && (
+                                      <Link
+                                        href={route("products_create")}
+                                        title="Crear producto"
+                                        onClick={(e) => e.stopPropagation()}
+                                      >
+                                        <PlusCircle className="text-blue-300" size={15} />
+                                      </Link>
+                                    )}
+                                  </NavLink>
+                                </SidebarMenuButton>
+                              </SidebarMenuItem>
+                            )
                           )}
-                        </SidebarMenuButton>
-                    )}
-                  </SidebarMenuItem>
-                  :
-                  <Accordion key={`accordion-${item.title}-${index}`} type="single" collapsible className="w-full" defaultValue="item-1">
-                    <AccordionItem value="item-1">
-                      <AccordionTrigger className="text-gray-100  pb-0">
-                        <SidebarGroupLabel className="text-sm text-gray-100">
-                          {item.title}
-                        </SidebarGroupLabel>
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        {item.subMenu.map((option) => (
-                          option.role?.includes(user.role) && (
-                            <SidebarMenuItem key={option.title}>
-                              <SidebarMenuButton>
-                                <NavLink href={option.url ?? "#"} active={option.active ?? false} className="flex justify-between w-full">
-                                  <div className="flex items-center gap-2 text-sm">
-                                    <option.icon size={16} />
-                                    <span>{option.title}</span>
-                                  </div>
-
-                                  {option.createRoute && (
-                                    <Link
-                                      href={route('products_create')}
-                                      title="Crear producto"
-                                      onClick={(e) => e.stopPropagation()}
-                                    >
-                                      <PlusCircle className="text-blue-300" size={15} />
-                                    </Link>
-                                  )}
-                                </NavLink>
-
-
-                              </SidebarMenuButton>
-                            </SidebarMenuItem>
-                          )
-                        ))}
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  )
+                )
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
