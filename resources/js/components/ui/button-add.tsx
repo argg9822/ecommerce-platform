@@ -12,7 +12,7 @@ export default function ButtonAdd({ onClick, className, title, text }: ButtonAdd
     return (
         <Button
             type="button" 
-            className={`max-h-[20px] bg-transparent py-0 text-blue-500 hover:text-blue-700 mb-1 ${className}`} 
+            className={`bg-transparent py-0 text-blue-500 hover:text-blue-700 mb-1 ${className}`} 
             title={title}
             onClick={() => onClick()}
         >

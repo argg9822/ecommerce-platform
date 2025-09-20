@@ -67,7 +67,7 @@ export default function ({ orders }: { orders: Order[] }) {
                         <div className='flex items-center gap-4'>
                             <Sheet open={isOpenSheet} onOpenChange={setIsOpenSheet}>
                                 <SheetTrigger asChild>
-                                    <Button onClick={() => setIsOpenSheet(true)} variant="outline">Filtrar</Button>
+                                    <Button onClick={() => setIsOpenSheet(true)} variant="secondary">Filtrar</Button>
                                 </SheetTrigger>
                                 <SheetContent>
                                     <SheetHeader>

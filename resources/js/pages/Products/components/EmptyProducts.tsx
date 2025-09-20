@@ -22,7 +22,7 @@ export default function EmptyProducts(){
             </p>
 
             <Link href={route('products_create')}>
-                <PrimaryButton className="mt-6 px-6 py-2 rounded-xl shadow-lg flex items-center gap-2">
+                <PrimaryButton className="mt-6 px-6 py-2 shadow-lg flex items-center gap-2">
                     <PlusCircle size={18} />
                     Agregar nuevo producto
                 </PrimaryButton>

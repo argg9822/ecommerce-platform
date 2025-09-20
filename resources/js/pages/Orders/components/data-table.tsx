@@ -280,7 +280,7 @@ export function DataTable({ data, setOpenDetails, setOrderViewDetail, setOrders 
         </DropdownMenu>
       </div>
 
-      <div className="overflow-hidden rounded-md border border-gray-800">
+      <div className="overflow-hidden rounded-md ">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -323,7 +323,7 @@ export function DataTable({ data, setOpenDetails, setOrderViewDetail, setOrders 
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No hay resultados.
+                  No hay resultados
                 </TableCell>
               </TableRow>
             )}
@@ -331,14 +331,14 @@ export function DataTable({ data, setOpenDetails, setOrderViewDetail, setOrders 
         </Table>
       </div>
 
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="text-muted-foreground flex-1 text-sm">
+      <div className="flex items-center justify-between space-x-2 py-4">
+        {/* <div className="text-muted-foreground flex-1 text-sm">
           {table.getFilteredSelectedRowModel().rows.length} de{" "}
           {table.getFilteredRowModel().rows.length} filas seleccionadas.
-        </div>
+        </div> */}
 
-        <div className="flex flex-col space-x-2 space-y-2">
-          <div className="flex flex-row gap-2">
+        <div className="text-muted-foreground text-sm flex items-center gap-2">
+          <div>
             <Select
               defaultValue={String(table.getState().pagination.pageSize)}
               onValueChange={(e) => table.setPageSize(Number(e))}
@@ -349,12 +349,22 @@ export function DataTable({ data, setOpenDetails, setOrderViewDetail, setOrders 
               <SelectContent>
                 {['5', '10', '20', '50'].map((size) => (
                   <SelectItem key={size} value={size}>
-                    {size} registros por página
+                    {size}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+          </div>
+          <span>filas por página</span>
+        </div>
 
+        <div className="flex space-x-2">
+          <span className="text-sm flex items-center text-gray-400 mr-3">
+            Página {table.getState().pagination.pageIndex + 1} de{" "}
+            {table.getPageCount()}
+          </span>
+
+          <div className="flex flex-row gap-2">
             <Button
               size="sm"
               onClick={() => table.previousPage()}
@@ -363,6 +373,7 @@ export function DataTable({ data, setOpenDetails, setOrderViewDetail, setOrders 
             >
               Anterior
             </Button>
+            
             <Button
               size="sm"
               onClick={() => table.nextPage()}
@@ -371,14 +382,7 @@ export function DataTable({ data, setOpenDetails, setOrderViewDetail, setOrders 
             >
               Siguiente
             </Button>
-
-            
           </div>
-
-          <span className="text-sm flex items-center justify-end text-gray-400">
-            Página {table.getState().pagination.pageIndex + 1} de{" "}
-            {table.getPageCount()}
-          </span>
         </div>
 
       </div>

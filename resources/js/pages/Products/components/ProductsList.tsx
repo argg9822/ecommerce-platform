@@ -62,7 +62,7 @@ export default function ProductsList({ products, onEdit, onDelete, onView }: Pro
             <div>
               <Sheet open={isOpenSheet} onOpenChange={setIsOpenSheet}>
                 <SheetTrigger asChild>
-                  <Button variant="outline" onClick={() => setIsOpenSheet(true)}>Filtrar</Button>
+                  <Button variant="secondary" onClick={() => setIsOpenSheet(true)}>Filtrar</Button>
                 </SheetTrigger>
                 <SheetContent>
                   <SheetHeader>
@@ -95,7 +95,7 @@ export default function ProductsList({ products, onEdit, onDelete, onView }: Pro
             </div>
 
             <Link href={route('products_create')}>
-              <PrimaryButton className="rounded-xl shadow-lg flex items-center gap-2">
+              <PrimaryButton className="shadow-lg flex items-center gap-2">
                 <PlusCircle size={18} />
                 Nuevo producto
               </PrimaryButton>
