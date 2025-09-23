@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Resources\V1\OrderResource;
 use App\Models\Api\V1\Order;
+use App\Models\Api\V1\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -57,9 +58,15 @@ class OrderController extends Controller
                 'deliveryType' => $request->delivery_info['deliveryType'],
             ];
 
+            // Calcular el costo de los productos
+            $productsCost = collect($request->products)->sum(function ($product) {
+                return Product::where('id', $product['product_id'])->value('cost') * $product['quantity'];
+            });
+
             $order = Order::create([
                 'preference_id' => $request->preference_id,
                 'total' => $total,
+                'profit' => $total - $productsCost,
                 'status' => $request->status,
                 'notes' => $request->delivery_info['deliveryNotes'],
                 'user_id' => Auth::id(),

@@ -93,6 +93,10 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
             'store'  => 'user_store'
         ]);
 
+        //Dashboard overview
+        Route::post('dashboard/overview', [DashboardController::class, 'sales'])->name('dashboard_sales');
+        Route::get('dashboard/payments', [DashboardController::class, 'payments'])->name('dashboard_payments');
+
         //Proxy files tenants admin
         Route::get('media/images/{path}/{tenantId}', function($path, $tenantId){
             $filePath = "$tenantId/images/$path";

@@ -17,6 +17,7 @@ class Order extends Model
         'number',
         'status',
         'total',
+        'profit',
         'notes',
         'shipping_city',
         'shipping_address',

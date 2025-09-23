@@ -8,7 +8,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
     Select,
     SelectContent,
-    SelectGroup,
     SelectItem,
     SelectTrigger,
     SelectValue,
@@ -19,7 +18,6 @@ import { useCouponFormContext } from "@/context/coupon-form.context";
 import { Checkbox } from "@/components/ui/checkbox";
 import DangerButton from "@/components/ui/danger-button";
 import { X } from "lucide-react";
-import { useEffect } from "react";
 
 export default function Conditions() {
     const {
