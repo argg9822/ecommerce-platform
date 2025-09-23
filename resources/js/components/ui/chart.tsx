@@ -297,7 +297,7 @@ interface ChartLegendContentProps extends React.ComponentProps<"div"> {
   payload?: Array<{
     value?: string
     id?: string
-    type?: string
+    type: string
     color?: string
     [key: string]: any
   }>
