@@ -27,4 +27,15 @@ jobs:
           git pull origin main
           docker-compose down
           docker-compose up -d --build
+          docker exec -it laravel_app bash
+          php artisan config:clear
+          php artisan route:clear
+          php artisan view:clear
+          php artisan cache:clear
+          php artisan optimize
+          php artisan tenants:migrate
+          npm run build
+          exit
+
+
         EOF
