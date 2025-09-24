@@ -50,7 +50,9 @@ jobs:
 
           echo "📦 Ejecutando npm install & build..."
           docker exec laravel_app npm install --legacy-peer-deps
+          docker exec laravel_app npm install react-is --save
           docker exec laravel_app npm run build
+
 
           echo "⚙️  Ejecutando migraciones..."
           docker exec laravel_app php artisan migrate --force
