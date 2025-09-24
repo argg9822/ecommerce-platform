@@ -11,6 +11,18 @@ export default defineConfig({
         }),
         react(),
     ],
+    build: {
+        manifest: true,
+        outDir: 'public/build',
+        rollupOptions: {
+            output: {
+                chunkFileNames: 'assets/[name]-[hash].js',
+                entryFileNames: 'assets/[name]-[hash].js',
+                assetFileNames: 'assets/[name]-[hash].[ext]',
+            },
+        },
+    },
+    base: '/build/', // 👈 fuerza a usar siempre /build/
     css: {
         preprocessorOptions: {
             scss: {
@@ -24,8 +36,4 @@ export default defineConfig({
             '@sass': path.resolve(__dirname, 'resources/sass'),
         },
     },
-    // 👇 Aquí está la clave
-    base: process.env.APP_URL
-        ? new URL(process.env.APP_URL).pathname
-        : '/', 
 });
