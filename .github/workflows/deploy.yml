@@ -23,19 +23,48 @@ jobs:
     - name: Deploy via SSH
       run: |
         ssh -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+          set -e  # Exit on error
           cd /home/softgenix/htdocs/www.softgenix.space
+          
+          echo "🔄 Pulling latest code..."
           git pull origin main
+          
+          echo "📦 Installing PHP dependencies..."
+          docker exec laravel_app composer install --no-dev --optimize-autoloader
+          
+          echo "📦 Installing NPM dependencies..."
+          docker exec laravel_app npm ci
+          
+          echo "🏗️ Building frontend assets..."
+          docker exec laravel_app npm run build
+          
+          echo "🐳 Restarting containers..."
           docker-compose down
           docker-compose up -d --build
-          docker exec -it laravel_app bash
-          php artisan config:clear
-          php artisan route:clear
-          php artisan view:clear
-          php artisan cache:clear
-          php artisan optimize
-          php artisan tenants:migrate
-          npm run build
-          exit
-
-
+          
+          echo "⏳ Waiting for containers to be ready..."
+          sleep 30
+          
+          echo "🔄 Clearing Laravel caches..."
+          docker exec laravel_app php artisan config:clear
+          docker exec laravel_app php artisan route:clear
+          docker exec laravel_app php artisan view:clear
+          docker exec laravel_app php artisan cache:clear
+          
+          echo "⚡ Optimizing Laravel..."
+          docker exec laravel_app php artisan config:cache
+          docker exec laravel_app php artisan route:cache
+          docker exec laravel_app php artisan view:cache
+          
+          echo "🗃️ Running database migrations..."
+          docker exec laravel_app php artisan migrate --force
+          
+          echo "🏢 Running tenant migrations..."
+          docker exec laravel_app php artisan tenants:migrate --force
+          
+          echo "🔧 Fixing permissions..."
+          docker exec laravel_app chown -R www-data:www-data storage bootstrap/cache
+          docker exec laravel_app chmod -R 775 storage bootstrap/cache
+          
+          echo "✅ Deployment completed successfully!"
         EOF
