@@ -1,9 +1,6 @@
 version: '3.8'
 
 services:
-  # ===============================
-  # PostgreSQL
-  # ===============================
   postgres:
     image: postgres:15
     container_name: postgres_db
@@ -15,13 +12,10 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5432:5432" 
     networks:
       - app_network
 
-  # ===============================
-  # Laravel (PHP-FPM)
-  # ===============================
   backend:
     build: .
     container_name: laravel_app
@@ -35,10 +29,6 @@ services:
       DB_DATABASE: ecommerce
       DB_USERNAME: softgenix
       DB_PASSWORD: s12345678
-      APP_ENV: production
-      APP_DEBUG: false
-      APP_URL: https://softgenix.space
-      ASSET_URL: https://softgenix.space
     networks:
       - app_network
     depends_on:
@@ -46,9 +36,6 @@ services:
     expose:
       - "9000"
 
-  # ===============================
-  # Nginx (Servidor Web)
-  # ===============================
   nginx:
     image: nginx:latest
     container_name: nginx_server
@@ -57,44 +44,17 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - .:/var/www
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
+      - .:/var/www  # Monta todo el proyecto, no solo /public
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     networks:
       - app_network
     depends_on:
       - backend
 
-  # ===============================
-  # Certbot (SSL Let's Encrypt)
-  # ===============================
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-      - .:/var/www
-    entrypoint: >
-      sh -c "trap exit TERM; 
-      while :; do
-        certbot renew --webroot -w /var/www/public --quiet;
-        sleep 12h;
-      done"
-
-# ===============================
-# Volúmenes
-# ===============================
 volumes:
   pgdata:
-  certbot-etc:
-  certbot-var:
 
-# ===============================
-# Red
-# ===============================
 networks:
   app_network:
     driver: bridge
