@@ -18,7 +18,7 @@ services:
 
   backend:
     build: .
-    container_name: backend  # <- Este es el nombre que Nginx debe usar
+    container_name: laravel_app  # <- Este es el nombre que Nginx debe usar
     restart: always
     volumes:
       - .:/var/www
