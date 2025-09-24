@@ -35,6 +35,8 @@ services:
       - postgres
     expose:
       - "9000"
+    # Asegurar que PHP-FPM se inicie
+    command: bash -c "php-fpm -D && tail -f /dev/null"
 
   nginx:
     image: nginx:latest
