@@ -22,49 +22,50 @@ jobs:
 
     - name: Deploy via SSH
       run: |
-        ssh -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
-          set -e  # Exit on error
+        ssh -T -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+          set -e
           cd /home/softgenix/htdocs/www.softgenix.space
           
-          echo "🔄 Pulling latest code..."
+          echo "=== Starting Deployment ==="
+          
+          # Pull latest code
           git pull origin main
           
-          echo "📦 Installing PHP dependencies..."
-          docker exec laravel_app composer install --no-dev --optimize-autoloader
-          
-          echo "📦 Installing NPM dependencies..."
-          docker exec laravel_app npm ci
-          
-          echo "🏗️ Building frontend assets..."
-          docker exec laravel_app npm run build
-          
-          echo "🐳 Restarting containers..."
+          # Stop and rebuild
           docker-compose down
           docker-compose up -d --build
           
-          echo "⏳ Waiting for containers to be ready..."
-          sleep 30
+          # Wait and verify
+          echo "Waiting for services to start..."
+          sleep 60
           
-          echo "🔄 Clearing Laravel caches..."
-          docker exec laravel_app php artisan config:clear
-          docker exec laravel_app php artisan route:clear
-          docker exec laravel_app php artisan view:clear
-          docker exec laravel_app php artisan cache:clear
+          # Get the actual container name
+          CONTAINER_ID=$(docker-compose ps -q backend)
+          if [ -z "$CONTAINER_ID" ]; then
+            echo "ERROR: Backend container not found!"
+            docker-compose ps
+            exit 1
+          fi
           
-          echo "⚡ Optimizing Laravel..."
-          docker exec laravel_app php artisan config:cache
-          docker exec laravel_app php artisan route:cache
-          docker exec laravel_app php artisan view:cache
+          echo "Using container: $CONTAINER_ID"
           
-          echo "🗃️ Running database migrations..."
-          docker exec laravel_app php artisan migrate --force
+          # Run all commands in one exec session
+          docker exec $CONTAINER_ID bash -c "
+            composer install --no-dev --optimize-autoloader
+            npm ci
+            npm run build
+            php artisan config:clear
+            php artisan route:clear
+            php artisan view:clear
+            php artisan cache:clear
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan migrate --force
+            php artisan tenants:migrate --force
+            chown -R www-data:www-data storage bootstrap/cache
+            chmod -R 775 storage bootstrap/cache
+          "
           
-          echo "🏢 Running tenant migrations..."
-          docker exec laravel_app php artisan tenants:migrate --force
-          
-          echo "🔧 Fixing permissions..."
-          docker exec laravel_app chown -R www-data:www-data storage bootstrap/cache
-          docker exec laravel_app chmod -R 775 storage bootstrap/cache
-          
-          echo "✅ Deployment completed successfully!"
+          echo "✅ Deployment completed!"
         EOF
