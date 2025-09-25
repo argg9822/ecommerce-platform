@@ -68,9 +68,17 @@ jobs:
           
           echo "=== Starting Deployment ==="
           
+          # Copiar .env al directorio (si no existe)
+          if [ ! -f .env ]; then
+            cp .env.example .env
+          fi
+          
           # Levantar contenedores
           docker-compose down
           docker-compose up -d --build
+          
+          # Esperar que los contenedores estén listos
+          sleep 30
           
           # Obtener container backend
           CONTAINER_ID=$(docker-compose ps -q backend)
@@ -82,12 +90,19 @@ jobs:
           
           echo "Using container: $CONTAINER_ID"
           
+          # Generar clave de aplicación si no existe
+          docker exec $CONTAINER_ID bash -c "
+            if [ -z \"\$(grep '^APP_KEY=base64:' .env)\" ]; then
+              php artisan key:generate
+            fi
+          "
+          
           # Solo comandos de Laravel
           docker exec $CONTAINER_ID bash -c "
-            php artisan migrate --force
-            php artisan tenants:migrate --force
             php artisan config:clear
             php artisan cache:clear
+            php artisan migrate --force
+            php artisan tenants:migrate --force
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache

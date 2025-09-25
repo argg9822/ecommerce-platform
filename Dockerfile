@@ -18,17 +18,30 @@ RUN apt-get update && apt-get install -y \
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copiar composer.json y composer.lock primero (para usar caché de capas)
+# Copiar SOLO los archivos de configuración primero
 COPY composer.json composer.lock ./
 
-# Instalar dependencias PHP
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+# Crear archivo .env temporal mínimo para composer install
+RUN echo "APP_NAME=Laravel" > .env \
+    && echo "APP_ENV=production" >> .env \
+    && echo "APP_KEY=base64:temporarykeyforbuild123456789012345678901234567890" >> .env \
+    && echo "DB_CONNECTION=sqlite" >> .env
+
+# Instalar dependencias PHP (sin scripts post-install)
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-scripts
+
+# Eliminar .env temporal
+RUN rm .env
 
 # Copiar código fuente al contenedor
 COPY . .
 
+# Ejecutar scripts de composer después de copiar todo
+RUN composer run-script post-install-cmd
+
 # Configurar permisos
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chmod -R 775 storage bootstrap/cache
 
 # Configuración PHP-FPM
 RUN echo "pm.max_children = 50" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
