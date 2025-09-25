@@ -18,18 +18,21 @@ services:
 
   backend:
     build: .
-    container_name: laravel_app  # <- Este es el nombre que Nginx debe usar
+    container_name: laravel_app
     restart: always
     volumes:
       - .:/var/www
     environment:
+      APP_ENV: production
+      APP_DEBUG: false
+      APP_KEY: base64:nV/S3N/u4KKvD7G2LfjzRcY/a6bJP8iqzim7Tq+rMZo=
+      APP_URL: https://softgenix.space
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
       DB_DATABASE: ecommerce
       DB_USERNAME: softgenix
       DB_PASSWORD: s12345678
-      # Variables importantes para tenancy
       TENANCY_DATABASE_TEMPLATE: ecommerce
       TENANCY_DATABASE_PREFIX: tenant_
     networks:
@@ -43,9 +46,6 @@ services:
     image: nginx:latest
     container_name: nginx_server
     restart: always
-    ports:
-      - "80:80"
-      - "443:443"
     volumes:
       - .:/var/www
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
