@@ -13,6 +13,36 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    # Instalar PHP para Composer
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, bcmath, gd, pdo_pgsql
+
+    - name: Install Composer dependencies
+      run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+    # Instalar Node y compilar assets
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Build assets
+      run: |
+        npm ci
+        npm run build
+
+    # Subir artefacto de build (opcional para debugging en GitHub)
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build
+        path: public/build
+
+    # Configurar SSH
     - name: Set up SSH key
       run: |
         mkdir -p ~/.ssh
@@ -20,6 +50,16 @@ jobs:
         chmod 600 ~/.ssh/id_ed25519
         ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
+    # Sincronizar proyecto al servidor (incluyendo vendor y build listos)
+    - name: Rsync project to server
+      run: |
+        rsync -az --delete \
+          --exclude=".git" \
+          --exclude="node_modules" \
+          --exclude=".github" \
+          ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/softgenix/htdocs/www.softgenix.space
+
+    # Desplegar vía SSH
     - name: Deploy via SSH
       run: |
         ssh -T -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
@@ -28,18 +68,11 @@ jobs:
           
           echo "=== Starting Deployment ==="
           
-          # Pull latest code
-          git pull origin main
-          
-          # Stop and rebuild
+          # Levantar contenedores
           docker-compose down
           docker-compose up -d --build
           
-          # Wait and verify
-          echo "Waiting for services to start..."
-          sleep 60
-          
-          # Get the actual container name
+          # Obtener container backend
           CONTAINER_ID=$(docker-compose ps -q backend)
           if [ -z "$CONTAINER_ID" ]; then
             echo "ERROR: Backend container not found!"
@@ -49,20 +82,15 @@ jobs:
           
           echo "Using container: $CONTAINER_ID"
           
-          # Run all commands in one exec session
+          # Solo comandos de Laravel
           docker exec $CONTAINER_ID bash -c "
-            composer install --no-dev --optimize-autoloader
-            npm ci
-            npm run build
+            php artisan migrate --force
+            php artisan tenants:migrate --force
             php artisan config:clear
-            php artisan route:clear
-            php artisan view:clear
             php artisan cache:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
-            php artisan migrate --force
-            php artisan tenants:migrate --force
             chown -R www-data:www-data storage bootstrap/cache
             chmod -R 775 storage bootstrap/cache
           "
