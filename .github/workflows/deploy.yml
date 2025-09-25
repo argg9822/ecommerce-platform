@@ -59,7 +59,6 @@ jobs:
           --exclude=".github" \
           ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/softgenix/htdocs/www.softgenix.space
 
-    # Desplegar vía SSH
     - name: Deploy via SSH
       run: |
         ssh -T -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
@@ -68,8 +67,9 @@ jobs:
           
           echo "=== Starting Deployment ==="
           
-          # Copiar .env al directorio (si no existe)
+          # Asegurar que el .env existe
           if [ ! -f .env ]; then
+            echo "❌ .env file not found! Creating from example..."
             cp .env.example .env
           fi
           
@@ -78,6 +78,7 @@ jobs:
           docker-compose up -d --build
           
           # Esperar que los contenedores estén listos
+          echo "Waiting for containers to be ready..."
           sleep 30
           
           # Obtener container backend
@@ -90,24 +91,25 @@ jobs:
           
           echo "Using container: $CONTAINER_ID"
           
-          # Generar clave de aplicación si no existe
+          # Ejecutar comandos de Laravel en el contenedor
           docker exec $CONTAINER_ID bash -c "
-            if [ -z \"\$(grep '^APP_KEY=base64:' .env)\" ]; then
-              php artisan key:generate
-            fi
-          "
-          
-          # Solo comandos de Laravel
-          docker exec $CONTAINER_ID bash -c "
+            # Ejecutar scripts de composer que requieren la app
+            composer run-script post-autoload-dump
+            
+            # Configurar aplicación
             php artisan config:clear
             php artisan cache:clear
+            
+            # Solo si la clave no está configurada
+            if ! grep -q '^APP_KEY=base64:[a-zA-Z0-9+/]*={0,2}$' .env; then
+              php artisan key:generate
+            fi
+            
             php artisan migrate --force
             php artisan tenants:migrate --force
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
-            chown -R www-data:www-data storage bootstrap/cache
-            chmod -R 775 storage bootstrap/cache
           "
           
           echo "✅ Deployment completed!"

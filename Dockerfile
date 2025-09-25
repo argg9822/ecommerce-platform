@@ -36,8 +36,8 @@ RUN rm .env
 # Copiar código fuente al contenedor
 COPY . .
 
-# Ejecutar scripts de composer después de copiar todo
-RUN composer run-script post-install-cmd
+# Ejecutar scripts de composer después de copiar todo (usa post-autoload-dump)
+RUN composer run-script post-autoload-dump
 
 # Configurar permisos
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
