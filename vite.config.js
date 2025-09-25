@@ -3,7 +3,6 @@ import path from 'path';
 import laravel from 'laravel-vite-plugin';
 import react from '@vitejs/plugin-react';
 
-
 export default defineConfig({
     plugins: [
         laravel({
@@ -12,17 +11,6 @@ export default defineConfig({
         }),
         react(),
     ],
-    build: {
-        manifest: true,
-        outDir: 'public/build',
-        rollupOptions: {
-            output: {
-                chunkFileNames: 'assets/[name]-[hash].js',
-                entryFileNames: 'assets/[name]-[hash].js',
-                assetFileNames: 'assets/[name]-[hash].[ext]',
-            },
-        },
-    },
     css: {
         preprocessorOptions: {
             scss: {
