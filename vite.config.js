@@ -23,7 +23,6 @@ export default defineConfig({
             },
         },
     },
-    base: '/build/', // 👈 fuerza a usar siempre /build/
     css: {
         preprocessorOptions: {
             scss: {
