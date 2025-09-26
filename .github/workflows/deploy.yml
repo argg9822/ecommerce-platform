@@ -22,7 +22,7 @@ jobs:
 
     - name: Rsync project to server
       run: |
-        rsync -az --delete \
+        rsync -rltDz --delete \
           --exclude=".git" \
           --exclude="node_modules" \
           --exclude=".github" \
