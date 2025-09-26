@@ -14,10 +14,10 @@ export default function Dashboard() {
 
                 <div className="text-gray-100 min-h-screen px-6">
                     <div className="dashboard">
-                        <div className="dashboard__card dashboard__summary">Resumen</div>
+                        <div className="dashboard__card dashboard__summary"></div>
                         <Sales />
                         <RecentPayments />
-                        <div className="dashboard__card dashboard__invoices">Próximas facturas</div>
+                        <div className="dashboard__card dashboard__invoices"></div>
                     </div>
                 </div>
             </div>
