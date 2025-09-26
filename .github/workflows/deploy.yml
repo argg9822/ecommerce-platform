@@ -13,19 +13,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # Instalar Node y compilar assets
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        cache: 'npm'
-
-    - name: Build assets
-      run: |
-        npm ci
-        npm run build
-
-    # Configurar SSH
     - name: Set up SSH key
       run: |
         mkdir -p ~/.ssh
@@ -33,18 +20,6 @@ jobs:
         chmod 600 ~/.ssh/id_ed25519
         ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-    # Sincronizar proyecto al servidor (sin vendor/node_modules)
-    - name: Rsync project to server
-      run: |
-        rsync -az --delete \
-          --exclude=".git" \
-          --exclude="node_modules" \
-          --exclude=".github" \
-          --exclude="vendor" \
-          --no-perms --no-owner --no-group \
-          ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/softgenix/htdocs/www.softgenix.space
-
-    # Deploy en el VPS
     - name: Deploy via SSH
       run: |
         ssh -T -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
@@ -53,22 +28,19 @@ jobs:
           
           echo "=== Starting Deployment ==="
           
-          # Asegurar que el .env existe
-          if [ ! -f .env ]; then
-            echo "❌ .env file not found! Creating from example..."
-            cp .env.example .env
-          fi
+          # Pull latest code
+          git pull origin main
           
-          # Levantar contenedores
+          # Stop and rebuild
           docker-compose down
           docker-compose up -d --build
           
-          # Esperar un poco para que arranque PHP-FPM
-          sleep 10
+          # Wait and verify
+          echo "Waiting for services to start..."
+          sleep 60
           
-          # Detectar el contenedor backend (ajusta el nombre según tu docker-compose.yml)
+          # Get the actual container name
           CONTAINER_ID=$(docker-compose ps -q backend)
-          
           if [ -z "$CONTAINER_ID" ]; then
             echo "ERROR: Backend container not found!"
             docker-compose ps
@@ -77,21 +49,22 @@ jobs:
           
           echo "Using container: $CONTAINER_ID"
           
-          # Instalar dependencias y correr comandos de Laravel dentro del contenedor
+          # Run all commands in one exec session
           docker exec $CONTAINER_ID bash -c "
             composer install --no-dev --optimize-autoloader
+            npm ci
+            npm run build
             php artisan config:clear
+            php artisan route:clear
+            php artisan view:clear
             php artisan cache:clear
-            
-            if ! grep -q '^APP_KEY=base64:' .env; then
-              php artisan key:generate
-            fi
-            
-            php artisan migrate --force
-            php artisan tenants:migrate --force
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
+            php artisan migrate --force
+            php artisan tenants:migrate --force
+            chown -R www-data:www-data storage bootstrap/cache
+            chmod -R 775 storage bootstrap/cache
           "
           
           echo "✅ Deployment completed!"
