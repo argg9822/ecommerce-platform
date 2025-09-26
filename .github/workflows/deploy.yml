@@ -57,6 +57,8 @@ jobs:
           --exclude=".git" \
           --exclude="node_modules" \
           --exclude=".github" \
+          --exclude "vendor" \
+          --no-perms --no-owner --no-group \
           ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/softgenix/htdocs/www.softgenix.space
 
     - name: Deploy via SSH
