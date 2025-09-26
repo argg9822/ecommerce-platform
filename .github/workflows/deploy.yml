@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
     - name: Set up SSH key
       run: |
@@ -32,7 +32,6 @@ jobs:
           --no-perms --no-owner --no-group \
           ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/softgenix/htdocs/www.softgenix.space
 
-
     - name: Deploy via SSH
       run: |
         ssh -T -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
@@ -40,20 +39,17 @@ jobs:
           cd /home/softgenix/htdocs/www.softgenix.space
           
           echo "=== Starting Deployment ==="
-          
-          # Pull latest code
-          git pull origin main
-          
-          # Instalar dependencias PHP
+
+          # Instalar dependencias PHP dentro del contenedor backend
           docker-compose run --rm backend bash -c "
             composer install --no-dev --optimize-autoloader
           "
-          
+
           # Build de frontend con Vite
           docker-compose run --rm backend bash -c "
             npm ci && npm run build
           "
-          
+
           # Levantar contenedores
           docker-compose down
           docker-compose up -d --build
