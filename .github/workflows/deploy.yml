@@ -41,7 +41,20 @@ jobs:
           
           echo "=== Starting Deployment ==="
           
-          # Reiniciar contenedores con la nueva build
+          # Pull latest code
+          git pull origin main
+          
+          # Instalar dependencias PHP
+          docker-compose run --rm backend bash -c "
+            composer install --no-dev --optimize-autoloader
+          "
+          
+          # Build de frontend con Vite
+          docker-compose run --rm backend bash -c "
+            npm ci && npm run build
+          "
+          
+          # Levantar contenedores
           docker-compose down
           docker-compose up -d --build
           
@@ -50,25 +63,18 @@ jobs:
           sleep 30
           
           # Detectar contenedor backend
-          CONTAINER_ID=$(docker-compose ps -q backend)
-          if [ -z "$CONTAINER_ID" ]; then
+          CONTAINER_ID=\$(docker-compose ps -q backend)
+          if [ -z "\$CONTAINER_ID" ]; then
             echo "ERROR: Backend container not found!"
             docker-compose ps
             exit 1
           fi
           
-          echo "Using container: $CONTAINER_ID"
+          echo "Using container: \$CONTAINER_ID"
           
-          # Ejecutar comandos de Laravel dentro del contenedor
-          docker exec $CONTAINER_ID bash -c "
-            composer install --no-dev --optimize-autoloader
+          docker exec \$CONTAINER_ID bash -c "
             php artisan config:clear
-            php artisan route:clear
-            php artisan view:clear
             php artisan cache:clear
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
             php artisan migrate --force
             php artisan tenants:migrate --force
             php artisan storage:link
