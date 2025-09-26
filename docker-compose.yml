@@ -25,10 +25,10 @@ services:
     environment:
       APP_ENV: production
       APP_DEBUG: false
-      APP_KEY: base64:nV/S3N/u4KKvD7G2LfjzRcY/a6bJP8iqzim7Tq+rMZo=
+      # APP_KEY: base64:nV/S3N/u4KKvD7G2LfjzRcY/a6bJP8iqzim7Tq+rMZo=
       APP_URL: https://softgenix.space
       DB_CONNECTION: pgsql
-      DB_HOST: postgres
+      DB_HOST: 127.0.0.1
       DB_PORT: 5432
       DB_DATABASE: ecommerce
       DB_USERNAME: softgenix
