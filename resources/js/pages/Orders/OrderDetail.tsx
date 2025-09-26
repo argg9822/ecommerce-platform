@@ -23,7 +23,6 @@ type OrderDetail = {
 
 export default function OrderDetail({ isOpen, order, setIsOpen, index }: OrderDetail) {
     const statusNotUpdate = ['cancelled', 'refunded', 'delivered', 'paid'];
-    console.log(order);
     
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>

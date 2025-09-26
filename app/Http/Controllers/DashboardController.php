@@ -32,10 +32,12 @@ class DashboardController extends Controller
 
     public function payments()
     {
-        $lastPayments = OrderPayment::with('order:id,number,total,status')
+        $lastPayments = OrderPayment::with('order:id,total,status')
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
+        
+        Log::info($lastPayments);
 
         return response()->json([
             'payments' => $lastPayments

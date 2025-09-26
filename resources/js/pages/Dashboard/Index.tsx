@@ -2,7 +2,7 @@ import { Head } from '@inertiajs/react';
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout';
 import Sales from '@/pages/Dashboard/Overview/Sales';
 import RecentPayments from '@/pages/Dashboard/Overview/RecentPayments';
-import '@/pages/Dashboard/Overview/charts.scss';
+import '@/pages/Dashboard/Overview/scss/charts.scss';
 
 export default function Dashboard() {
     return (
@@ -16,8 +16,8 @@ export default function Dashboard() {
                     <div className="dashboard">
                         <div className="dashboard__card dashboard__summary">Resumen</div>
                         <Sales />
-                        <div className="dashboard__card dashboard__invoices">Próximas facturas</div>
                         <RecentPayments />
+                        <div className="dashboard__card dashboard__invoices">Próximas facturas</div>
                     </div>
                 </div>
             </div>
