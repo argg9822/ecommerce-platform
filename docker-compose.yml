@@ -22,6 +22,8 @@ services:
     restart: always
     volumes:
       - .:/var/www
+      - ./.env:/var/www/.env
+
     environment:
       APP_ENV: production
       APP_DEBUG: false

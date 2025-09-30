@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
     - name: Set up SSH key
       run: |
@@ -20,6 +20,24 @@ jobs:
         chmod 600 ~/.ssh/id_ed25519
         ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
+    - name: Install frontend dependencies
+      run: npm ci
+
+    - name: Build frontend
+      run: npm run build
+
+    - name: Rsync project to server
+      run: |
+        rsync -rlDz --delete \
+          --exclude=".git" \
+          --exclude="node_modules" \
+          --exclude=".github" \
+          --exclude="vendor" \
+          --exclude="/storage" \
+          --exclude=".env" \
+          --no-perms --no-owner --no-group \
+          ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/softgenix/htdocs/www.softgenix.space
+
     - name: Deploy via SSH
       run: |
         ssh -T -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
@@ -27,42 +45,41 @@ jobs:
           cd /home/softgenix/htdocs/www.softgenix.space
           
           echo "=== Starting Deployment ==="
-          
-          # Pull latest code
-          git pull origin main
-          
-          # Stop and rebuild
+
+          # Instalar dependencias PHP dentro del contenedor backend
+          docker-compose run --rm backend bash -c "
+            composer install --no-dev --optimize-autoloader
+          "
+
+          # Build de frontend con Vite
+          docker-compose run --rm backend bash -c "
+            npm ci && npm run build
+          "
+
+          # Levantar contenedores
           docker-compose down
           docker-compose up -d --build
           
-          # Wait and verify
-          echo "Waiting for services to start..."
-          sleep 60
+          # Esperar servicios
+          echo "Waiting for containers..."
+          sleep 30
           
-          # Get the actual container name
-          CONTAINER_ID=$(docker-compose ps -q backend)
-          if [ -z "$CONTAINER_ID" ]; then
+          # Detectar contenedor backend
+          CONTAINER_ID=\$(docker-compose ps -q backend)
+          if [ -z "\$CONTAINER_ID" ]; then
             echo "ERROR: Backend container not found!"
             docker-compose ps
             exit 1
           fi
           
-          echo "Using container: $CONTAINER_ID"
+          echo "Using container: \$CONTAINER_ID"
           
-          # Run all commands in one exec session
-          docker exec $CONTAINER_ID bash -c "
-            composer install --no-dev --optimize-autoloader
-            npm ci
-            npm run build
+          docker exec \$CONTAINER_ID bash -c "
             php artisan config:clear
-            php artisan route:clear
-            php artisan view:clear
             php artisan cache:clear
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
             php artisan migrate --force
             php artisan tenants:migrate --force
+            php artisan storage:link
             chown -R www-data:www-data storage bootstrap/cache
             chmod -R 775 storage bootstrap/cache
           "
