@@ -25,7 +25,7 @@ services:
     environment:
       APP_ENV: production
       APP_DEBUG: false
-      APP_KEY: base64:nV/S3N/u4KKvD7G2LfjzRcY/a6bJP8iqzim7Tq+rMZo=
+      APP_KEY: base64:YZIou0FzxGd4zC0mqTg8YuduSdS2FOm1XaHGDFelpYc=
       APP_URL: https://softgenix.space
       DB_CONNECTION: pgsql
       DB_HOST: postgres
