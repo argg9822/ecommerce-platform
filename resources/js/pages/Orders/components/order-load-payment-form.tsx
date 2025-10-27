@@ -27,13 +27,13 @@ export function OrderLoadPaymentForm({ order, orderIndex }: { order: Order, orde
         console.log('Updating filtered orders');
 
         const {
-            filteredOrders,
-            setFilteredOrder
+            orders,
+            setOrders
         } = useOrders();
 
-        const newFilteredOrders = [...filteredOrders];
+        const newFilteredOrders = [...orders];
 
-        setFilteredOrder(newFilteredOrders.map((order, index) => {
+        setOrders(newFilteredOrders.map((order, index) => {
             if (index === orderIndex) {
                 return { ...order, payment: data };
             }

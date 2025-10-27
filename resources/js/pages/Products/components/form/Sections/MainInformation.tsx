@@ -1,5 +1,4 @@
-import { Brand } from '@/types';
-import { Category } from "@/types";
+import { Brand, Category } from '@/types';
 import { Input } from "@/components/ui/input";
 import { Textarea } from '@/components/ui/textarea';
 import { PlusIcon, CircleHelp, Layers, Check, ChevronsUpDown, PlusCircle, Trash2, X } from 'lucide-react';
@@ -7,8 +6,7 @@ import { useProductFormContext } from '@/context/product-form.context';
 import { Button } from '@/components/ui/button';
 import InputLabel from '@/components/InputLabel';
 import InputError from '@/components/InputError';
-import { Checkbox } from "@/components/ui/checkbox"
-import InputsFeatures from "@/pages/Products/components/form/InputsFeatures";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
     Command,
     CommandEmpty,
