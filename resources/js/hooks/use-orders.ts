@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { Order } from "@/types/order";
+import axios from "axios";
 import {
     Clock,
     CheckCircle,
@@ -13,7 +14,7 @@ import {
     IdCardIcon,
     HouseIcon
 } from "lucide-react";
-import { ElementType, useState } from "react";
+import { ElementType, useEffect, useState } from "react";
 
 interface FormatDateFn {
     (date: string | number | Date | dayjs.Dayjs): string;
@@ -25,16 +26,19 @@ type StatusInfo = {
     icon: ElementType;
 };
 
-export function useOrders(orders?: Order[]) {
-    // Filtro estado
+export function useOrders() {
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [error, setError] = useState<string | null>(null);
+    const [loadingOrders, setLoadingOrders] = useState<boolean>(true)
+    
+    // Filtros
+    const [orderFilterDate, setOrderFilterDate] = useState<Date | null>(null);
     const [orderFilterStatus, setOrderFilterStatus] = useState('all');
-    const [filteredOrders, setFilteredOrder] = useState<Order[]>(orders ?? []);
+    const [orderFilterNumber, setOrderFilterNumber] = useState<string>('');
 
-    // Filtro fecha inicio
     const [openDatepickerInit, setOpenDatepickerInit] = useState(false);
-    const [dateFilterInitDate, setDateFilterInitDate] = useState<Date | undefined>(undefined);
-
     const [isOpenSheet, setIsOpenSheet] = useState<boolean>(false);
+    const [orderViewDetail, setOrderViewDetail] = useState<Order | null>(null);
 
     const getOrderStatusInfo = (status: string): StatusInfo => {
         switch (status) {
@@ -107,6 +111,15 @@ export function useOrders(orders?: Order[]) {
         }
     };
 
+    useEffect(() => {
+        setError(null)
+
+        axios.get(route('orders_list'))
+            .then(res => setOrders(res.data.orders))
+            .catch(err => setError(err.message))
+            .finally(() => setLoadingOrders(false))
+    }, []);
+
     const getPaymentTypeInfo = (type: string): { paymentText: string, PaymentIcon: typeof IdCardIcon } => {
         switch (type) {
             case 'mercado_pago':
@@ -119,11 +132,21 @@ export function useOrders(orders?: Order[]) {
     };
 
     const filterOrders = () => {
-        if (orderFilterStatus === 'all') {
-            setFilteredOrder((orders ?? []));
-        } else {
-            setFilteredOrder((orders ?? []).filter(o => o.status === orderFilterStatus));
+        const filtered = orders ?? [];
+
+        if (orderFilterStatus !== 'all') {
+            setOrders(filtered.filter(o => o.status === orderFilterStatus));
         }
+
+        if (orderFilterDate) {
+            const selectedDate = dayjs(orderFilterDate).startOf('day');
+            setOrders((filtered ?? []).filter(o => dayjs(o.created_at).isSame(selectedDate, 'day')));
+        }
+
+        if (orderFilterNumber.trim() !== '') {
+            setOrders((filtered ?? []).filter(o => o.id.includes(orderFilterNumber.trim())));
+        }
+
         setIsOpenSheet(false);
     }
 
@@ -136,8 +159,8 @@ export function useOrders(orders?: Order[]) {
     return {
         orderFilterStatus,
         setOrderFilterStatus,
-        filteredOrders,
-        setFilteredOrder,
+        orders,
+        setOrders,
         filterOrders,
         isOpenSheet,
         setIsOpenSheet,
@@ -145,8 +168,14 @@ export function useOrders(orders?: Order[]) {
         getPaymentTypeInfo,
         openDatepickerInit,
         setOpenDatepickerInit,
-        dateFilterInitDate,
-        setDateFilterInitDate,
+        orderFilterDate,
+        orderFilterNumber,
+        setOrderFilterNumber,
+        setOrderFilterDate,
+        loadingOrders,
+        orderViewDetail,
+        setOrderViewDetail,
+        error,
         formatDate,
     }
 }

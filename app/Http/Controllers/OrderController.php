@@ -15,6 +15,14 @@ class OrderController extends Controller
      */
     public function index()
     {
+        return Inertia::render('Orders/Index');
+    }
+
+    /**
+     * Display a listing of the resource as JSON.
+     */
+    public function list()
+    {
         $orders = Order::with([
             'items' => function ($query) {
                 $query->with('products:id,name');
@@ -37,7 +45,7 @@ class OrderController extends Controller
             'updated_at',
         ])->orderBy('created_at', 'desc')->get();
 
-        return Inertia::render('Orders/Index', [
+        return response()->json([
             'orders' => $orders
         ]);
     }
@@ -93,6 +101,14 @@ class OrderController extends Controller
             $order->update([
                 'status' => $request->input('status')
             ]);
+
+            //Actualizar el stock del producto entregado
+            if ($request->input('status') === 'delivered') {
+                foreach ($order->items as $item) {
+                    $product = $item->product;
+                    $product->decrement('stock', $item->quantity);
+                }
+            }
 
             return redirect()->back()->with('flash.success', [
                 'title' => 'Estado de la orden actualizado correctamente',

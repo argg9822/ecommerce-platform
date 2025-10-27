@@ -22,7 +22,8 @@ export default function AppBreadcrumb (){
     'profile': {path: 'Perfil', route: 'profile.edit'},
     'edit' : {path: 'Editar', route: 'products_edit'},
     'ordenes' : {path: 'Órdenes', route: 'orders_index'},
-    'cupones' : {path: 'Cupones', route: 'coupons_index'}
+    'cupones' : {path: 'Cupones', route: 'coupons_index'},
+    'categorias' : {path: 'Categorías', route: 'categories_index'},
   }
 
   const [breadrumbs, setBreadrumbs] = useState<string[]>([]);

@@ -1,8 +1,14 @@
+/* Libraries */
 import 'dayjs/locale/es';
-import { ChevronDownIcon } from "lucide-react";
-
-import AuthenticatedLayout from "@/layouts/AuthenticatedLayout";
+import { useState } from 'react';
 import { Head } from "@inertiajs/react";
+import { Order } from "@/types/order";
+import { motion } from "framer-motion";
+
+/* Icons */
+import { ChevronDownIcon, RefreshCcw } from "lucide-react";
+
+/* UI */
 import { Label } from "@/components/ui/label";
 import {
     Sheet,
@@ -29,31 +35,43 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar"
-import { Order } from "@/types/order";
 import { Button } from "@/components/ui/button";
-import { useState } from 'react';
-import { useOrders } from '@/hooks/use-orders';
-import OrderDetail from './OrderDetail';
-import { DataTable } from './components/data-table';
+import PrimaryButton from "@/components/PrimaryButton";
+import InputLabel from '@/components/InputLabel';
 
-export default function ({ orders }: { orders: Order[] }) {
+/* Components */
+import AuthenticatedLayout from "@/layouts/AuthenticatedLayout";
+import OrderDetail from '@/pages/Orders/OrderDetail';
+import { useOrders } from '@/hooks/use-orders';
+import { DataTable } from '@/pages/Orders/components/data-table';
+import { Input } from '@/components/ui/input';
+import TableSkeleton from '@/components/skeleton/TableSkeleton';
+
+export default function () {
     const {
         orderFilterStatus,
         setOrderFilterStatus,
-        filteredOrders,
-        setFilteredOrder,
+        orders,
+        setOrders,
         filterOrders,
+        setOrderFilterDate,
+        orderFilterDate,
         isOpenSheet,
         setIsOpenSheet,
-        formatDate,
         openDatepickerInit,
         setOpenDatepickerInit,
-        dateFilterInitDate,
-        setDateFilterInitDate,
-    } = useOrders(orders);
+        orderFilterNumber,
+        loadingOrders,
+        setOrderFilterNumber,
+        orderViewDetail,
+        setOrderViewDetail,
+    } = useOrders();
     
     const [openOrderDetail, setOpenOrderDetail] = useState<boolean>(false);
-    const [orderViewDetail, setOrderViewDetail] = useState<Order>(orders[0] ?? []);
+
+    const redirectOrdersIndex = () => {
+        window.location.href = route('orders_index');
+    }
 
     return (
         <AuthenticatedLayout>
@@ -65,6 +83,10 @@ export default function ({ orders }: { orders: Order[] }) {
 
                         {/* Filtro */}
                         <div className='flex items-center gap-4'>
+                            {/* Actualizar */}
+                            <PrimaryButton onClick={redirectOrdersIndex} title='Actualizar órdenes'>
+                                <RefreshCcw />
+                            </PrimaryButton>
                             <Sheet open={isOpenSheet} onOpenChange={setIsOpenSheet}>
                                 <SheetTrigger asChild>
                                     <Button onClick={() => setIsOpenSheet(true)} variant="secondary">Filtrar</Button>
@@ -104,7 +126,7 @@ export default function ({ orders }: { orders: Order[] }) {
 
                                         <div className="grid gap-3">
                                             <Label htmlFor="date" className="px-1">
-                                                Fecha (desde)
+                                                Fecha
                                             </Label>
                                             <Popover open={openDatepickerInit} onOpenChange={setOpenDatepickerInit}>
                                                 <PopoverTrigger asChild>
@@ -113,7 +135,7 @@ export default function ({ orders }: { orders: Order[] }) {
                                                         id="filterInitDate"
                                                         className="justify-between font-normal"
                                                     >
-                                                        {dateFilterInitDate ? dateFilterInitDate.toLocaleDateString() : "Selecciona una fecha"}
+                                                        {orderFilterDate ? orderFilterDate.toLocaleDateString() : "Selecciona una fecha"}
                                                         <ChevronDownIcon />
                                                     </Button>
                                                 </PopoverTrigger>
@@ -130,11 +152,11 @@ export default function ({ orders }: { orders: Order[] }) {
                                                 >
                                                     <Calendar
                                                         mode="single"
-                                                        selected={dateFilterInitDate}
+                                                        selected={orderFilterDate || undefined}
                                                         captionLayout="dropdown"
                                                         onSelect={(date) => {
                                                             if (date) {
-                                                                setDateFilterInitDate(date);
+                                                                setOrderFilterDate(date);
                                                                 setOpenDatepickerInit(false);
                                                             }
                                                         }}
@@ -142,6 +164,17 @@ export default function ({ orders }: { orders: Order[] }) {
                                                     />
                                                 </PopoverContent>
                                             </Popover>
+                                        </div>
+
+                                        <div className="grid gap-3">
+                                            <InputLabel htmlFor="order-number-filter" value="Número de orden" />
+                                            <Input
+                                                type="text"
+                                                id='order-number-filter'
+                                                value={orderFilterNumber}
+                                                placeholder="Buscar por # de orden"
+                                                onChange={(e) => setOrderFilterNumber(e.target.value)}
+                                            />
                                         </div>
                                     </div>
                                     <SheetFooter>
@@ -154,13 +187,31 @@ export default function ({ orders }: { orders: Order[] }) {
                             </Sheet>
                         </div>
                     </div>
+                    
+                    {
+                        loadingOrders && (
+                            <TableSkeleton />
+                        )
+                    }
 
-                    <DataTable data={filteredOrders} setOrders={setFilteredOrder} setOpenDetails={setOpenOrderDetail} setOrderViewDetail={setOrderViewDetail} />
+                    {
+                        !loadingOrders && orders && orders.length === 0 && (
+                            <p className="text-gray-400 text-center mt-20">No se encontraron órdenes.</p>
+                        )
+                    }
+
+                    {
+                        !loadingOrders && orders && orders.length > 0 && (
+                            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} >
+                                <DataTable data={orders} setOrders={setOrders} setOpenDetails={setOpenOrderDetail} setOrderViewDetail={setOrderViewDetail} />
+                            </motion.section>
+                        )
+                    }
                 </div>
             </div>
 
-            {filteredOrders.length > 0 && (
-                <OrderDetail setIsOpen={setOpenOrderDetail} order={orderViewDetail} index={filteredOrders.findIndex(order => order.id === orderViewDetail.id)} isOpen={openOrderDetail}/>
+            {orderViewDetail && (
+                <OrderDetail setIsOpen={setOpenOrderDetail} order={orderViewDetail} index={orderViewDetail ? orders.findIndex(order => order.id === orderViewDetail.id) : -1} isOpen={openOrderDetail}/>
             )}
 
         </AuthenticatedLayout>

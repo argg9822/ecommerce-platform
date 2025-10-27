@@ -36,8 +36,6 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
-        
-        Log::info($lastPayments);
 
         return response()->json([
             'payments' => $lastPayments

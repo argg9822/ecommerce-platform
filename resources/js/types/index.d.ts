@@ -15,14 +15,14 @@ export interface Plan {
     updated_at: string;
 }
 
-export interface Category {
-    id: number;
-    name: string;
-    slug: string;
-    description: string;
-    image: string;
-    parent: Category[]
-}
+// export interface Category {
+//     id: number;
+//     name: string;
+//     slug: string;
+//     description: string;
+//     image: string;
+//     parent: Category[]
+// }
 
 export interface Brand {
     id: number;

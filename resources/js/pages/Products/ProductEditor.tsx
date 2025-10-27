@@ -1,6 +1,7 @@
 import { useState, FormEventHandler } from 'react';
 import { Head } from "@inertiajs/react";
-import { Brand, Category } from "@/types";
+import { Brand } from "@/types";
+import { Category } from '@/types/category';
 import Authenticated from "@/layouts/AuthenticatedLayout";
 import { 
     MainInformation, 
@@ -31,6 +32,7 @@ import {
 } from "@/components/ui/accordion";
 import PrimaryButton from '@/components/PrimaryButton';
 import { ProductForm } from '@/types/product-form.type';
+import CategoryFormDialog from '@/components/form/CategoryFormDialog';
 
 type CreateProductProps = {
     mode: 'create' | 'edit',
@@ -140,15 +142,7 @@ export default function ProductEditor({ mode, categories, brands, product, unava
             </ProductFormContext.Provider>
 
             {/* Modal para agregar categoría */}
-            <Dialog open={openDialogCategory} onOpenChange={setOpenDialogCategory}>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle className='text-gray-100'>Agregar categoría</DialogTitle>
-                        <DialogDescription>Considera utilizar nombres de categoría claros y descriptivos para mejorar la organización de tu catálogo.</DialogDescription>
-                    </DialogHeader>
-                    <CategoryForm categories={categories} openDialog={setOpenDialogCategory} />
-                </DialogContent>
-            </Dialog>
+            <CategoryFormDialog isOpen={openDialogCategory} setIsOpen={setOpenDialogCategory} />
 
             {/* Modal para agregar marca */}
             <Dialog open={openDialogBrand} onOpenChange={setOpenDialogBrand}>

@@ -54,12 +54,17 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
         Route::post('productos/update/{id}', [ProductController::class, 'update'])->name('products_update');
 
         // Categories
-        Route::get('categories/list', [CategoryController::class, 'list'])->name('categories_list');
-        Route::resource('categories', CategoryController::class)->names([
+        Route::controller(CategoryController::class)->group(function () {
+            Route::get('categories/sales-by-category/{category}', 'salesByCategory')->name('categories_sales');
+            Route::get('categories/list', 'list')->name('categories_list');
+            Route::get('categories/select-list', 'selectList')->name('categories_select_list');
+        });
+        Route::resource('categorias', CategoryController::class)->names([
             'index'  => 'categories_index',
             'create' => 'categories_create',
             'store'  => 'categories_store',
-            'show'   => 'categories_show'
+            'show'   => 'categories_show',
+            'update' => 'categories_update',
         ]);
 
         // Brands
@@ -69,9 +74,14 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
         ]);
 
         // Orders
-        Route::post('ordenes/update-status/{order}', [OrderController::class, 'updateStatus'])->name('orders_update_status');
+        Route::controller(OrderController::class)->group(function () {
+            Route::post('ordenes/update-status/{order}', 'updateStatus')->name('orders_update_status');
+            Route::get('ordenes/list', 'list')->name('orders_list');
+        });
+        
         Route::resource('ordenes', OrderController::class)->names([
-            'index' => 'orders_index'
+            'index' => 'orders_index',
+            'show'  => 'orders_show'
         ]);
 
         // Payments
@@ -87,7 +97,7 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
         ]);
 
         // Clientes
-         Route::resource('clientes', UserController::class)->names([
+        Route::resource('clientes', UserController::class)->names([
             'index'  => 'user_index',
             'create' => 'user_create',
             'store'  => 'user_store'

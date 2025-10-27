@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Services\TenantFileService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -19,16 +20,67 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::select('id', 'name')->get();
+        return Inertia::render('Categories/Index');
+    }
+
+    /**
+     * Return a list of categories in JSON format.
+     */
+    public function list()
+    {
+        $categories = Category::with([
+            'children',
+            'products:id,name,price'
+        ])->whereNull('parent_id')->get();
 
         return response()->json([
             'categories' => $categories
         ], Response::HTTP_OK);
     }
 
-    public function list()
+    public function salesByCategory($id)
     {
-        Log::info('Listado de categorías ');
+        try {
+            $start = Carbon::now()->subMonths(6)->startOfMonth();
+            $end = Carbon::now()->endOfMonth();
+
+            $sales = DB::table('categories')
+                ->join('category_product', 'categories.id', '=', 'category_product.category_id')
+                ->join('products', 'category_product.product_id', '=', 'products.id')
+                ->join('order_items', 'products.id', '=', 'order_items.product_id')
+                ->join('orders', 'order_items.order_id', '=', 'orders.id')
+                ->select(
+                    DB::raw("TO_CHAR(DATE_TRUNC('month', orders.created_at), 'YYYY-MM') as month"),
+                    DB::raw('SUM(order_items.quantity) as total_sold')
+                )
+                ->where('categories.id', $id)
+                ->whereIn('orders.status', ['delivered', 'paid'])
+                ->whereBetween('orders.created_at', [$start, $end])
+                ->groupBy(DB::raw("DATE_TRUNC('month', orders.created_at)"))
+                ->orderBy('month')
+                ->get();
+
+            return response()->json([
+                'sales' => $sales
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::error("Error fetching sales by category", [
+                'category_id' => $id,
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'message' => 'Error fetching sales data'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Return a list of categories in JSON format.
+     */
+    public function selectList()
+    {
         $categories = Category::select('id', 'name')->get();
 
         return response()->json([
@@ -49,14 +101,14 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request, TenantFileService $tenantService)
     {
-        try{
+        try {
             DB::beginTransaction();
             $imagePath = null;
 
-            if($request->hasFile('image')){
+            if ($request->hasFile('image')) {
                 $imagePath = $tenantService->storeImages($request->file('image'), 'categories');
             }
-    
+
             Category::create([
                 'name' => $request->name,
                 'slug' => Str::slug($request->name),
@@ -64,18 +116,17 @@ class CategoryController extends Controller
                 'image' => $imagePath,
                 'parent_id' => $request->parent_id
             ]);
-            
+
             DB::commit();
 
             return redirect()->back()->with('flash.success', [
                 'title' => 'Categoría creada correctamente',
                 'message' => 'Recuerda que organizar bien tus categorías te ayudará a gestionar mejor tus productos y facilitará la navegación de tus clientes'
             ]);
-                
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack();
             Log::error("Error creando la categoria", [
-                'message' =>$e->getMessage(),
+                'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
 
@@ -83,7 +134,7 @@ class CategoryController extends Controller
                 'title' => 'No se pudo crear la categoría',
                 'message' => 'Por verifica los datos ingresados e intenta nuevamente'
             ]);
-        }        
+        }
     }
 
     /**
@@ -105,9 +156,47 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category, TenantFileService $tenantService)
     {
-        //
+        try {
+            Log::info("Actualizando la categoria", [
+                'category_id' => $category->id,
+                'request_data' => $request->all()
+            ]);
+            DB::beginTransaction();
+            $imagePath = $category->image;
+
+            if ($request->hasFile('image')) {
+                $imagePath = $tenantService->storeImages($request->file('image'), 'categories');
+            }
+
+            $category->update([
+                'name' => $request->name,
+                'slug' => Str::slug($request->name),
+                'description' => $request->description,
+                'image' => $imagePath,
+                'parent_id' => $request->parent_id
+            ]);
+
+            DB::commit();
+
+            return redirect()->back()->with('flash.success', [
+                'title' => 'Categoría actualizada correctamente',
+                'message' => 'Recuerda que organizar bien tus categorías te ayudará a gestionar mejor tus productos y facilitará la navegación de tus clientes'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("Error actualizando la categoria", [
+                'category_id' => $category->id,
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()->with('flash.error', [
+                'title' => 'No se pudo actualizar la categoría',
+                'message' => 'Por verifica los datos ingresados e intenta nuevamente'
+            ]);
+        }
     }
 
     /**

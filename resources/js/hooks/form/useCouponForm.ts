@@ -32,10 +32,6 @@ export function useCouponForm() {
         setData(key, isNaN(parsed) ? undefined : parsed);
     }
 
-    useEffect(() => {
-        console.log(data.conditions);
-    }, [data.conditions]);
-
     const handleConditionChange = (newValue: number | string, key: "name" | "value", condition_index: number, e?: ChangeEvent<HTMLInputElement>) => {
         if (e) {
             handleNumberChangeInput(e, `conditions[${condition_index}].value`);

@@ -6,8 +6,6 @@ import UploadImages from "@/components/UploadImages";
 import { useCategoryForm } from "@/hooks/form/useCategoryForm";
 import PrimaryButton from "@/components/PrimaryButton";
 import { FormEventHandler } from "react";
-import { Layers } from 'lucide-react';
-import { Category } from "@/types";
 import {
   Select,
   SelectContent,
@@ -15,29 +13,37 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { log } from 'node:console';
+import { Category } from '@/types/category';
 
 interface CategoryFormProps {
-    openDialog: (isOpen: boolean) => void,
-    categories: Category[]
+    openDialog: (isOpen: boolean) => void;
+    category?: Category| null;
 }
 
-export default function CategoryForm({ openDialog, categories }: CategoryFormProps) {
+export default function CategoryForm({ openDialog, category }: CategoryFormProps) {
     const {
         storeCategory,
+        updateCategory,
         setData,
         data,
         errors,
         processing,
         setImageCategory,
-        recentlySuccessful
-    } = useCategoryForm();
+        recentlySuccessful,
+        categories
+    } = useCategoryForm(category ? { category } : {});
 
     const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
-        storeCategory(() => {
-            openDialog(false);
-        });
+        if (category) {
+            updateCategory(() => {
+                openDialog(false);
+            });
+        }else{
+            storeCategory(() => {
+                openDialog(false);
+            });
+        }
     }
 
     const parentsCategories = categories.filter(category => !category.parent);
@@ -55,7 +61,7 @@ export default function CategoryForm({ openDialog, categories }: CategoryFormPro
                     <div>
                         <InputLabel htmlFor="category_id" value="Categoría padre" />
                         <div className='flex'>
-                            <Select onValueChange={(e) => { setData('parent_id', e) }} defaultValue={data.parent_id}>
+                            <Select onValueChange={(e) => { setData('parent_id', Number(e)) }} defaultValue={String(data.parent_id) || undefined}>
                                 <SelectTrigger className='h-[30px]'>
                                     <SelectValue placeholder="Seleccionar" />
                                 </SelectTrigger>

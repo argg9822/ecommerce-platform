@@ -1,4 +1,4 @@
-import { Home, Inbox, Search, Settings, ListOrdered, ShoppingBasket, PlusCircle } from "lucide-react";
+import { Home, Inbox, FolderTree, ListOrdered, ShoppingBasket, PlusCircle } from "lucide-react";
 import { Link, usePage } from '@inertiajs/react';
 import ApplicationLogo from '@/components/ApplicationLogo';
 import NavLink from "@/components/NavLink";
@@ -58,13 +58,20 @@ const menuItems: MenuItem[] = [
         active: route().current("products"),
         icon: Inbox,
         role: ["admin", "owner"],
-        createRoute: route('products_create')
+        createRoute: "products_create"
       },
       {
         title: "Órdenes",
         url: route("orders_index"),
         active: route().current("ordenes"),
         icon: ListOrdered,
+        role: ["admin", "owner"]
+      },
+      {
+        title: "Categorías",
+        url: route("categories_index"),
+        active: route().current("categorias"),
+        icon: FolderTree,
         role: ["admin", "owner"]
       }
     ]
@@ -79,7 +86,8 @@ const menuItems: MenuItem[] = [
         url: route("coupons_index"),
         active: route().current("marketing"),
         icon: ShoppingBasket,
-        role: ["admin", "owner"]
+        role: ["admin", "owner"],
+        createRoute: "coupons_create"
       },
     ]
   },
@@ -150,9 +158,9 @@ export function AppSidebar() {
                                       <span>{option.title}</span>
                                     </div>
 
-                                    {option.createRoute && (
+                                    {option.createRoute && route().has(option.createRoute) && (
                                       <Link
-                                        href={route("products_create")}
+                                        href={route(option.createRoute)}
                                         title="Crear producto"
                                         onClick={(e) => e.stopPropagation()}
                                       >

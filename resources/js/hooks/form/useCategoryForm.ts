@@ -1,24 +1,34 @@
 import { useForm, usePage } from "@inertiajs/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { FlashMessage } from '@/types';
+import { Category } from "@/types/category";
+import axios from "axios";
 
-export function useCategoryForm(){
+export function useCategoryForm({ category } : { category?: Category }) {
     const { toast } = useToast();
+    const [categories, setCategories] = useState<Category[]>([]);
 
+    useEffect(() => {
+        axios.get(route('categories_select_list'))
+            .then(response => {setCategories(response.data.categories)})
+            .catch(error => {console.error("Error fetching categories:", error)});
+    }, []);
+    
     const {
         data,
         setData,
         errors,
         post,
+        put,
         reset,
         processing,
         recentlySuccessful
     } = useForm({
-        name: '',
-        description: '',
+        name: category?.name || '',
+        description: category?.description || '',
         image: null as File | null,
-        parent_id: ''
+        parent_id: null as number | null,
     });
 
     const { flash } = usePage().props as {
@@ -62,6 +72,21 @@ export function useCategoryForm(){
         });
     }
 
+    const updateCategory = (onSuccess?:  () => void) => {        
+        put(route('categories_update', { category: category?.id }), {
+            preserveScroll: true,
+            onSuccess: () => {
+                reset();
+                if (onSuccess) onSuccess();
+            },
+            onError: () => {
+                if (errors.name) reset('name');
+                if (errors.image) reset('image');
+                if (errors.description) reset('description');
+            }
+        });
+    }
+
     const setImageCategory = (newImage: File[]) => {
         if (newImage.length > 0 && newImage[0].type.startsWith('image/')) {
             setData('image', newImage[0]);
@@ -76,11 +101,13 @@ export function useCategoryForm(){
 
     return {
         storeCategory,
+        updateCategory,
         setData,
         data,
         errors,
         processing,
         setImageCategory,
-        recentlySuccessful
+        recentlySuccessful,
+        categories
     }
 }

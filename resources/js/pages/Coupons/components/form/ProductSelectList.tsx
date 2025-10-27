@@ -1,4 +1,4 @@
-import useProducts from "@/hooks/get/use-products";
+import useProducts from "@/hooks/use-products";
 import { Conditions } from "@/types/coupon-form.type";
 import { CheckboxList } from "@/pages/Coupons/components/form/checkbox-list";
 

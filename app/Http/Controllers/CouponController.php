@@ -59,8 +59,8 @@ class CouponController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-
             Log::error('Error al crear el cupón: ' . $e->getMessage());
+            
             return redirect()->back()->with('flash.error', [
                 'title' => 'Error al crear el cupón',
                 'message' => 'Ocurrió un error al generar el cupón.'

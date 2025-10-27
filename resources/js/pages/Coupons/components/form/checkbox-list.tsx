@@ -8,7 +8,7 @@ import { Conditions } from "@/types/coupon-form.type";
 import { motion } from "framer-motion";
 
 interface CheckboxListProps {
-    items: Array<{ id?: number; name: string; price?: number }>;
+    items: Array<{ id?: number; name: string; price?: number }> | [];
     onChange: (value: number, field: keyof Conditions, index: number) => void;
     condition_index: number;
 }

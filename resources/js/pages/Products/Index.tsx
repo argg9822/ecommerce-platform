@@ -60,8 +60,6 @@ export default function Index({products}: ProductsProps){
   }, [flash]); 
 
   const handleEditProduct = (productSlug: string) => {
-    console.log('productSlug', productSlug);
-    
     router.visit(route('products_edit', productSlug));
   }
 

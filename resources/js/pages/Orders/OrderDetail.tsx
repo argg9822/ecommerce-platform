@@ -9,7 +9,7 @@ import { Order } from "@/types/order";
 import { Package, User, MapPin, Calendar, ShoppingBag, Pencil } from "lucide-react"
 import { OrderStatusBadge } from "@/pages/Orders/components/order-status-badge";
 import { SendWhatsapp } from "@/components/SendWhatsapp";
-import { OrderPaymentForm } from "@/pages/Orders/components/order-payment-form";
+import { OrderLoadPaymentForm } from "@/pages/Orders/components/order-load-payment-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import OrderPaymentsHistory from "@/pages/Orders/components/order-payments-history";
 import OrderStatusHistory from "@/pages/Orders/components/order-status-history";
@@ -22,8 +22,6 @@ type OrderDetail = {
 }
 
 export default function OrderDetail({ isOpen, order, setIsOpen, index }: OrderDetail) {
-    const statusNotUpdate = ['cancelled', 'refunded', 'delivered', 'paid'];
-    
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent className="sm:max-w-4xl h-[95vh] overflow-y-auto">
@@ -111,14 +109,15 @@ export default function OrderDetail({ isOpen, order, setIsOpen, index }: OrderDe
                         </div>
                     </div>
 
-                    {/* Actualizar pago */}
-                    {(order.payment_type === 'contra_entrega' && !statusNotUpdate.includes(order.status)) 
-                        ? (
-                            <div className="rounded-lg mt-4">
-                                <OrderPaymentForm order={order} orderIndex={index} />
-                            </div>
-                        ) 
-                    : <OrderPaymentsHistory payments={order.payments} />}
+                    {/* Actualizar pago y estado*/}
+                    <div className="rounded-lg mt-4">
+                        <OrderLoadPaymentForm order={order} orderIndex={index} />
+                    </div>
+
+                    {/* Historial de pagos */}
+                    {
+                        order.payments.length > 0 && <OrderPaymentsHistory payments={order.payments} />
+                    }
 
                     {/* Historial */}
                     {(order.status_history && order.status_history.length > 0) && (

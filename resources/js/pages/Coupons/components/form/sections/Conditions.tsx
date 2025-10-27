@@ -1,4 +1,3 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
 import ButtonAdd from "@/components/ui/button-add";
 import CategorySelectList from "@/pages/Coupons/components/form/CategorySelectList";
 import ProductSelectList from "@/pages/Coupons/components/form/ProductSelectList";
@@ -12,7 +11,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { useCouponForm } from "@/hooks/form/useCouponForm";
 import ClientSelectList from "@/pages/Coupons/components/form/ClientSelectList";
 import { useCouponFormContext } from "@/context/coupon-form.context";
 import { Checkbox } from "@/components/ui/checkbox";
