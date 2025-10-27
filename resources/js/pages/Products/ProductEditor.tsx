@@ -1,7 +1,6 @@
-import { useState, FormEventHandler } from 'react';
+import { useState } from 'react';
 import { Head } from "@inertiajs/react";
-import { Brand } from "@/types";
-import { Category } from '@/types/category';
+import { Brand, Category } from "@/types";
 import Authenticated from "@/layouts/AuthenticatedLayout";
 import { 
     MainInformation, 
@@ -12,7 +11,6 @@ import {
     SeoDetails
 } from '@/pages/Products/components/form/Sections';
 import BrandForm from '@/pages/Brands/Partials/BrandForm';
-import CategoryForm from '@/pages/Categories/Partials/CategoryForm';
 import useProductForm from '@/hooks/form/useProductForm';
 import { ProductFormContext } from '@/context/product-form.context';
 
@@ -20,7 +18,6 @@ import { ProductFormContext } from '@/context/product-form.context';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";

@@ -3,7 +3,7 @@ import { Product } from "@/types/product";
 
 export type CategoryContextType = ReturnType<typeof useCategories>;
 export interface Category {
-    id?: number;
+    id: number;
     name: string;
     description: string | null;
     image: string | null;
